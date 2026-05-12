@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>762973347675-4cqgu90klrje75ih70cq7iir4po41dkh.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.762973347675-4cqgu90klrje75ih70cq7iir4po41dkh</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>762973347675-9dr30hsd4p74ag40bob1ldh3il97nf58.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBOzIHwUcMAE4T2RKi9L3mskyEPFMKqTww</string>
+	<key>GCM_SENDER_ID</key>
+	<string>762973347675</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.dohtechsolutions.buzme.dev</string>
+	<key>PROJECT_ID</key>
+	<string>buzme-test</string>
+	<key>STORAGE_BUCKET</key>
+	<string>buzme-test.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:762973347675:ios:d56983ba7d10e40e70c47e</string>
+</dict>
+</plist>
