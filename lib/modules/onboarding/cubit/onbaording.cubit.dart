@@ -11,7 +11,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   void completeOnboarding() {
-    // locator<StorageServices>().saveData('isFirstTime', false);
+    locator<StorageServices>().saveData('isFirstTime', false);
     emit(state.copyWith(isCompleted: true));
   }
 }

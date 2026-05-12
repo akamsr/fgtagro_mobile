@@ -58,11 +58,8 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(seconds: 5));
 
     final storage = locator<StorageServices>();
-    final bool isFirstTime = true;
+    final bool isFirstTime = storage.readData('isFirstTime') ?? true;
     final bool isLoggedIn = storage.readData('token') != null;
-
-    // final bool isFirstTime = storage.readData('isFirstTime') ?? true;
-    // final bool isLoggedIn = storage.readData('token') != null;
 
     if (isFirstTime) {
       CustomNavigate.replaceAll([const OnboardingRoute()]);

@@ -65,8 +65,6 @@ class ApiService {
 
   Future<UserModel?> login(Map<String, dynamic> data) async {
     try {
-      // Removed sensitive URL toast
-
       final response = await locator<ApiClient>().dio.post(
         "${apiUrl}auth/login",
         options: Options(headers: NetworkUtils.headers()),
@@ -124,9 +122,20 @@ class ApiService {
         final body = response.data is String
             ? jsonDecode(response.data)
             : response.data;
-        final user = UserModel.fromJson(
-          body['data']['user'] ?? body['user'] ?? body,
+
+        final userData = body['data']?['user'] ?? body['user'] ?? body;
+        final user = UserModel.fromJson(userData);
+
+        final token = body['data']?['access_token'] ?? body['access_token'];
+
+        if (token != null) {
+          await storageService.prefs.setString('token', token);
+        }
+        await storageService.saveModel(
+          key: 'loggedUser',
+          value: user.toJsonString(),
         );
+        await storageService.prefs.setInt('userId', user.id ?? 0);
 
         return user;
       } else {
@@ -222,20 +231,26 @@ class ApiService {
   Future<void> verifyEmail(String email, String token) async {
     try {
       final response = await locator<ApiClient>().dio.post(
-        "${apiUrl}auth/verify-email",
+        "${apiUrl}auth/verify-otp",
         options: Options(headers: NetworkUtils.headers()),
         data: jsonEncode({'email': email, 'token': token}),
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
-        throw body['error']?['message'] ?? body['message'] ?? 'Email verification failed';
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
+        throw body['error']?['message'] ??
+            body['message'] ??
+            'Email verification failed';
       }
     } on DioException catch (e) {
       final body = e.response?.data;
       if (body != null) {
         final parsed = body is String ? jsonDecode(body) : body;
-        throw parsed['error']?['message'] ?? parsed['message'] ?? 'Email verification failed';
+        throw parsed['error']?['message'] ??
+            parsed['message'] ??
+            'Email verification failed';
       }
       rethrow;
     } catch (e) {
@@ -252,14 +267,18 @@ class ApiService {
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
         throw body['error']?['message'] ?? body['message'] ?? 'Resend failed';
       }
     } on DioException catch (e) {
       final body = e.response?.data;
       if (body != null) {
         final parsed = body is String ? jsonDecode(body) : body;
-        throw parsed['error']?['message'] ?? parsed['message'] ?? 'Resend failed';
+        throw parsed['error']?['message'] ??
+            parsed['message'] ??
+            'Resend failed';
       }
       rethrow;
     } catch (e) {
@@ -287,18 +306,18 @@ class ApiService {
   }
 
   Future<UserModel?> getAuthUser(String userID) async {
-    final Map data = {"id": userID};
-    final response = await locator<ApiClient>().dio.post(
-      "${apiUrl}auth/user?lang=${LanguageService.current}",
+    final response = await locator<ApiClient>().dio.get(
+      "${apiUrl}auth/me?lang=${LanguageService.current}",
       options: Options(headers: NetworkUtils.headers()),
-      data: jsonEncode(data),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final body = response.data is String
           ? jsonDecode(response.data)
           : response.data;
-      return UserModel.fromJson(body);
+      return UserModel.fromJson(
+        body['data']?['user'] ?? body['user'] ?? body['data'] ?? body,
+      );
     } else {
       final body = response.data is String
           ? jsonDecode(response.data)
@@ -310,9 +329,11 @@ class ApiService {
   Future<UserModel?> refreshUserToken() async {
     try {
       final response = await locator<ApiClient>().dio.post(
-        "${apiUrl}auth/refresh-token?lang=${LanguageService.current}",
+        "${apiUrl}auth/refresh?lang=${LanguageService.current}",
         options: Options(headers: NetworkUtils.headers()),
-        data: jsonEncode({'oldToken': locator<StorageServices>().refreshToken}),
+        data: jsonEncode({
+          'refresh_token': locator<StorageServices>().refreshToken,
+        }),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final body = response.data is String

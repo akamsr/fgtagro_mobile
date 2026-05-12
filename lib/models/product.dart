@@ -167,7 +167,7 @@ class ProductModel {
       slug: json['slug'] ?? '',
       shortDescription: json['short_description'] ?? '',
       description: json['description'] ?? '',
-      unitPrice: (json['unit_price'] ?? 0).toDouble(),
+      unitPrice: double.tryParse(json['unit_price']?.toString() ?? '0') ?? 0.0,
       unitOfSale: json['unit_of_sale'] ?? '',
       stockQuantity: json['stock_quantity'] ?? 0,
       status: json['status'] ?? '',

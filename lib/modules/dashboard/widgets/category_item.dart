@@ -28,7 +28,9 @@ class CategoryItem extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: active ? AppColors.secondaryColor : const Color(0xFFF5F3F8),
+                color: active
+                    ? AppColors.secondaryColor
+                    : const Color(0xFFF5F3F8),
                 borderRadius: BorderRadius.circular(16),
               ),
               alignment: Alignment.center,

@@ -25,11 +25,31 @@ class $AssetsImagesGen {
   const $AssetsImagesGen();
 }
 
+class $AssetsOnboardingGen {
+  const $AssetsOnboardingGen();
+
+  /// File path: assets/onboarding/image_1.png
+  AssetGenImage get image1 =>
+      const AssetGenImage('assets/onboarding/image_1.png');
+
+  /// File path: assets/onboarding/image_2.png
+  AssetGenImage get image2 =>
+      const AssetGenImage('assets/onboarding/image_2.png');
+
+  /// File path: assets/onboarding/image_3.png
+  AssetGenImage get image3 =>
+      const AssetGenImage('assets/onboarding/image_3.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [image1, image2, image3];
+}
+
 class Assets {
   const Assets._();
 
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsOnboardingGen onboarding = $AssetsOnboardingGen();
 }
 
 class AssetGenImage {

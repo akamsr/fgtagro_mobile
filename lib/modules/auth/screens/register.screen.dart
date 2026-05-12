@@ -65,7 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.user != null) {
-          CustomNavigate.replace(const HomeDashBoardRoute());
+          CustomNavigate.replace(VerifyEmailRoute(email: _emailController.text));
         }
       },
       builder: (context, state) {

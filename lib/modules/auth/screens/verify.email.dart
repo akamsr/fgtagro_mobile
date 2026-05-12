@@ -2,12 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
 import 'package:fgtagro_mobile/modules/auth/widgets/auth_button.dart';
 import 'package:fgtagro_mobile/modules/auth/widgets/auth_layout.dart';
-import 'package:fgtagro_mobile/modules/auth/widgets/auth_text_field.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinput/pinput.dart';
 import 'dart:async';
 
 @RoutePage()
@@ -70,6 +70,31 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final defaultPinTheme = PinTheme(
+      width: 56,
+      height: 56,
+      textStyle: const TextStyle(
+        fontSize: 20,
+        color: AppColors.textPrimary,
+        fontWeight: FontWeight.w600,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.borderStrong),
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+
+    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+      border: Border.all(color: AppColors.primaryColor),
+      borderRadius: BorderRadius.circular(12),
+    );
+
+    final submittedPinTheme = defaultPinTheme.copyWith(
+      decoration: defaultPinTheme.decoration?.copyWith(
+        color: AppColors.bgSubtle,
+      ),
+    );
+
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.success) {
@@ -116,17 +141,25 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                AuthTextField(
-                  controller: _tokenController,
-                  keyboardType: TextInputType.number,
-                  label: 'Verification Code',
-                  hintText: '000000',
-                  prefixIcon: Icons.key_outlined,
-                  validator: (val) => val == null || val.length != 6
-                      ? 'Required 6 digits'
-                      : null,
+                Center(
+                  child: Pinput(
+                    length: 6,
+                    controller: _tokenController,
+                    keyboardType: TextInputType.number,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: focusedPinTheme,
+                    submittedPinTheme: submittedPinTheme,
+                    validator: (s) {
+                      return s == null || s.length != 6
+                          ? 'Required 6 digits'
+                          : null;
+                    },
+                    pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                    showCursor: true,
+                    onCompleted: (pin) => _submit(context),
+                  ),
                 ),
                 const SizedBox(height: 32),
 
@@ -143,4 +176,5 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     );
   }
 }
+
 

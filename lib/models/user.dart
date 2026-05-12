@@ -224,10 +224,31 @@ class UserModel extends HiveObject {
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
+    final rawId = map['id'];
+    int? parsedId;
+    String parsedUid = map['uid'] ?? '';
+    
+    if (rawId is int) {
+      parsedId = rawId;
+    } else if (rawId is String) {
+      if (int.tryParse(rawId) != null) {
+        parsedId = int.tryParse(rawId);
+      } else {
+        parsedUid = rawId;
+      }
+    }
+
+    final String firstName = map['first_name'] ?? '';
+    final String lastName = map['last_name'] ?? '';
+    String fullName = map['fullNames'] ?? '';
+    if (fullName.isEmpty && (firstName.isNotEmpty || lastName.isNotEmpty)) {
+      fullName = '$firstName $lastName'.trim();
+    }
+
     return UserModel(
-      id: map['id'] ?? 0,
-      uid: map['uid'] ?? '',
-      fullNames: map['fullNames'] ?? '',
+      id: parsedId ?? 0,
+      uid: parsedUid,
+      fullNames: fullName,
       roles: map['Roles'] ?? [],
       email: map['email'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
