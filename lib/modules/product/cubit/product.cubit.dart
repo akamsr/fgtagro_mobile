@@ -1,3 +1,4 @@
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
 import 'package:fgtagro_mobile/models/product.dart';
 import 'package:fgtagro_mobile/services/products/product.services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,13 +19,28 @@ class ProductCubit extends Cubit<ProductState> {
     emit(state.copyWith(genLoading: false));
   }
 
+  void emitError(dynamic e, StackTrace s) {
+    emit(
+      state.copyWith(
+        genLoading: false,
+        genError: ErrorMapper.map(e, s),
+        showError: true,
+      ),
+    );
+  }
+
   Future<void> fetchCategories() async {
     emitLoading();
     try {
       final categories = await productService.getCategories();
-      emit(state.copyWith(genLoading: false, categories: categories));
-    } catch (e) {
-      emit(state.copyWith(genLoading: false, showError: true));
+      emit(state.copyWith(
+        genLoading: false, 
+        categories: categories, 
+        genError: null, 
+        showError: false,
+      ));
+    } catch (e, s) {
+      emitError(e, s);
     }
   }
 
@@ -32,22 +48,33 @@ class ProductCubit extends Cubit<ProductState> {
     emitLoading();
     try {
       final products = await productService.getFeaturedProducts();
-      emit(state.copyWith(genLoading: false, featuredProducts: products));
-    } catch (e) {
-      emit(state.copyWith(genLoading: false, showError: true));
+      emit(state.copyWith(
+        genLoading: false, 
+        featuredProducts: products, 
+        genError: null, 
+        showError: false,
+      ));
+    } catch (e, s) {
+      emitError(e, s);
     }
   }
 
   Future<void> fetchProducts({int page = 1, int limit = 20, String? search}) async {
     emitLoading();
     try {
-      final result = await productService.getPublishedProducts(page: page, limit: limit, search: search);
+      final result = await productService.getPublishedProducts(
+        page: page,
+        limit: limit,
+        search: search,
+      );
       emit(state.copyWith(
         genLoading: false,
         products: result['products'],
+        genError: null,
+        showError: false,
       ));
-    } catch (e) {
-      emit(state.copyWith(genLoading: false, showError: true));
+    } catch (e, s) {
+      emitError(e, s);
     }
   }
 
@@ -55,9 +82,14 @@ class ProductCubit extends Cubit<ProductState> {
     emitLoading();
     try {
       final product = await productService.getProductById(id);
-      emit(state.copyWith(genLoading: false, selectedProduct: product));
-    } catch (e) {
-      emit(state.copyWith(genLoading: false, showError: true));
+      emit(state.copyWith(
+        genLoading: false,
+        selectedProduct: product,
+        genError: null,
+        showError: false,
+      ));
+    } catch (e, s) {
+      emitError(e, s);
     }
   }
 }

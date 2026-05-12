@@ -1,6 +1,6 @@
 import 'package:fgtagro_mobile/modules/cart/cubit/cart.cubit.dart';
 import 'package:fgtagro_mobile/modules/cart/cubit/cart.state.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/custome_comsumer.dart';
+import 'package:fgtagro_mobile/utils/error/custom_bloc_consumer.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:fgtagro_mobile/utils/theme/styles.dart';
 import 'package:fgtagro_mobile/widgets/icons.dart';

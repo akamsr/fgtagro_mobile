@@ -3,7 +3,7 @@ part of 'home.cubit.dart';
 class HomeState extends GlobalAppState {
   final bool genLoading;
   final bool showError;
-  final GlobalErrorData? genError;
+  final AppFailure? genError;
   final bool noInternet;
   final bool filterLoading;
   final bool locationPermisionsAccepted;
@@ -19,12 +19,14 @@ class HomeState extends GlobalAppState {
     this.locationPermisionsAccepted = true,
   });
 
+  @override
+  AppFailure? get error => genError;
+
   HomeState copyWith({
     bool? genLoading,
     bool? showError,
     bool? filterLoading,
-    GlobalErrorData? genError,
-
+    AppFailure? genError,
     bool? noInternet,
     bool? locationPermisionsAccepted,
     bool? browseEmpty,
@@ -32,6 +34,7 @@ class HomeState extends GlobalAppState {
     return HomeState(
       genLoading: genLoading ?? this.genLoading,
       genError: genError ?? this.genError,
+      showError: showError ?? this.showError,
       noInternet: noInternet ?? this.noInternet,
       filterLoading: filterLoading ?? this.filterLoading,
       browseEmpty: browseEmpty ?? this.browseEmpty,

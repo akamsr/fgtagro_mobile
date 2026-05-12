@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
+import 'package:fgtagro_mobile/utils/error/global_app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,16 +14,11 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeState()) {}
 
   List<String> cities = [];
-
   bool checkNow = false;
 
   Future<void> stopCheck() async {
     checkNow = false;
     refresh();
-  }
-
-  Future<void> getCities() async {
-    // cities = await LocationServices().getCities();
   }
 
   @override
@@ -64,23 +60,20 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
-  // ignore: type_annotate_public_apis
-  void emitError(e, s) {
+  void emitError(dynamic e, StackTrace s) {
     emit(
       state.copyWith(
         genLoading: false,
-        genError: GlobalErrorData(e, stackTrace: s),
+        genError: ErrorMapper.map(e, s),
       ),
     );
   }
 
   Future<bool> getPermission() async {
     final permission = await Geolocator.requestPermission();
-
     final bool granted =
         ((permission == LocationPermission.always) ||
         (permission == LocationPermission.whileInUse));
-
     return granted;
   }
 
@@ -92,16 +85,12 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> grantPermission() async {
     final Location location = new Location();
-
     final bool granted = await getPermission();
     if (!granted) {
-      bool _serviceEnabled;
-      _serviceEnabled = await location.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await location.requestService();
-        if (!_serviceEnabled) {
-          return;
-        }
+      bool serviceEnabled = await location.serviceEnabled();
+      if (!serviceEnabled) {
+        serviceEnabled = await location.requestService();
+        if (!serviceEnabled) return;
       }
       await openAppSettings();
     } else {
@@ -115,18 +104,15 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(genLoading: true, noInternet: false));
 
     LocationPermission permission = await Geolocator.checkPermission();
-
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // emit(HomeState(genLoading: false, locationPermisionsAccepted: false));
         return Future.error('Location permissions are denied');
       }
     }
-
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.',
+        'Location permissions are permanently denied.',
       );
     }
   }

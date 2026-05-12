@@ -1,9 +1,10 @@
 import 'package:fgtagro_mobile/models/seller.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
+import 'package:fgtagro_mobile/utils/error/global_app_state.dart';
 
 class SellerState extends GlobalAppState {
   final bool genLoading;
-  final GlobalErrorData? genError;
+  final AppFailure? genError;
   final bool showError;
   final SellerProfileModel? profile;
   final List<StoreModel> stores;
@@ -16,9 +17,12 @@ class SellerState extends GlobalAppState {
     this.stores = const [],
   });
 
+  @override
+  AppFailure? get error => genError;
+
   SellerState copyWith({
     bool? genLoading,
-    GlobalErrorData? genError,
+    AppFailure? genError,
     bool? showError,
     SellerProfileModel? profile,
     List<StoreModel>? stores,
@@ -34,10 +38,10 @@ class SellerState extends GlobalAppState {
 
   @override
   List<Object?> get extraprops => [
-        genLoading,
-        genError,
-        showError,
-        profile,
-        stores,
-      ];
+    genLoading,
+    genError,
+    showError,
+    profile,
+    stores,
+  ];
 }

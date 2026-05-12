@@ -1,5 +1,5 @@
 import 'package:fgtagro_mobile/services/conversation/conversation.services.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'conversation.state.dart';
 
@@ -13,11 +13,11 @@ class ConversationCubit extends Cubit<ConversationState> {
     try {
       final conversations = await _conversationService.getConversations();
       emit(state.copyWith(genLoading: false, conversations: conversations));
-    } catch (e) {
+    } catch (e, s) {
       emit(
         state.copyWith(
           genLoading: false,
-          genError: GlobalErrorData(e),
+          genError: ErrorMapper.map(e, s),
           showError: true,
         ),
       );
@@ -29,11 +29,11 @@ class ConversationCubit extends Cubit<ConversationState> {
     try {
       final messages = await _conversationService.getMessages(conversationId);
       emit(state.copyWith(genLoading: false, messages: messages));
-    } catch (e) {
+    } catch (e, s) {
       emit(
         state.copyWith(
           genLoading: false,
-          genError: GlobalErrorData(e),
+          genError: ErrorMapper.map(e, s),
           showError: true,
         ),
       );
@@ -47,8 +47,8 @@ class ConversationCubit extends Cubit<ConversationState> {
         content,
       );
       emit(state.copyWith(messages: [...state.messages, newMessage]));
-    } catch (e) {
-      emit(state.copyWith(genError: GlobalErrorData(e), showError: true));
+    } catch (e, s) {
+      emit(state.copyWith(genError: ErrorMapper.map(e, s), showError: true));
     }
   }
 

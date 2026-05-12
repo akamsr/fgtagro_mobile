@@ -6,9 +6,11 @@ import 'dart:convert';
 import 'package:fgtagro_mobile/env/url.dart';
 import 'package:fgtagro_mobile/models/user.dart';
 import 'package:fgtagro_mobile/utils/language/language.dart';
+import 'package:fgtagro_mobile/utils/log/log.dart';
 import 'package:fgtagro_mobile/utils/network/network.dart';
 import 'package:fgtagro_mobile/utils/storage/local.storage.dart';
 import 'package:fgtagro_mobile/utils/storage/locator.storage.dart';
+import 'package:fgtagro_mobile/widgets/notification/toast.dart';
 import 'package:flutter/material.dart';
 import '../../utils/functions/navigate.dart';
 
@@ -22,7 +24,8 @@ class ApiService {
   final firebase = FirebaseProvider();
 
   Future<String> updateUser(UserModel user) async {
-    final url = '${apiUrl}/update-user/${user.uid}?lang=${LanguageService.current}';
+    final url =
+        '${apiUrl}update-user/${user.uid}?lang=${LanguageService.current}';
     final body = jsonEncode(user.toJson());
     try {
       final response = await locator<ApiClient>().dio.put(
@@ -41,31 +44,39 @@ class ApiService {
         );
         return 'Success';
       } else {
-        final respBody = response.data is String ? jsonDecode(response.data) : response.data;
+        final respBody = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
         throw Exception(respBody["message"]);
       }
     } on DioException catch (e) {
       if (e.response != null) {
-        final respBody = e.response?.data is String ? jsonDecode(e.response?.data) : e.response?.data;
+        final respBody = e.response?.data is String
+            ? jsonDecode(e.response?.data)
+            : e.response?.data;
         return respBody?["message"] ?? e.toString();
       }
       return e.toString();
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
-      return e.toString();
+      return 'Failed to update user. Please try again.';
     }
   }
 
   Future<UserModel?> login(Map<String, dynamic> data) async {
     try {
+      // Removed sensitive URL toast
+
       final response = await locator<ApiClient>().dio.post(
-        "${apiUrl}/auth/login",
+        "${apiUrl}auth/login",
         options: Options(headers: NetworkUtils.headers()),
         data: jsonEncode(data),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
         final user = UserModel.fromJson(
           body['data']['user'] ?? body['user'] ?? body,
         );
@@ -82,14 +93,18 @@ class ApiService {
 
         return user;
       } else {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
         throw body['error']?['message'] ?? body['message'] ?? 'Login failed';
       }
     } on DioException catch (e) {
       final body = e.response?.data;
       if (body != null) {
         final parsed = body is String ? jsonDecode(body) : body;
-        throw parsed['error']?['message'] ?? parsed['message'] ?? 'Login failed';
+        throw parsed['error']?['message'] ??
+            parsed['message'] ??
+            'Login failed';
       }
       rethrow;
     } catch (e) {
@@ -99,28 +114,38 @@ class ApiService {
 
   Future<UserModel> register(Map<String, dynamic> data) async {
     try {
+      // Removed sensitive URL log
+
       final response = await locator<ApiClient>().dio.post(
-        "${apiUrl}/auth/register",
+        "${apiUrl}auth/register",
         options: Options(headers: NetworkUtils.headers()),
         data: jsonEncode(data),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
         final user = UserModel.fromJson(
           body['data']['user'] ?? body['user'] ?? body,
         );
 
         return user;
       } else {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
-        throw body['error']?['message'] ?? body['message'] ?? 'Registration failed';
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
+        throw body['error']?['message'] ??
+            body['message'] ??
+            'Registration failed';
       }
     } on DioException catch (e) {
       final body = e.response?.data;
       if (body != null) {
         final parsed = body is String ? jsonDecode(body) : body;
-        throw parsed['error']?['message'] ?? parsed['message'] ?? 'Registration failed';
+        throw parsed['error']?['message'] ??
+            parsed['message'] ??
+            'Registration failed';
       }
       rethrow;
     } catch (e) {
@@ -131,20 +156,26 @@ class ApiService {
   Future<void> forgotPassword(String email) async {
     try {
       final response = await locator<ApiClient>().dio.post(
-        "${apiUrl}/auth/forgot-password",
+        "${apiUrl}auth/forgot-password",
         options: Options(headers: NetworkUtils.headers()),
         data: jsonEncode({'email': email}),
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
-        throw body['error']?['message'] ?? body['message'] ?? 'Forgot password failed';
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
+        throw body['error']?['message'] ??
+            body['message'] ??
+            'Forgot password failed';
       }
     } on DioException catch (e) {
       final body = e.response?.data;
       if (body != null) {
         final parsed = body is String ? jsonDecode(body) : body;
-        throw parsed['error']?['message'] ?? parsed['message'] ?? 'Forgot password failed';
+        throw parsed['error']?['message'] ??
+            parsed['message'] ??
+            'Forgot password failed';
       }
       rethrow;
     } catch (e) {
@@ -159,7 +190,7 @@ class ApiService {
   }) async {
     try {
       final response = await locator<ApiClient>().dio.post(
-        "${apiUrl}/auth/reset-password-otp",
+        "${apiUrl}auth/reset-password-otp",
         options: Options(headers: NetworkUtils.headers()),
         data: jsonEncode({
           'email': email,
@@ -169,14 +200,20 @@ class ApiService {
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
-        throw body['error']?['message'] ?? body['message'] ?? 'Reset password failed';
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
+        throw body['error']?['message'] ??
+            body['message'] ??
+            'Reset password failed';
       }
     } on DioException catch (e) {
       final body = e.response?.data;
       if (body != null) {
         final parsed = body is String ? jsonDecode(body) : body;
-        throw parsed['error']?['message'] ?? parsed['message'] ?? 'Reset password failed';
+        throw parsed['error']?['message'] ??
+            parsed['message'] ??
+            'Reset password failed';
       }
       rethrow;
     } catch (error) {
@@ -189,12 +226,14 @@ class ApiService {
   Future<UserModel?> getUserById(int id) async {
     final Map data = {"uid": id};
     final response = await locator<ApiClient>().dio.post(
-      "${apiUrl}/users/find/$id?lang=${LanguageService.current}",
+      "${apiUrl}users/find/$id?lang=${LanguageService.current}",
       options: Options(headers: NetworkUtils.headers()),
       data: jsonEncode(data),
     );
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final body = response.data is String ? jsonDecode(response.data) : response.data;
+      final body = response.data is String
+          ? jsonDecode(response.data)
+          : response.data;
       return UserModel.fromJson(body);
     } else {
       throw Exception("User not found");
@@ -204,16 +243,20 @@ class ApiService {
   Future<UserModel?> getAuthUser(String userID) async {
     final Map data = {"id": userID};
     final response = await locator<ApiClient>().dio.post(
-      "${apiUrl}/auth/user?lang=${LanguageService.current}",
+      "${apiUrl}auth/user?lang=${LanguageService.current}",
       options: Options(headers: NetworkUtils.headers()),
       data: jsonEncode(data),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final body = response.data is String ? jsonDecode(response.data) : response.data;
+      final body = response.data is String
+          ? jsonDecode(response.data)
+          : response.data;
       return UserModel.fromJson(body);
     } else {
-      final body = response.data is String ? jsonDecode(response.data) : response.data;
+      final body = response.data is String
+          ? jsonDecode(response.data)
+          : response.data;
       throw body;
     }
   }
@@ -221,12 +264,14 @@ class ApiService {
   Future<UserModel?> refreshUserToken() async {
     try {
       final response = await locator<ApiClient>().dio.post(
-        "${apiUrl}/auth/refresh-token?lang=${LanguageService.current}",
+        "${apiUrl}auth/refresh-token?lang=${LanguageService.current}",
         options: Options(headers: NetworkUtils.headers()),
         data: jsonEncode({'oldToken': locator<StorageServices>().refreshToken}),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final body = response.data is String ? jsonDecode(response.data) : response.data;
+        final body = response.data is String
+            ? jsonDecode(response.data)
+            : response.data;
         final user = UserModel.fromJson(body);
         await storageService.saveModel(
           key: 'loggedUser',

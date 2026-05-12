@@ -1,3 +1,4 @@
+import 'package:fgtagro_mobile/utils/error/reporting_service.dart';
 import 'package:fgtagro_mobile/env/app_config.dart';
 import 'package:fgtagro_mobile/env/dev_env.dart';
 import 'package:fgtagro_mobile/firebase_options_dev.dart';
@@ -31,7 +32,12 @@ void main() async {
     ),
   );
 
-  await Firebase.initializeApp(options: DevFirebaseOptions.currentPlatform);
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(options: DevFirebaseOptions.currentPlatform);
+  }
+
+  // Initialize unified reporting service
+  ReportingService.init();
 
   runApp(MyApp(isDev: true));
 }

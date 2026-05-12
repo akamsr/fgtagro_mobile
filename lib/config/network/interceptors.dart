@@ -7,37 +7,40 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:fgtagro_mobile/utils/storage/local.storage.dart';
 import 'package:fgtagro_mobile/utils/storage/locator.storage.dart';
+import 'package:flutter/foundation.dart';
 
 class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    log("REQUEST[${options.method}] => PATH: ${options.path}");
-
+    if (kDebugMode) {
+      // Log only the path, not the full URL which may contain the domain
+      log('REQUEST[${options.method}] => PATH: ${options.path}');
+    }
     handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    log(
-      'ERROR[${err.response?.statusCode}, ${err.response?.statusMessage}] => PATH: ${err.requestOptions.path}',
-    );
+    if (kDebugMode) {
+      log(
+        'ERROR[${err.response?.statusCode}, ${err.response?.statusMessage}] => PATH: ${err.requestOptions.path}',
+      );
+    }
     handler.next(err);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    log(
-      'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
-    );
+    if (kDebugMode) {
+      log(
+        'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
+      );
+    }
     handler.next(response);
   }
 }
 
 class AuthenticationInterceptor extends Interceptor {
-  // final Dio _dio;
-
-  // String? _refreshToken;
-
   String? get _token => locator<StorageServices>().accesToken;
 
   @override
@@ -45,29 +48,20 @@ class AuthenticationInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    options.headers["Authorization"] = "Bearer $_token";
-    options.headers["Accept"] = "application/json";
+    options.headers['Authorization'] = 'Bearer $_token';
+    options.headers['Accept'] = 'application/json';
     handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    //Todo: Refresh authentication token if response id 401 (or 500 - to be fixed)
-    if (err.response?.statusCode == 401 || err.response?.statusCode == 500) {
-      // if(err.response.statusCode==401&&err.response.data['message'])
-      // push(const DriverLoginRoute());
-      // final String? newToken = await refreshAccessToken();
-      // if (newToken != null) {
-      //   err.requestOptions.headers["Not Authorized"] = "Bearer $newToken";
-
-      //   ///Gets the new token gotten after refresh and updates the old token stored in the local db;
-
-      //   // updateToken(newToken: newToken);
-      //   return handler.resolve(await _dio.fetch(err.requestOptions));
-      // }
+    // TODO: Implement token refresh on 401
+    if (kDebugMode) {
+      log(
+        err.response?.statusMessage.toString() ?? '',
+        name: 'AUTH_ERROR',
+      );
     }
-    log(err.response?.statusMessage.toString() ?? "", name: 'ERROR');
-
     handler.next(err);
   }
 }
@@ -82,9 +76,13 @@ class RetryInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     int retryAttempts = 0;
 
-    while (retryAttempts < retryAttempts && await _shouldRetry(err)) {
+    // Fixed bug: was `retryAttempts < retryAttempts` (always false).
+    while (retryAttempts < retryCount && await _shouldRetry(err)) {
       try {
         retryAttempts++;
+        if (kDebugMode) {
+          log('Retrying request (attempt $retryAttempts of $retryCount)...');
+        }
         final Response response = await dio.request(
           err.requestOptions.path,
           options: Options(
@@ -101,7 +99,11 @@ class RetryInterceptor extends Interceptor {
         handler.resolve(response);
         return;
       } catch (e) {
-        err = e as DioException;
+        if (e is DioException) {
+          err = e;
+        } else {
+          break;
+        }
       }
     }
 
@@ -109,78 +111,55 @@ class RetryInterceptor extends Interceptor {
   }
 
   Future<bool> _shouldRetry(DioException err) async {
-    final List<ConnectivityResult> result = await Connectivity()
-        .checkConnectivity();
-    final bool shouldRetry =
+    // Do not retry API errors (4xx/5xx) — only connectivity-level failures
+    if (err.response != null) return false;
+
+    final List<ConnectivityResult> result =
+        await Connectivity().checkConnectivity();
+    final bool hasConnection = !result.contains(ConnectivityResult.none);
+
+    final bool isRetryableError =
         err.type == DioExceptionType.connectionTimeout ||
         err.type == DioExceptionType.receiveTimeout ||
-        err.type == DioExceptionType.unknown &&
-            !result.contains(ConnectivityResult.none);
+        err.type == DioExceptionType.unknown;
 
-    return shouldRetry;
+    return isRetryableError && hasConnection;
   }
 }
 
 class ErrorHandlingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    switch (err.type) {
-      case DioExceptionType.connectionTimeout:
-        log("Connection timeout with ${err.requestOptions.path}");
-        log(
-          err.message ?? "Connection timeout with ${err.requestOptions.path}",
-        );
-        break;
-      case DioExceptionType.sendTimeout:
-        log("Send timeout in connection with ${err.requestOptions.path}");
-        log(
-          err.message ??
-              "Send timeout in connection with ${err.requestOptions.path}",
-        );
-        break;
-      case DioExceptionType.receiveTimeout:
-        log("Receive timeout with ${err.requestOptions.path}");
-        log(err.message ?? "Receive timeout with ${err.requestOptions.path}");
-        break;
-      case DioExceptionType.badCertificate:
-        log("Received Bad Certificate error from ${err.requestOptions.path}");
-        log(
-          err.message ??
-              "Bad Certificate error from ${err.requestOptions.path}",
-        );
-        break;
-      case DioExceptionType.badResponse:
-        log(
-          "Bad Response: ${err.response?.statusCode} from ${err.requestOptions.path}",
-        );
-        log(
-          err.response?.data?.toString() ??
-              err.message ??
-              err.response?.statusMessage ??
-              "Bad Response: ${err.response?.statusCode} from ${err.requestOptions.path}",
-        );
-        break;
-      case DioExceptionType.cancel:
-        log("Request to ${err.requestOptions.path} was cancelled");
-        log(
-          err.message ?? "Request to ${err.requestOptions.path} was cancelled",
-        );
-        break;
-      case DioExceptionType.connectionError:
-        log(
-          "Connection Error, No Internet or Something Else to send request to ${err.requestOptions.path}",
-        );
-        log(
-          err.message ??
-              "Connection Error, No Internet or Something Else to send request to ${err.requestOptions.path}",
-        );
-
-      case DioExceptionType.unknown:
-        log(
-          "An Unknown error occurred when sending request to ${err.requestOptions.path}",
-        );
+    if (kDebugMode) {
+      // Log path only, never the full URL
+      final path = err.requestOptions.path;
+      switch (err.type) {
+        case DioExceptionType.connectionTimeout:
+          log('Connection timeout for: $path');
+          break;
+        case DioExceptionType.sendTimeout:
+          log('Send timeout for: $path');
+          break;
+        case DioExceptionType.receiveTimeout:
+          log('Receive timeout for: $path');
+          break;
+        case DioExceptionType.badCertificate:
+          log('Bad certificate for: $path');
+          break;
+        case DioExceptionType.badResponse:
+          log('Bad response [${err.response?.statusCode}] for: $path');
+          break;
+        case DioExceptionType.cancel:
+          log('Request cancelled: $path');
+          break;
+        case DioExceptionType.connectionError:
+          log('Connection error for: $path');
+          break;
+        case DioExceptionType.unknown:
+          log('Unknown error for: $path');
+          break;
+      }
     }
-
     handler.next(err);
   }
 }

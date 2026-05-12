@@ -2,7 +2,7 @@ part of 'auth.cubit.dart';
 
 class AuthState extends GlobalAppState {
   final bool genLoading;
-  final GlobalErrorData? genError;
+  final AppFailure? genError;
   final bool showError;
   final String loginMode; // 'phone' or 'email'
   final bool isBiometricEnabled;
@@ -25,9 +25,12 @@ class AuthState extends GlobalAppState {
     this.user,
   });
 
+  @override
+  AppFailure? get error => genError;
+
   AuthState copyWith({
     bool? genLoading,
-    GlobalErrorData? genError,
+    AppFailure? genError,
     bool? showError,
     String? loginMode,
     bool? isBiometricEnabled,

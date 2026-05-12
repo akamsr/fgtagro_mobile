@@ -40,7 +40,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               if (state.showError && state.genError != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Error: ${state.genError?.error.toString()}'),
+                    content: Text('Error: ${state.genError?.message}'),
                   ),
                 );
               }

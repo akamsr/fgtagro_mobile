@@ -1,5 +1,5 @@
 import 'package:fgtagro_mobile/services/order/order.services.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'order.state.dart';
 
@@ -13,11 +13,11 @@ class OrderCubit extends Cubit<OrderState> {
     try {
       final orders = await _orderService.getOrders();
       emit(state.copyWith(genLoading: false, orders: orders));
-    } catch (e) {
+    } catch (e, s) {
       emit(
         state.copyWith(
           genLoading: false,
-          genError: GlobalErrorData(e),
+          genError: ErrorMapper.map(e, s),
           showError: true,
         ),
       );

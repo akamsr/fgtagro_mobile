@@ -71,9 +71,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             listener: (context, state) {
               if (state.showError && state.genError != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${state.genError?.error.toString()}')),
+                  SnackBar(content: Text('Error: ${state.genError?.message}')),
                 );
               }
+
               // Optionally handle success navigation here
             },
             builder: (context, state) {

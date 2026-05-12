@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:fgtagro_mobile/models/user.dart';
 import 'package:fgtagro_mobile/services/auth/auth.services.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
-import 'package:flutter/material.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
+import 'package:fgtagro_mobile/utils/error/global_app_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'auth.state.dart';
@@ -12,27 +12,33 @@ class AuthCubit extends Cubit<AuthState> {
   final ApiService apiService;
 
   AuthCubit({ApiService? apiService})
-      : apiService = apiService ?? ApiService(),
-        super(AuthState());
+    : apiService = apiService ?? ApiService(),
+      super(AuthState());
 
   void setLoginMode(String mode) {
     emit(state.copyWith(loginMode: mode));
   }
 
   void emitLoading() {
-    emit(state.copyWith(genLoading: true, genError: null, showError: false, success: false));
+    emit(
+      state.copyWith(
+        genLoading: true,
+        genError: null,
+        showError: false,
+        success: false,
+      ),
+    );
   }
 
   void emitLoaded() {
     emit(state.copyWith(genLoading: false));
   }
 
-  // ignore: type_annotate_public_apis
-  void emitError(e, s) {
+  void emitError(dynamic e, StackTrace s) {
     emit(
       state.copyWith(
         genLoading: false,
-        genError: GlobalErrorData(e, stackTrace: s),
+        genError: ErrorMapper.map(e, s),
         showError: true,
       ),
     );
@@ -49,10 +55,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> loginWithEmail(String email, String password) async {
     emitLoading();
     try {
-      await apiService.login({
-        'email': email,
-        'password': password,
-      });
+      await apiService.login({'email': email, 'password': password});
       emitLoaded();
     } catch (e, s) {
       emitError(e, s);
@@ -62,10 +65,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> loginWithPhone(String phone, String password) async {
     emitLoading();
     try {
-      await apiService.login({
-        'phone': phone,
-        'password': password,
-      });
+      await apiService.login({'phone': phone, 'password': password});
       emitLoaded();
     } catch (e, s) {
       emitError(e, s);
@@ -78,7 +78,6 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       // TODO: Implement actual biometric retrieval of stored credentials
       await Future.delayed(const Duration(seconds: 1));
-      // await apiService.login({...});
       emitLoaded();
     } catch (e, s) {
       emitBiometricError("Biometric login failed");
@@ -105,7 +104,7 @@ class AuthCubit extends Cubit<AuthState> {
         'phone_number': phoneNumber,
         'password': password,
       };
-      
+
       await apiService.register(payload);
       emitLoaded();
     } catch (e, s) {

@@ -1,9 +1,10 @@
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
+import 'package:fgtagro_mobile/utils/error/global_app_state.dart';
 import 'package:fgtagro_mobile/models/order.dart';
 
 class OrderState extends GlobalAppState {
   final bool genLoading;
-  final GlobalErrorData? genError;
+  final AppFailure? genError;
   final bool showError;
   final List<OrderModel> orders;
 
@@ -14,9 +15,12 @@ class OrderState extends GlobalAppState {
     this.orders = const [],
   });
 
+  @override
+  AppFailure? get error => genError;
+
   OrderState copyWith({
     bool? genLoading,
-    GlobalErrorData? genError,
+    AppFailure? genError,
     bool? showError,
     List<OrderModel>? orders,
   }) {

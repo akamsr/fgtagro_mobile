@@ -1,3 +1,4 @@
+import 'package:fgtagro_mobile/utils/error/reporting_service.dart';
 import 'package:fgtagro_mobile/env/app_config.dart';
 import 'package:fgtagro_mobile/env/prod_env.dart';
 import 'package:fgtagro_mobile/firebase_options_prod.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
   AppConfig.init(
     flavor: AppFlavor.prod,
     apiBaseUrl: ProdEnv.apiBaseUrl,
@@ -30,7 +32,12 @@ void main() async {
     ),
   );
 
-  await Firebase.initializeApp(options: ProdFirebaseOptions.currentPlatform);
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(options: ProdFirebaseOptions.currentPlatform);
+  }
+
+  // Initialize unified reporting service
+  ReportingService.init();
 
   runApp(MyApp(isDev: false));
 }

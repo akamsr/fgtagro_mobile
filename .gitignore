@@ -50,3 +50,5 @@ ios/Flutter/Release.xcconfig
 .env
 .env.dev
 .env.prod
+notes.md
+error.md

@@ -48,7 +48,7 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
             listener: (context, state) {
               if (state.showError && state.genError != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${state.genError?.error.toString()}')),
+                  SnackBar(content: Text('Error: ${state.genError?.message}')),
                 );
               }
               if (state.success) {

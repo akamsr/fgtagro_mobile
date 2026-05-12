@@ -1,10 +1,11 @@
 import 'package:fgtagro_mobile/models/cart.dart';
 import 'package:fgtagro_mobile/models/cartitems.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
+import 'package:fgtagro_mobile/utils/error/global_app_state.dart';
 
 class CartState extends GlobalAppState {
   final bool genLoading;
-  final GlobalErrorData? genError;
+  final AppFailure? genError;
   final bool showError;
   final Cart? cart;
 
@@ -15,15 +16,18 @@ class CartState extends GlobalAppState {
     this.cart,
   });
 
+  @override
+  AppFailure? get error => genError;
+
   CartState copyWith({
     bool? genLoading,
-    GlobalErrorData? genError,
+    AppFailure? genError,
     bool? showError,
     Cart? cart,
   }) {
     return CartState(
       genLoading: genLoading ?? this.genLoading,
-      genError: genError ?? this.genError,
+      genError: genError, // Allow clearing
       showError: showError ?? this.showError,
       cart: cart ?? this.cart,
     );
@@ -52,7 +56,7 @@ class CartLoaded extends CartState {
 
 class CartError extends CartState {
   @override
-  final GlobalErrorData error;
+  final AppFailure error;
 
   CartError(this.error);
 }

@@ -1,10 +1,11 @@
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
 import 'package:fgtagro_mobile/models/category.dart';
 import 'package:fgtagro_mobile/models/product.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/global_app_state.dart';
 
 class ProductState extends GlobalAppState {
   final bool genLoading;
-  final GlobalErrorData? genError;
+  final AppFailure? genError;
   final bool showError;
   final List<CategoryModel> categories;
   final List<ProductModel> products;
@@ -21,9 +22,12 @@ class ProductState extends GlobalAppState {
     this.selectedProduct,
   });
 
+  @override
+  AppFailure? get error => genError;
+
   ProductState copyWith({
     bool? genLoading,
-    GlobalErrorData? genError,
+    AppFailure? genError,
     bool? showError,
     List<CategoryModel>? categories,
     List<ProductModel>? products,

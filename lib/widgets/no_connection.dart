@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:fgtagro_mobile/modules/dashboard/cubit/home.cubit.dart';
+import 'package:fgtagro_mobile/utils/error/custom_bloc_consumer.dart';
 import 'package:fgtagro_mobile/utils/theme/styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/custome_comsumer.dart';
 import 'package:flutter/material.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

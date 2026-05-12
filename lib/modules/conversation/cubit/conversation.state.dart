@@ -1,10 +1,11 @@
 import 'package:fgtagro_mobile/models/conversation.dart';
 import 'package:fgtagro_mobile/models/message.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
+import 'package:fgtagro_mobile/utils/error/global_app_state.dart';
 
 class ConversationState extends GlobalAppState {
   final bool genLoading;
-  final GlobalErrorData? genError;
+  final AppFailure? genError;
   final bool showError;
   final List<ConversationModel> conversations;
   final List<MessageModel> messages;
@@ -17,9 +18,12 @@ class ConversationState extends GlobalAppState {
     this.messages = const [],
   });
 
+  @override
+  AppFailure? get error => genError;
+
   ConversationState copyWith({
     bool? genLoading,
-    GlobalErrorData? genError,
+    AppFailure? genError,
     bool? showError,
     List<ConversationModel>? conversations,
     List<MessageModel>? messages,
@@ -34,5 +38,11 @@ class ConversationState extends GlobalAppState {
   }
 
   @override
-  List<Object?> get extraprops => [genLoading, genError, showError, conversations, messages];
+  List<Object?> get extraprops => [
+    genLoading,
+    genError,
+    showError,
+    conversations,
+    messages,
+  ];
 }

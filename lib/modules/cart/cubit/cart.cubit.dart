@@ -1,6 +1,5 @@
-import 'package:fgtagro_mobile/models/cart.dart';
 import 'package:fgtagro_mobile/services/cart/cart.services.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/global_app_state.dart';
+import 'package:fgtagro_mobile/utils/error/app_error.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cart.state.dart';
 
@@ -14,11 +13,11 @@ class CartCubit extends Cubit<CartState> {
     try {
       final cart = await _cartService.getCart();
       emit(state.copyWith(genLoading: false, cart: cart));
-    } catch (e) {
+    } catch (e, s) {
       emit(
         state.copyWith(
           genLoading: false,
-          genError: GlobalErrorData(e),
+          genError: ErrorMapper.map(e, s),
           showError: true,
         ),
       );
@@ -30,11 +29,11 @@ class CartCubit extends Cubit<CartState> {
     try {
       final cart = await _cartService.addToCart(productId, qty);
       emit(state.copyWith(genLoading: false, cart: cart));
-    } catch (e) {
+    } catch (e, s) {
       emit(
         state.copyWith(
           genLoading: false,
-          genError: GlobalErrorData(e),
+          genError: ErrorMapper.map(e, s),
           showError: true,
         ),
       );
@@ -46,11 +45,11 @@ class CartCubit extends Cubit<CartState> {
     try {
       final cart = await _cartService.removeFromCart(cartItemId);
       emit(state.copyWith(genLoading: false, cart: cart));
-    } catch (e) {
+    } catch (e, s) {
       emit(
         state.copyWith(
           genLoading: false,
-          genError: GlobalErrorData(e),
+          genError: ErrorMapper.map(e, s),
           showError: true,
         ),
       );
@@ -67,11 +66,11 @@ class CartCubit extends Cubit<CartState> {
     try {
       final cart = await _cartService.updateQuantity(cartItemId, qty);
       emit(state.copyWith(genLoading: false, cart: cart));
-    } catch (e) {
+    } catch (e, s) {
       emit(
         state.copyWith(
           genLoading: false,
-          genError: GlobalErrorData(e),
+          genError: ErrorMapper.map(e, s),
           showError: true,
         ),
       );
