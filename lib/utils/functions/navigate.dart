@@ -11,17 +11,31 @@ class CustomNavigate {
       locator<AppRouter>().navigatorKey.currentContext;
 
   static Future<dynamic> push(PageRouteInfo<dynamic> route) async {
-    currentContext!.read<BottomNavProvider>().silentSHownavbar();
+    if (currentContext != null) {
+      try {
+        currentContext!.read<BottomNavProvider>().silentSHownavbar();
+      } catch (e) {
+        // Handle cases where provider is not in the tree
+      }
+    }
     return await locator<AppRouter>().push(route);
   }
 
   static Future<dynamic> pushReplace(PageRouteInfo<dynamic> route) async {
-    currentContext!.read<BottomNavProvider>().silentSHownavbar();
+    if (currentContext != null) {
+      try {
+        currentContext!.read<BottomNavProvider>().silentSHownavbar();
+      } catch (e) {}
+    }
     return await locator<AppRouter>().replace(route);
   }
 
   static Future<dynamic> navigate(PageRouteInfo<dynamic> route) async {
-    currentContext!.read<BottomNavProvider>().silentSHownavbar();
+    if (currentContext != null) {
+      try {
+        currentContext!.read<BottomNavProvider>().silentSHownavbar();
+      } catch (e) {}
+    }
     return await locator<AppRouter>().push(route);
   }
 
@@ -34,7 +48,11 @@ class CustomNavigate {
   }
 
   static Future<dynamic> replace(PageRouteInfo<dynamic> route) async {
-    currentContext!.read<BottomNavProvider>().silentSHownavbar();
+    if (currentContext != null) {
+      try {
+        currentContext!.read<BottomNavProvider>().silentSHownavbar();
+      } catch (e) {}
+    }
     return await locator<AppRouter>().replace(route);
   }
 
@@ -44,15 +62,10 @@ class CustomNavigate {
 
   static Future<dynamic> pop(BuildContext context, {dynamic result}) async {
     return await context.router.maybePop(result);
-    // return result;
-    // await locator<AppRouter>().pop();
-    // await locator<AppRouter>().pop();
-    // Navigator.of(currentContext!).pop();
   }
 
   static void back() {
-    // locator<AppRouter>().pop();
-    currentContext!.router.maybePop();
+    currentContext?.router.maybePop();
   }
 
   static void popRoot(BuildContext context) {
@@ -60,12 +73,20 @@ class CustomNavigate {
   }
 
   Future<dynamic> pushIndex(PageRouteInfo<dynamic> route, int index) async {
-    currentContext!.read<BottomNavProvider>().onIndexChange(index);
+    if (currentContext != null) {
+      try {
+        currentContext!.read<BottomNavProvider>().onIndexChange(index);
+      } catch (e) {}
+    }
     return await locator<AppRouter>().push(route);
   }
 
   void changeIndex(int index) {
-    currentContext!.read<BottomNavProvider>().onIndexChange(index);
+    if (currentContext != null) {
+      try {
+        currentContext!.read<BottomNavProvider>().onIndexChange(index);
+      } catch (e) {}
+    }
   }
 
   static Future<void> popAndPush(PageRouteInfo<dynamic> route) async {

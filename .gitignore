@@ -41,6 +41,14 @@ app.*.map.json
 ios/Flutter/Debug.xcconfig
 ios/Flutter/Release.xcconfig
 
+# Generated files
+*.g.dart
+*.gr.dart
+*.freezed.dart
+*.config.dart
+*.mocks.dart
+lib/generated/
+
 # Environment variables — never commit these
 .env
 .env.dev
@@ -48,3 +56,4 @@ ios/Flutter/Release.xcconfig
 notes.md
 error.md
 package-lock.json
+pubspec.lock

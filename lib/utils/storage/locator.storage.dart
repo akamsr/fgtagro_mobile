@@ -25,7 +25,7 @@ Future<void> _setupAppLocator() async {
     "setupAppLocator should only be called once at the start of the app.",
   );
 
-  // locator.registerLazySingleton<AppRouter>(() => AppRouter());
+  locator.registerLazySingleton<AppRouter>(() => AppRouter());
 
   locator.registerLazySingleton<StorageServices>(
     () => StorageServices(preferences),

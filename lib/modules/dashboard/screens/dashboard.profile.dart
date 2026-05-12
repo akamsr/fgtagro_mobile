@@ -3,6 +3,9 @@ import 'package:fgtagro_mobile/modules/dashboard/widgets/dashboard_menu_item.dar
 import 'package:fgtagro_mobile/modules/dashboard/widgets/dashboard_profile_stat.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fgtagro_mobile/widgets/locale/locale_provider.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 
 @RoutePage()
 class ProfileScreen extends StatefulWidget {
@@ -98,9 +101,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       color: const Color(0xFFF5F3F8),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: const Text(
-                                      'MODIFIER PROFIL',
-                                      style: TextStyle(
+                                    child: Text(
+                                      S.of(context).editProfile,
+                                      style: const TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w700,
                                         color: AppColors.secondaryColor,
@@ -111,9 +114,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ],
                             )
-                          : const Text(
-                              'Visiteur',
-                              style: TextStyle(
+                          : Text(
+                              S.of(context).visitor,
+                              style: const TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey,
                               ),
@@ -123,27 +126,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
-              // ─── Stats bento ───
               if (isAuthenticated)
                 Padding(
                   padding: const EdgeInsets.only(left: 24, right: 24, top: 16),
                   child: Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: DashboardProfileStat(
                           value: '23',
-                          label: 'Commandes',
+                          label: S.of(context).orders,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: DashboardProfileStat(value: '8', label: 'Avis'),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: DashboardProfileStat(
+                          value: '8',
+                          label: S.of(context).reviews,
+                        ),
                       ),
-                      const SizedBox(width: 12),
-                      const Expanded(
+                      SizedBox(width: 12),
+                      Expanded(
                         child: DashboardProfileStat(
                           value: '5',
-                          label: 'Favoris',
+                          label: S.of(context).favorites,
                           isPrimary: true,
                         ),
                       ),
@@ -151,7 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
 
-              // ─── Espace Vendeur ───
               if (isAuthenticated)
                 Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16, top: 24),
@@ -190,8 +194,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: [
                                 Text(
                                   hasSellerProfile
-                                      ? 'Espace Vendeur'
-                                      : 'Devenir Vendeur',
+                                      ? S.of(context).sellerSpace
+                                      : S.of(context).becomeSeller,
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
@@ -202,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Text(
                                   hasSellerProfile
                                       ? 'AGRO DISTRIB SARL'
-                                      : 'Vendez vos produits sur FGT AGRO',
+                                      : S.of(context).sellYourProducts,
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey,
@@ -228,11 +232,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(bottom: 12, left: 4),
                       child: Text(
-                        'MON COMPTE',
-                        style: TextStyle(
+                        S.of(context).myAccount,
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
                           color: Colors.black38,
@@ -256,18 +260,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           DashboardMenuItem(
                             icon: Icons.location_on_outlined,
-                            label: 'Adresses',
+                            label: S.of(context).addresses,
                             onTap: () {},
                           ),
                           DashboardMenuItem(
                             icon: Icons.payment_outlined,
-                            label: 'Moyen de paiement',
+                            label: S.of(context).paymentMethod,
                             divider: true,
                             onTap: () {},
                           ),
                           DashboardMenuItem(
                             icon: Icons.notifications_outlined,
-                            label: 'Notifications',
+                            label: S.of(context).notifications,
                             divider: true,
                             onTap: () {},
                           ),
@@ -313,9 +317,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        'Connexion biométrique',
-                                        style: TextStyle(
+                                      Text(
+                                        S.of(context).biometricLogin,
+                                        style: const TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w600,
                                           color: AppColors.secondaryColor,
@@ -345,9 +349,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                           DashboardMenuItem(
                             icon: Icons.receipt_long_outlined,
-                            label: 'Mes commandes',
+                            label: S.of(context).myOrders,
                             divider: true,
                             onTap: () {},
+                          ),
+
+                          // Language Selector
+                          Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                  color: Color.fromRGBO(197, 198, 208, 0.5),
+                                  width: 0.5,
+                                ),
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromRGBO(
+                                      16,
+                                      185,
+                                      129,
+                                      0.1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: const Icon(
+                                    Icons.language,
+                                    size: 20,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    S.of(context).language,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.secondaryColor,
+                                    ),
+                                  ),
+                                ),
+                                Consumer<LocaleProvider>(
+                                  builder: (context, provider, _) {
+                                    return DropdownButton<String>(
+                                      value: provider.locale.languageCode,
+                                      underline: const SizedBox(),
+                                      onChanged: (String? newValue) {
+                                        if (newValue != null) {
+                                          provider.setLocale(Locale(newValue));
+                                        }
+                                      },
+                                      items: [
+                                        DropdownMenuItem(
+                                          value: 'en',
+                                          child: Text(S.of(context).english),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'fr',
+                                          child: Text(S.of(context).french),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -362,11 +439,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(bottom: 12, left: 4),
                       child: Text(
-                        'AIDE ET SUPPORT',
-                        style: TextStyle(
+                        S.of(context).helpAndSupport,
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
                           color: Colors.black38,
@@ -390,14 +467,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           DashboardMenuItem(
                             icon: Icons.help_outline,
-                            label: 'Centre d\'aide',
+                            label: S.of(context).helpCenter,
                             onTap: () {},
                           ),
 
                           // Logout
                           DashboardMenuItem(
                             icon: Icons.logout,
-                            label: 'Se déconnecter',
+                            label: S.of(context).logout,
                             divider: true,
                             onTap: () {},
                             iconBgColor: const Color.fromRGBO(239, 68, 68, 0.1),

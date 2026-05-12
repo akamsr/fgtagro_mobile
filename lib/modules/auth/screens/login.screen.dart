@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_button.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_layout.dart';
 import 'package:fgtagro_mobile/modules/auth/widgets/auth_mode_toggle.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_text_field.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/functions/navigate.dart';
-import 'package:fgtagro_mobile/utils/log/log.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
-import 'package:fgtagro_mobile/widgets/notification/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,218 +37,153 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       if (state.loginMode == 'phone') {
         context.read<AuthCubit>().loginWithPhone(
-          _phoneController.text,
-          _passwordController.text,
-        );
+              _phoneController.text,
+              _passwordController.text,
+            );
       } else {
         context.read<AuthCubit>().loginWithEmail(
-          _emailController.text,
-          _passwordController.text,
-        );
+              _emailController.text,
+              _passwordController.text,
+            );
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primaryColor,
-      body: SafeArea(
-        child: BlocConsumer<AuthCubit, AuthState>(
-          listener: (context, state) {
-            if (state.showError && state.genError != null) {
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   SnackBar(content: Text('Erreur: ${state.genError?.message ?? "Une erreur est survenue"}')),
-              // );
-              // context.read<AuthCubit>().hideError();
-            }
-            if (state.user != null) {
-              CustomNavigate.replace(const HomeDashBoardRoute());
-            }
-            if (state.biometricError != null) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.biometricError!)));
-              context.read<AuthCubit>().clearBiometricError();
-            }
-          },
-          builder: (context, state) {
-            return Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24.0,
-                  vertical: 40.0,
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state.user != null) {
+          CustomNavigate.replace(const HomeDashBoardRoute());
+        }
+        if (state.biometricError != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.biometricError!)),
+          );
+          context.read<AuthCubit>().clearBiometricError();
+        }
+      },
+      builder: (context, state) {
+        return AuthLayout(
+          title: 'Welcome Back',
+          subtitle: S.of(context).loginToAccount,
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Pas encore de compte ? ',
+                  style: TextStyle(color: AppColors.textSecondary),
                 ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  padding: const EdgeInsets.all(24.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Header
-                        const Icon(
-                          Icons.lock_outline,
-                          size: 64,
-                          color: AppColors.primaryColor,
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'FGT AGRO',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Connectez-vous à votre compte',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Toggle
-                        AuthModeToggle(
-                          currentMode: state.loginMode,
-                          onModeChanged: (mode) =>
-                              context.read<AuthCubit>().setLoginMode(mode),
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Fields
-                        if (state.loginMode == 'phone')
-                          TextFormField(
-                            controller: _phoneController,
-                            keyboardType: TextInputType.phone,
-                            decoration: InputDecoration(
-                              labelText: 'Numéro de téléphone',
-                              prefixIcon: const Icon(Icons.phone),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            validator: (val) =>
-                                val == null || val.isEmpty ? 'Requis' : null,
-                          )
-                        else
-                          TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              prefixIcon: const Icon(Icons.email_outlined),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            validator: (val) =>
-                                val == null || val.isEmpty ? 'Requis' : null,
-                          ),
-                        const SizedBox(height: 16),
-
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'Mot de passe',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (val) =>
-                              val == null || val.isEmpty ? 'Requis' : null,
-                        ),
-                        const SizedBox(height: 8),
-
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              CustomNavigate.push(const ForgotPasswordRoute());
-                            },
-                            child: const Text(
-                              'Mot de passe oublié ?',
-                              style: TextStyle(color: AppColors.primaryColor),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-
-                        ElevatedButton(
-                          onPressed: state.genLoading
-                              ? null
-                              : () => _submit(context, state),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColor,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: state.genLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text('Se connecter'),
-                        ),
-
-                        if (state.isBiometricEnabled) ...[
-                          const SizedBox(height: 16),
-                          TextButton.icon(
-                            onPressed: () =>
-                                context.read<AuthCubit>().loginWithBiometrics(),
-                            icon: Icon(
-                              state.biometricType == 'face_id'
-                                  ? Icons.face
-                                  : Icons.fingerprint,
-                              color: AppColors.primaryColor,
-                            ),
-                            label: const Text('Connexion Biométrique'),
-                          ),
-                        ],
-                        const SizedBox(height: 16),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Pas encore de compte ? '),
-                            TextButton(
-                              onPressed: () {
-                                CustomNavigate.push(const RegisterRoute());
-                              },
-                              child: const Text(
-                                'S\'inscrire',
-                                style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                GestureDetector(
+                  onTap: () {
+                    CustomNavigate.push(const RegisterRoute());
+                  },
+                  child: const Text(
+                    'S\'inscrire',
+                    style: TextStyle(
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
-      ),
+              ],
+            ),
+          ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AuthModeToggle(
+                  currentMode: state.loginMode,
+                  onModeChanged: (mode) =>
+                      context.read<AuthCubit>().setLoginMode(mode),
+                ),
+                const SizedBox(height: 32),
+
+                // Fields
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: state.loginMode == 'phone'
+                      ? AuthTextField(
+                          key: const ValueKey('phone_field'),
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
+                          label: 'Numéro de téléphone',
+                          prefixIcon: Icons.phone_outlined,
+                          validator: (val) => val == null || val.isEmpty
+                              ? S.of(context).requiredField
+                              : null,
+                        )
+                      : AuthTextField(
+                          key: const ValueKey('email_field'),
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          label: 'Email',
+                          prefixIcon: Icons.email_outlined,
+                          validator: (val) => val == null || val.isEmpty
+                              ? S.of(context).requiredField
+                              : null,
+                        ),
+                ),
+                const SizedBox(height: 24),
+
+                AuthTextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  label: 'Mot de passe',
+                  prefixIcon: Icons.lock_outline,
+                  validator: (val) => val == null || val.isEmpty
+                      ? S.of(context).requiredField
+                      : null,
+                ),
+                
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      CustomNavigate.push(const ForgotPasswordRoute());
+                    },
+                    child: Text(
+                      S.of(context).forgotPassword,
+                      style: const TextStyle(
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+
+                AuthButton(
+                  text: S.of(context).login.toUpperCase(),
+                  isLoading: state.genLoading,
+                  onPressed: () => _submit(context, state),
+                ),
+
+                if (state.isBiometricEnabled) ...[
+                  const SizedBox(height: 24),
+                  Center(
+                    child: IconButton(
+                      onPressed: () =>
+                          context.read<AuthCubit>().loginWithBiometrics(),
+                      icon: Icon(
+                        state.biometricType == 'face_id'
+                            ? Icons.face
+                            : Icons.fingerprint,
+                        size: 40,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
+

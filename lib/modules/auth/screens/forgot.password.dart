@@ -1,5 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_button.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_layout.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_text_field.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
@@ -32,119 +36,57 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(),
-      child: Scaffold(
-        backgroundColor: AppColors.primaryColor,
-        body: SafeArea(
-          child: BlocConsumer<AuthCubit, AuthState>(
-            listener: (context, state) {
-              if (state.showError && state.genError != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${state.genError?.message}')),
-                );
-              }
-              if (state.success) {
-                CustomNavigate.push(ResetPasswordOtpRoute());
-              }
-            },
-            builder: (context, state) {
-              return Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24.0,
-                    vertical: 40.0,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    padding: const EdgeInsets.all(24.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () => CustomNavigate.pop(context),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          const Icon(
-                            Icons.lock_reset,
-                            size: 64,
-                            color: AppColors.primaryColor,
-                          ),
-                          const SizedBox(height: 16),
-                          const Text(
-                            'Forgot Password',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Enter your email to receive a reset code',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          const SizedBox(height: 24),
-
-                          TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              prefixIcon: const Icon(Icons.mail_outline),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            validator: (val) =>
-                                val == null || val.isEmpty ? 'Required' : null,
-                          ),
-                          const SizedBox(height: 24),
-
-                          ElevatedButton(
-                            onPressed: state.genLoading
-                                ? null
-                                : () => _submit(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primaryColor,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: state.genLoading
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Text('Send Reset Link'),
-                          ),
-                        ],
-                      ),
-                    ),
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state.success) {
+          CustomNavigate.push(ResetPasswordOtpRoute(email: _emailController.text));
+        }
+      },
+      builder: (context, state) {
+        return AuthLayout(
+          title: S.of(context).forgotPassword,
+          subtitle: S.of(context).enterEmailToReset,
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () => CustomNavigate.pop(context),
+                child: const Text(
+                  'Retour à la connexion',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              );
-            },
+              ),
+            ),
+          ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AuthTextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  label: S.of(context).email,
+                  hintText: 'example@mail.com',
+                  prefixIcon: Icons.mail_outline,
+                  validator: (val) =>
+                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                ),
+                const SizedBox(height: 32),
+
+                AuthButton(
+                  text: S.of(context).sendResetLink.toUpperCase(),
+                  isLoading: state.genLoading,
+                  onPressed: () => _submit(context),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
+

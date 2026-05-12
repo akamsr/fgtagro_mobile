@@ -1,5 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_button.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_layout.dart';
+import 'package:fgtagro_mobile/modules/auth/widgets/auth_text_field.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
@@ -39,256 +43,184 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       if (!_acceptTerms) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Veuillez accepter les conditions d\'utilisation'),
-          ),
+          SnackBar(content: Text(S.of(context).acceptTerms)),
         );
         return;
       }
 
       context.read<AuthCubit>().register(
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
-        email: _emailController.text,
-        phoneCode: '+237',
-        phoneNumber: _phoneController.text,
-        password: _passwordController.text,
-        acceptTerms: _acceptTerms,
-      );
+            firstName: _firstNameController.text,
+            lastName: _lastNameController.text,
+            email: _emailController.text,
+            phoneCode: '+237',
+            phoneNumber: _phoneController.text,
+            password: _passwordController.text,
+            acceptTerms: _acceptTerms,
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primaryColor,
-      body: SafeArea(
-        child: BlocConsumer<AuthCubit, AuthState>(
-          listener: (context, state) {
-            if (state.showError && state.genError != null) {
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   SnackBar(content: Text('Erreur: ${state.genError?.message ?? "Une erreur est survenue"}')),
-              // );
-              // context.read<AuthCubit>().hideError();
-            }
-            if (state.user != null) {
-              // Usually after registration, we might go to email verification or dashboard
-              CustomNavigate.replace(const HomeDashBoardRoute());
-            }
-          },
-          builder: (context, state) {
-            return Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24.0,
-                  vertical: 40.0,
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state.user != null) {
+          CustomNavigate.replace(const HomeDashBoardRoute());
+        }
+      },
+      builder: (context, state) {
+        return AuthLayout(
+          title: S.of(context).createAccount,
+          subtitle: S.of(context).joinUsToday,
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  S.of(context).alreadyHaveAccount,
+                  style: const TextStyle(color: AppColors.textSecondary),
                 ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  padding: const EdgeInsets.all(24.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Icon(
-                          Icons.person_add_alt_1_outlined,
-                          size: 64,
-                          color: AppColors.primaryColor,
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Créer un compte',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Gilroy',
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Rejoignez FGT AGRO aujourd\'hui',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontFamily: 'Gilroy',
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: _firstNameController,
-                                decoration: InputDecoration(
-                                  labelText: 'Prénom',
-                                  prefixIcon: const Icon(Icons.person_outline),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                validator: (val) => val == null || val.isEmpty
-                                    ? 'Requis'
-                                    : null,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: TextFormField(
-                                controller: _lastNameController,
-                                decoration: InputDecoration(
-                                  labelText: 'Nom',
-                                  prefixIcon: const Icon(Icons.person_outline),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                validator: (val) => val == null || val.isEmpty
-                                    ? 'Requis'
-                                    : null,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-
-                        TextFormField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            prefixIcon: const Icon(Icons.mail_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (val) =>
-                              val == null || val.isEmpty ? 'Requis' : null,
-                        ),
-                        const SizedBox(height: 16),
-
-                        TextFormField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            labelText: 'Téléphone',
-                            prefixIcon: const Icon(Icons.phone),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (val) =>
-                              val == null || val.isEmpty ? 'Requis' : null,
-                        ),
-                        const SizedBox(height: 16),
-
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'Mot de passe',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (val) =>
-                              val == null || val.isEmpty ? 'Requis' : null,
-                        ),
-                        const SizedBox(height: 16),
-
-                        TextFormField(
-                          controller: _confirmPasswordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'Confirmer le mot de passe',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (val) {
-                            if (val == null || val.isEmpty) return 'Requis';
-                            if (val != _passwordController.text)
-                              return 'Les mots de passe ne correspondent pas';
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-
-                        CheckboxListTile(
-                          contentPadding: EdgeInsets.zero,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          title: const Text(
-                            'J\'accepte les termes et conditions',
-                          ),
-                          value: _acceptTerms,
-                          onChanged: (val) {
-                            setState(() {
-                              _acceptTerms = val ?? false;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 24),
-
-                        ElevatedButton(
-                          onPressed: state.genLoading
-                              ? null
-                              : () => _submit(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColor,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: state.genLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text('S\'inscrire'),
-                        ),
-                        const SizedBox(height: 16),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Vous avez déjà un compte ? '),
-                            TextButton(
-                              onPressed: () {
-                                CustomNavigate.push(const LoginRoute());
-                              },
-                              child: const Text(
-                                'Se connecter',
-                                style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                GestureDetector(
+                  onTap: () {
+                    CustomNavigate.push(const LoginRoute());
+                  },
+                  child: const Text(
+                    ' Se connecter',
+                    style: TextStyle(
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
-      ),
+              ],
+            ),
+          ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: AuthTextField(
+                        controller: _firstNameController,
+                        label: S.of(context).firstName,
+                        hintText: 'John',
+                        validator: (val) => val == null || val.isEmpty
+                            ? S.of(context).requiredField
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: AuthTextField(
+                        controller: _lastNameController,
+                        label: S.of(context).lastName,
+                        hintText: 'Doe',
+                        validator: (val) => val == null || val.isEmpty
+                            ? S.of(context).requiredField
+                            : null,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                AuthTextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  label: S.of(context).email,
+                  hintText: 'example@mail.com',
+                  prefixIcon: Icons.mail_outline,
+                  validator: (val) =>
+                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                ),
+                const SizedBox(height: 20),
+
+                AuthTextField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  label: S.of(context).phone,
+                  hintText: '600 000 000',
+                  prefixIcon: Icons.phone_outlined,
+                  validator: (val) =>
+                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                ),
+                const SizedBox(height: 20),
+
+                AuthTextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  label: S.of(context).password,
+                  prefixIcon: Icons.lock_outline,
+                  validator: (val) =>
+                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                ),
+                const SizedBox(height: 20),
+
+                AuthTextField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  label: S.of(context).confirmPassword,
+                  prefixIcon: Icons.lock_outline,
+                  validator: (val) {
+                    if (val == null || val.isEmpty)
+                      return S.of(context).requiredField;
+                    if (val != _passwordController.text)
+                      return S.of(context).passwordsDoNotMatch;
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                Theme(
+                  data: ThemeData(
+                    checkboxTheme: CheckboxThemeData(
+                      fillColor: WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return AppColors.primaryColor;
+                        }
+                        return Colors.transparent;
+                      }),
+                      side: const BorderSide(color: AppColors.borderStrong),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                  child: CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(
+                      S.of(context).iAcceptTerms,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    value: _acceptTerms,
+                    onChanged: (val) {
+                      setState(() {
+                        _acceptTerms = val ?? false;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                AuthButton(
+                  text: S.of(context).register.toUpperCase(),
+                  isLoading: state.genLoading,
+                  onPressed: () => _submit(context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
+

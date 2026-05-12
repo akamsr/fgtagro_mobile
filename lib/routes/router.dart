@@ -5,8 +5,12 @@ import 'package:fgtagro_mobile/routes/router.gr.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
+    // Initial
+    AutoRoute(page: SplashRoute.page, initial: true),
+    AutoRoute(page: OnboardingRoute.page),
+
     // Auth
-    AutoRoute(page: LoginRoute.page, initial: true),
+    AutoRoute(page: LoginRoute.page),
     AutoRoute(page: RegisterRoute.page),
     AutoRoute(page: ForgotPasswordRoute.page),
     AutoRoute(page: ResetPasswordOtpRoute.page),

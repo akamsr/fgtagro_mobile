@@ -12,13 +12,15 @@ class PopUpHelper {
     bool? barrierDimissal, {
     BuildContext? context,
   }) async {
+    final currentContext = CustomNavigate.currentContext;
+    if (currentContext == null) return;
+    
     final isDialogShowing =
-        ModalRoute.of(context ?? CustomNavigate.currentContext!)?.isCurrent ==
-        false;
+        ModalRoute.of(context ?? currentContext)?.isCurrent == false;
 
     if (isDialogShowing) return;
     return await showGeneralDialog(
-      context: context ?? CustomNavigate.currentContext!,
+      context: context ?? currentContext,
       barrierDismissible: barrierDimissal ?? true,
       barrierLabel: '',
       pageBuilder: (context, animation, secondaryAnimation) => Container(),
@@ -52,8 +54,10 @@ class PopUpHelper {
   }
 
   static Future<dynamic> showCustomPopUp(Widget child) async {
+    final context = CustomNavigate.currentContext;
+    if (context == null) return;
     return await showDialog(
-      context: CustomNavigate.currentContext!,
+      context: context,
       builder: (context) => child,
     );
   }
@@ -64,8 +68,10 @@ class PopUpHelper {
     bool isMap = false,
     double? height,
   }) async {
+    final context = CustomNavigate.currentContext;
+    if (context == null) return;
     return await showModalBottomSheet(
-      context: CustomNavigate.currentContext!,
+      context: context,
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {

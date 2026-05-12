@@ -24,13 +24,17 @@ class AuthGuard extends AutoRouteGuard {
       return resolver.next();
     } else {
       Future.microtask(() async {
+        final context = CustomNavigate.currentContext;
+        if (context == null) {
+          resolver.next(false);
+          return;
+        }
         await showModalBottomSheet<bool>(
           isScrollControlled: true,
           constraints: BoxConstraints(
-            maxHeight:
-                MediaQuery.sizeOf(CustomNavigate.currentContext!).height * 0.75,
+            maxHeight: MediaQuery.sizeOf(context).height * 0.75,
           ),
-          context: CustomNavigate.currentContext!,
+          context: context,
           builder: (context) => Padding(
             padding: EdgeInsets.only(
               left: 10.w,
@@ -43,9 +47,12 @@ class AuthGuard extends AutoRouteGuard {
           ),
         ).then((value) {
           if (value != true) {
-            CustomNavigate.currentContext!
-                .read<BottomNavProvider>()
-                .onIndexChange(0);
+            final context = CustomNavigate.currentContext;
+            if (context != null) {
+              try {
+                context.read<BottomNavProvider>().onIndexChange(0);
+              } catch (e) {}
+            }
           } else {
             resolver.next(true);
           }

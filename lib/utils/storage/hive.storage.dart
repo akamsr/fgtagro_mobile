@@ -17,6 +17,14 @@ class HiveDbService {
   Future<void> init() async {
     await Hive.initFlutter();
     Hive.registerAdapters();
+    // Pre-open essential boxes for synchronous access
+    await Hive.openBox('settings');
+  }
+
+  // Synchronous read for already open boxes
+  dynamic readData(String boxName, String key) {
+    final box = Hive.box(boxName);
+    return box.get(key);
   }
 
 

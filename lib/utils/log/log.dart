@@ -11,6 +11,9 @@ class DevLog {
   }
 
   static void dismissFocus() {
-    FocusScope.of(CustomNavigate.currentContext!).unfocus();
+    final context = CustomNavigate.currentContext;
+    if (context != null) {
+      FocusScope.of(context).unfocus();
+    }
   }
 }
