@@ -32,9 +32,9 @@ void main() async {
     ),
   );
 
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(options: DevFirebaseOptions.currentPlatform);
-  }
+  // if (Firebase.apps.isEmpty) {
+  //   await Firebase.initializeApp(options: DevFirebaseOptions.currentPlatform);
+  // }
 
   // Initialize unified reporting service
   ReportingService.init();

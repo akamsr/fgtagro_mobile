@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
+import 'package:fgtagro_mobile/routes/router.gr.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +19,7 @@ class VerifyEmailScreen extends StatefulWidget {
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   final _formKey = GlobalKey<FormState>();
   final _tokenController = TextEditingController();
-  
+
   static const int _resendDelay = 60;
   int _countdown = _resendDelay;
   Timer? _timer;
@@ -49,7 +51,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   void _submit(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
-      context.read<AuthCubit>().verifyEmail(widget.email ?? '', _tokenController.text);
+      context.read<AuthCubit>().verifyEmail(
+        widget.email ?? '',
+        _tokenController.text,
+      );
     }
   }
 
@@ -75,12 +80,17 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 );
               }
 
-              // Optionally handle success navigation here
+              if (state.success) {
+                CustomNavigate.replace(const HomeDashBoardRoute());
+              }
             },
             builder: (context, state) {
               return Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 40.0,
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -97,16 +107,23 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                             alignment: Alignment.centerLeft,
                             child: IconButton(
                               icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.router.pop(),
+                              onPressed: () => CustomNavigate.pop(context),
                             ),
                           ),
                           const SizedBox(height: 16),
-                          const Icon(Icons.mark_email_read_outlined, size: 64, color: AppColors.primaryColor),
+                          const Icon(
+                            Icons.mark_email_read_outlined,
+                            size: 64,
+                            color: AppColors.primaryColor,
+                          ),
                           const SizedBox(height: 16),
                           const Text(
                             'Verify Email',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -123,36 +140,53 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                             decoration: InputDecoration(
                               labelText: 'Verification Code',
                               prefixIcon: const Icon(Icons.key_outlined),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                            validator: (val) => val == null || val.length != 6 ? 'Required 6 digits' : null,
+                            validator: (val) => val == null || val.length != 6
+                                ? 'Required 6 digits'
+                                : null,
                           ),
                           const SizedBox(height: 24),
 
                           ElevatedButton(
-                            onPressed: state.genLoading ? null : () => _submit(context),
+                            onPressed: state.genLoading
+                                ? null
+                                : () => _submit(context),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primaryColor,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
                             child: state.genLoading
                                 ? const SizedBox(
                                     height: 20,
                                     width: 20,
-                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
                                   )
                                 : const Text('Verify'),
                           ),
                           const SizedBox(height: 16),
 
                           TextButton(
-                            onPressed: _countdown == 0 && widget.email != null ? () => _resend(context) : null,
+                            onPressed: _countdown == 0 && widget.email != null
+                                ? () => _resend(context)
+                                : null,
                             child: Text(
-                              _countdown > 0 ? 'Resend in $_countdown s' : 'Resend Code',
+                              _countdown > 0
+                                  ? 'Resend in $_countdown s'
+                                  : 'Resend Code',
                               style: TextStyle(
-                                color: _countdown > 0 ? Colors.grey : AppColors.primaryColor,
+                                color: _countdown > 0
+                                    ? Colors.grey
+                                    : AppColors.primaryColor,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

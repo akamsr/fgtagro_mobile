@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
+import 'package:fgtagro_mobile/routes/router.gr.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,14 +41,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             listener: (context, state) {
               if (state.showError && state.genError != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Error: ${state.genError?.message}'),
-                  ),
+                  SnackBar(content: Text('Error: ${state.genError?.message}')),
                 );
               }
               if (state.success) {
-                // If success, typically we navigate to the OTP or confirm page
-                // context.router.pushNamed('/reset-password-otp');
+                CustomNavigate.push(ResetPasswordOtpRoute());
               }
             },
             builder: (context, state) {
@@ -72,7 +71,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             alignment: Alignment.centerLeft,
                             child: IconButton(
                               icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.router.pop(),
+                              onPressed: () => CustomNavigate.pop(context),
                             ),
                           ),
                           const SizedBox(height: 16),

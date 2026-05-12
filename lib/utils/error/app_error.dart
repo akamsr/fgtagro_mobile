@@ -46,7 +46,7 @@ class ErrorMapper {
     return AppFailure(
       type: FailureType.unknown,
       message: 'An unexpected error occurred.',
-      technicalDetails: _sanitize(error.toString()),
+      technicalDetails: sanitize(error.toString()),
       originalError: error,
       stackTrace: stackTrace,
     );
@@ -96,7 +96,7 @@ class ErrorMapper {
   static AppFailure _network(dynamic e, StackTrace? s) => AppFailure(
     type: FailureType.network,
     message: 'No internet connection.',
-    technicalDetails: _sanitize(e.toString()),
+    technicalDetails: sanitize(e.toString()),
     originalError: e,
     stackTrace: s,
   );
@@ -107,7 +107,7 @@ class ErrorMapper {
     return e.toString().toLowerCase().contains('socketexception');
   }
 
-  static String _sanitize(String raw) {
+  static String sanitize(String raw) {
     return raw
         .replaceAll(RegExp(r'https?://\S+'), '[redacted]')
         .replaceAll(
@@ -115,4 +115,5 @@ class ErrorMapper {
           '[redacted]',
         );
   }
+
 }

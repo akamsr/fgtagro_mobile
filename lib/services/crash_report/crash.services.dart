@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:fgtagro_mobile/models/device_info.dart';
 import 'package:fgtagro_mobile/utils/error/app_error.dart';
-import 'package:fgtagro_mobile/utils/error/global_error_handling/models/error_mapping.dart';
 import 'package:fgtagro_mobile/utils/log/log.dart';
 import 'package:fgtagro_mobile/utils/network/network.dart';
 import 'package:dio/dio.dart';
@@ -25,7 +24,7 @@ class CrashReportService {
             ? jsonDecode(response.data)
             : response.data;
         final msg = body?['message'] ?? 'Crash report submission failed';
-        DevLog.show(sanitizeErrorMessage(msg.toString()), name: 'CrashReport');
+        DevLog.show(ErrorMapper.sanitize(msg.toString()), name: 'CrashReport');
       }
     } on DioException catch (e) {
       // Swallow network errors for crash reporting — a crash-report failure

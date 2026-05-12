@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
         email: _emailController.text,
-        phoneCode: '+237', // default hardcoded logic from RN
+        phoneCode: '+237',
         phoneNumber: _phoneController.text,
         password: _passwordController.text,
         acceptTerms: _acceptTerms,
@@ -72,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             }
             if (state.user != null) {
               // Usually after registration, we might go to email verification or dashboard
-              context.router.replace(const HomeDashBoardRoute());
+              CustomNavigate.replace(const HomeDashBoardRoute());
             }
           },
           builder: (context, state) {
@@ -267,7 +268,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             const Text('Vous avez déjà un compte ? '),
                             TextButton(
                               onPressed: () {
-                                context.router.push(const LoginRoute());
+                                CustomNavigate.push(const LoginRoute());
                               },
                               child: const Text(
                                 'Se connecter',

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
 import 'package:fgtagro_mobile/modules/auth/widgets/auth_mode_toggle.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/utils/log/log.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:fgtagro_mobile/widgets/notification/toast.dart';
@@ -60,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // context.read<AuthCubit>().hideError();
             }
             if (state.user != null) {
-              context.router.replace(const HomeDashBoardRoute());
+              CustomNavigate.replace(const HomeDashBoardRoute());
             }
             if (state.biometricError != null) {
               ScaffoldMessenger.of(
@@ -169,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              context.router.push(const ForgotPasswordRoute());
+                              CustomNavigate.push(const ForgotPasswordRoute());
                             },
                             child: const Text(
                               'Mot de passe oublié ?',
@@ -225,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text('Pas encore de compte ? '),
                             TextButton(
                               onPressed: () {
-                                context.router.push(const RegisterRoute());
+                                CustomNavigate.push(const RegisterRoute());
                               },
                               child: const Text(
                                 'S\'inscrire',

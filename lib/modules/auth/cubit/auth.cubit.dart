@@ -55,22 +55,24 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> loginWithEmail(String email, String password) async {
     emitLoading();
     try {
-      await apiService.login({'email': email, 'password': password});
-      emitLoaded();
+      final user = await apiService.login({'email': email, 'password': password});
+      emit(state.copyWith(genLoading: false, user: user));
     } catch (e, s) {
       emitError(e, s);
     }
   }
 
+
   Future<void> loginWithPhone(String phone, String password) async {
     emitLoading();
     try {
-      await apiService.login({'phone': phone, 'password': password});
-      emitLoaded();
+      final user = await apiService.login({'phone': phone, 'password': password});
+      emit(state.copyWith(genLoading: false, user: user));
     } catch (e, s) {
       emitError(e, s);
     }
   }
+
 
   Future<void> loginWithBiometrics() async {
     emitLoading();
@@ -105,12 +107,13 @@ class AuthCubit extends Cubit<AuthState> {
         'password': password,
       };
 
-      await apiService.register(payload);
-      emitLoaded();
+      final user = await apiService.register(payload);
+      emit(state.copyWith(genLoading: false, user: user, success: true));
     } catch (e, s) {
       emitError(e, s);
     }
   }
+
 
   Future<void> forgotPassword(String email) async {
     emitLoading();
@@ -143,24 +146,24 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> verifyEmail(String email, String token) async {
     emitLoading();
     try {
-      // Currently using a generic API service if verify is not specifically mapped
-      await Future.delayed(const Duration(seconds: 1));
-      emitLoaded();
+      await apiService.verifyEmail(email, token);
+      emit(state.copyWith(genLoading: false, success: true));
     } catch (e, s) {
       emitError(e, s);
     }
   }
 
+
   Future<void> resendVerificationEmail(String email) async {
     emitLoading();
     try {
-      // TODO: Implement API Call in ApiService for resend
-      await Future.delayed(const Duration(seconds: 1));
-      emitLoaded();
+      await apiService.resendVerificationEmail(email);
+      emit(state.copyWith(genLoading: false));
     } catch (e, s) {
       emitError(e, s);
     }
   }
+
 
   Future<void> logout() async {
     emit(AuthState());

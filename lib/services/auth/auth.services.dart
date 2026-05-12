@@ -114,8 +114,6 @@ class ApiService {
 
   Future<UserModel> register(Map<String, dynamic> data) async {
     try {
-      // Removed sensitive URL log
-
       final response = await locator<ApiClient>().dio.post(
         "${apiUrl}auth/register",
         options: Options(headers: NetworkUtils.headers()),
@@ -217,6 +215,54 @@ class ApiService {
       }
       rethrow;
     } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> verifyEmail(String email, String token) async {
+    try {
+      final response = await locator<ApiClient>().dio.post(
+        "${apiUrl}auth/verify-email",
+        options: Options(headers: NetworkUtils.headers()),
+        data: jsonEncode({'email': email, 'token': token}),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        final body = response.data is String ? jsonDecode(response.data) : response.data;
+        throw body['error']?['message'] ?? body['message'] ?? 'Email verification failed';
+      }
+    } on DioException catch (e) {
+      final body = e.response?.data;
+      if (body != null) {
+        final parsed = body is String ? jsonDecode(body) : body;
+        throw parsed['error']?['message'] ?? parsed['message'] ?? 'Email verification failed';
+      }
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> resendVerificationEmail(String email) async {
+    try {
+      final response = await locator<ApiClient>().dio.post(
+        "${apiUrl}auth/resend-verification",
+        options: Options(headers: NetworkUtils.headers()),
+        data: jsonEncode({'email': email}),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        final body = response.data is String ? jsonDecode(response.data) : response.data;
+        throw body['error']?['message'] ?? body['message'] ?? 'Resend failed';
+      }
+    } on DioException catch (e) {
+      final body = e.response?.data;
+      if (body != null) {
+        final parsed = body is String ? jsonDecode(body) : body;
+        throw parsed['error']?['message'] ?? parsed['message'] ?? 'Resend failed';
+      }
+      rethrow;
+    } catch (e) {
       rethrow;
     }
   }

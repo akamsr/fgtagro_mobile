@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
+import 'package:fgtagro_mobile/routes/router.gr.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,14 +54,19 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
                 );
               }
               if (state.success) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password Reset Successful')));
-                context.router.replaceAll([const PageRouteInfo('LoginRoute')]);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Password Reset Successful')),
+                );
+                CustomNavigate.replaceAll([const LoginRoute()]);
               }
             },
             builder: (context, state) {
               return Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 40.0,
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -76,16 +83,23 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
                             alignment: Alignment.centerLeft,
                             child: IconButton(
                               icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.router.pop(),
+                              onPressed: () => CustomNavigate.pop(context),
                             ),
                           ),
                           const SizedBox(height: 16),
-                          const Icon(Icons.password, size: 64, color: AppColors.primaryColor),
+                          const Icon(
+                            Icons.password,
+                            size: 64,
+                            color: AppColors.primaryColor,
+                          ),
                           const SizedBox(height: 16),
                           const Text(
                             'Reset Password',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -102,9 +116,13 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
                             decoration: InputDecoration(
                               labelText: 'OTP Code',
                               prefixIcon: const Icon(Icons.pin_outlined),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                            validator: (val) => val == null || val.length != 6 ? 'Required 6 digits' : null,
+                            validator: (val) => val == null || val.length != 6
+                                ? 'Required 6 digits'
+                                : null,
                           ),
                           const SizedBox(height: 16),
 
@@ -114,9 +132,12 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
                             decoration: InputDecoration(
                               labelText: 'New Password',
                               prefixIcon: const Icon(Icons.lock_outline),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                            validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                            validator: (val) =>
+                                val == null || val.isEmpty ? 'Required' : null,
                           ),
                           const SizedBox(height: 16),
 
@@ -126,29 +147,39 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
                             decoration: InputDecoration(
                               labelText: 'Confirm Password',
                               prefixIcon: const Icon(Icons.lock_outline),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
                             validator: (val) {
                               if (val == null || val.isEmpty) return 'Required';
-                              if (val != _passwordController.text) return 'Passwords do not match';
+                              if (val != _passwordController.text)
+                                return 'Passwords do not match';
                               return null;
                             },
                           ),
                           const SizedBox(height: 24),
 
                           ElevatedButton(
-                            onPressed: state.genLoading ? null : () => _submit(context),
+                            onPressed: state.genLoading
+                                ? null
+                                : () => _submit(context),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primaryColor,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
                             child: state.genLoading
                                 ? const SizedBox(
                                     height: 20,
                                     width: 20,
-                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
                                   )
                                 : const Text('Reset Password'),
                           ),
