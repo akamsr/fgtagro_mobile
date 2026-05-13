@@ -152,7 +152,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                               clipBehavior: Clip.none,
                               children: [
                                 const Icon(
-                                  Icons.shopping_bag_outlined,
+                                  Icons.shopping_cart,
                                   color: AppColors.textPrimary,
                                   size: 26,
                                 ),
@@ -430,8 +430,8 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 2,
-                                          mainAxisSpacing: 16,
-                                          crossAxisSpacing: 16,
+                                          mainAxisSpacing: 5,
+                                          crossAxisSpacing: 5,
                                           childAspectRatio: 0.7,
                                         ),
                                     itemCount: state.products.length,

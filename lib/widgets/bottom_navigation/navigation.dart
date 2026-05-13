@@ -71,12 +71,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     final s = S.of(context);
 
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.bgSurface,
-        border: Border(
-          top: BorderSide(color: AppColors.borderDefault, width: 1),
-        ),
-      ),
+      decoration: const BoxDecoration(color: AppColors.bgSurface),
       child: SafeArea(
         top: false,
         child: Container(
@@ -153,55 +148,57 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                   ),
 
                   // Icons and Labels Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _NavItem(
-                        index: 0,
-                        currentIndex: _currentIndex,
-                        prevIndex: _prevIndex,
-                        progress: _controller,
-                        label: s.navHome,
-                        icon: 'assets/icons/home.svg',
-                        onTap: () => _tabsRouter.setActiveIndex(0),
-                      ),
-                      _NavItem(
-                        index: 1,
-                        currentIndex: _currentIndex,
-                        prevIndex: _prevIndex,
-                        progress: _controller,
-                        label: s.navCategories,
-                        icon: 'assets/icons/category.svg',
-                        onTap: () => _tabsRouter.setActiveIndex(1),
-                      ),
-                      _NavItem(
-                        index: 2,
-                        currentIndex: _currentIndex,
-                        prevIndex: _prevIndex,
-                        progress: _controller,
-                        label: s.navMessages,
-                        icon: 'assets/icons/message.svg',
-                        onTap: () => _tabsRouter.setActiveIndex(2),
-                      ),
-                      _NavItem(
-                        index: 3,
-                        currentIndex: _currentIndex,
-                        prevIndex: _prevIndex,
-                        progress: _controller,
-                        label: s.navOrders,
-                        icon: 'assets/icons/cart.svg',
-                        onTap: () => _tabsRouter.setActiveIndex(3),
-                      ),
-                      _NavItem(
-                        index: 4,
-                        currentIndex: _currentIndex,
-                        prevIndex: _prevIndex,
-                        progress: _controller,
-                        label: s.navProfile,
-                        icon: 'assets/icons/profile.svg',
-                        onTap: () => _tabsRouter.setActiveIndex(4),
-                      ),
-                    ],
+                  Positioned.fill(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _NavItem(
+                          index: 0,
+                          currentIndex: _currentIndex,
+                          prevIndex: _prevIndex,
+                          progress: _controller,
+                          label: s.navHome,
+                          icon: 'assets/icons/home.svg',
+                          onTap: () => _tabsRouter.setActiveIndex(0),
+                        ),
+                        _NavItem(
+                          index: 1,
+                          currentIndex: _currentIndex,
+                          prevIndex: _prevIndex,
+                          progress: _controller,
+                          label: s.navCategories,
+                          icon: 'assets/icons/category.svg',
+                          onTap: () => _tabsRouter.setActiveIndex(1),
+                        ),
+                        _NavItem(
+                          index: 2,
+                          currentIndex: _currentIndex,
+                          prevIndex: _prevIndex,
+                          progress: _controller,
+                          label: "Rentals",
+                          icon: 'assets/icons/message.svg',
+                          onTap: () => _tabsRouter.setActiveIndex(2),
+                        ),
+                        _NavItem(
+                          index: 3,
+                          currentIndex: _currentIndex,
+                          prevIndex: _prevIndex,
+                          progress: _controller,
+                          label: s.navOrders,
+                          icon: 'assets/icons/cart.svg',
+                          onTap: () => _tabsRouter.setActiveIndex(3),
+                        ),
+                        _NavItem(
+                          index: 4,
+                          currentIndex: _currentIndex,
+                          prevIndex: _prevIndex,
+                          progress: _controller,
+                          label: s.navProfile,
+                          icon: 'assets/icons/profile.svg',
+                          onTap: () => _tabsRouter.setActiveIndex(4),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               );
@@ -251,13 +248,18 @@ class _NavItem extends StatelessWidget {
                   final t = progress.value;
                   double activeLevel = 0.0;
                   if (index == currentIndex) {
-                    activeLevel = Curves.easeIn.transform(
-                      (t - 0.4).clamp(0.0, 0.6) / 0.6,
-                    );
+                    activeLevel = progress.isCompleted
+                        ? 1.0
+                        : Curves.easeIn.transform(
+                            (t - 0.4).clamp(0.0, 0.6) / 0.6,
+                          );
                   } else if (index == prevIndex) {
-                    activeLevel =
-                        1.0 -
-                        Curves.easeOut.transform((t / 0.6).clamp(0.0, 1.0));
+                    activeLevel = progress.isCompleted
+                        ? 0.0
+                        : 1.0 -
+                              Curves.easeOut.transform(
+                                (t / 0.6).clamp(0.0, 1.0),
+                              );
                   }
 
                   return Center(
@@ -267,9 +269,8 @@ class _NavItem extends StatelessWidget {
                       height: 22,
                       colorFilter: ColorFilter.mode(
                         Color.lerp(
-                          AppColors.textSecondary,
-                          AppColors
-                              .primaryColor, // Changed from white to primaryColor for contrast on pale orange
+                          AppColors.textPrimary,
+                          AppColors.primaryColor,
                           activeLevel,
                         )!,
                         BlendMode.srcIn,
@@ -283,23 +284,28 @@ class _NavItem extends StatelessWidget {
             AnimatedBuilder(
               animation: progress,
               builder: (context, child) {
-                final t = progress.value;
-                double visibility = 0.0;
+                final isActive = index == currentIndex;
 
-                if (index == currentIndex) {
-                  visibility = (t - 0.6).clamp(0.0, 0.4) / 0.4;
+                double visibility;
+
+                if (isActive) {
+                  visibility = Curves.easeOut.transform(progress.value);
+                } else {
+                  visibility = 0.6; // inactive items still visible
                 }
 
                 return Opacity(
                   opacity: visibility,
                   child: Transform.translate(
-                    offset: Offset(0, (1 - visibility) * 4),
+                    offset: Offset(0, isActive ? (1 - visibility) * 4 : 0),
                     child: Text(
                       label,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.primaryColor,
+                        color: isActive
+                            ? AppColors.primaryColor
+                            : AppColors.textPrimary.withOpacity(0.7),
                       ),
                     ),
                   ),

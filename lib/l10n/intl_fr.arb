@@ -80,5 +80,6 @@
     "navCategories": "Catégories",
     "navMessages": "Messages",
     "navOrders": "Commandes",
-    "navProfile": "Profil"
+    "navProfile": "Profil",
+    "addToCart": "Ajouter au panier"
 }
