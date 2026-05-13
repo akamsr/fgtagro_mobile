@@ -67,5 +67,18 @@
     "sellYourProducts": "Vendez vos produits sur FGT AGRO",
     "language": "Langue",
     "english": "Anglais",
-    "french": "Français"
+    "french": "Français",
+    "newsOfTheWeek": "Nouveautés de la semaine",
+    "bestOffersForYou": "Meilleures offres pour vous",
+    "featured": "Mis en avant",
+    "newAndPopular": "Nouveautés & Populaire",
+    "snacks": "Collations",
+    "offers": "Offres",
+    "flashSale": "Vente Flash",
+    "buyNow": "Acheter",
+    "navHome": "Accueil",
+    "navCategories": "Catégories",
+    "navMessages": "Messages",
+    "navOrders": "Commandes",
+    "navProfile": "Profil"
 }
