@@ -22,12 +22,16 @@ class AppRouter extends RootStackRouter {
      AutoRoute(page: CartRoute.page),
      AutoRoute(page: CheckoutRoute.page),
      AutoRoute(page: ConversationDetailRoute.page),
-    AutoRoute(page: SellerDashboardRoute.page),
-    AutoRoute(page: CreateStoreRoute.page),
-    AutoRoute(page: SellerOnboardRoute.page),
-     AutoRoute(page: NotificationsRoute.page),
-     AutoRoute(page: LanguageSettingsRoute.page),
-     AutoRoute(page: FavouritesRoute.page),
+     AutoRoute(page: SellerDashboardRoute.page),
+     AutoRoute(page: SellerProductListRoute.page),
+     AutoRoute(page: ProductPublicationRoute.page),
+     AutoRoute(page: CreateStoreRoute.page),
+     AutoRoute(page: SellerOnboardRoute.page),
+      AutoRoute(page: NotificationsRoute.page),
+      AutoRoute(page: LanguageSettingsRoute.page),
+      AutoRoute(page: FavouritesRoute.page),
+       AutoRoute(page: SellerOrderListRoute.page),
+       AutoRoute(page: SellerRentalListRoute.page),
 
     // Main navigation home page
     AutoRoute(

@@ -39,6 +39,14 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
 
         return Scaffold(
           backgroundColor: AppColors.bgCanvas,
+          floatingActionButton: isSeller
+              ? FloatingActionButton.extended(
+                  onPressed: () => context.router.push(const ProductPublicationRoute()),
+                  backgroundColor: AppColors.primaryColor,
+                  icon: const Icon(Icons.add, color: Colors.white),
+                  label: const Text('Add Product', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                )
+              : null,
           body: CustomScrollView(
             slivers: [
               // Header

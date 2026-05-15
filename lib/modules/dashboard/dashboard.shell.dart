@@ -27,9 +27,9 @@ class HomeDashBoardPage extends StatelessWidget {
               routes: isSeller
                   ? [
                       const SellerDashboardRoute(),
-                      const ProductListRoute(), // Placeholder for Products
-                      const OrdersRoute(), // Placeholder for Orders
-                      const CategoriesRoute(), // Placeholder for Rentals
+                      const SellerProductListRoute(), 
+                      const SellerOrderListRoute(),
+                      const SellerRentalListRoute(),
                       const ProfileRoute(),
                     ]
                   : [

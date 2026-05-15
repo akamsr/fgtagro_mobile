@@ -9,6 +9,7 @@ import 'package:fgtagro_mobile/models/cartitems.dart';
 import 'package:fgtagro_mobile/models/category.dart';
 import 'package:fgtagro_mobile/models/conversation.dart';
 import 'package:fgtagro_mobile/models/device_info.dart';
+import 'package:fgtagro_mobile/models/equipment.dart';
 import 'package:fgtagro_mobile/models/message.dart';
 import 'package:fgtagro_mobile/models/order.dart';
 import 'package:fgtagro_mobile/models/product.dart';
@@ -24,6 +25,7 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(CategoryModelAdapter());
     registerAdapter(ConversationModelAdapter());
     registerAdapter(CustomDevInfoAdapter());
+    registerAdapter(EquipmentModelAdapter());
     registerAdapter(MessageModelAdapter());
     registerAdapter(MessageRoleAdapter());
     registerAdapter(MessageTypeAdapter());
@@ -48,6 +50,7 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
     registerAdapter(CategoryModelAdapter());
     registerAdapter(ConversationModelAdapter());
     registerAdapter(CustomDevInfoAdapter());
+    registerAdapter(EquipmentModelAdapter());
     registerAdapter(MessageModelAdapter());
     registerAdapter(MessageRoleAdapter());
     registerAdapter(MessageTypeAdapter());
