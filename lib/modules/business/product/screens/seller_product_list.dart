@@ -294,9 +294,7 @@ class _SellerProductCard extends StatelessWidget {
   void _showMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -309,7 +307,10 @@ class _SellerProductCard extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.inventory_2_outlined),
             title: const Text('Update Stock'),
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              _showStockUpdate(context, product);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.archive_outlined),
@@ -318,6 +319,54 @@ class _SellerProductCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
         ],
+      ),
+    );
+  }
+
+  void _showStockUpdate(BuildContext context, ProductModel product) {
+    final controller = TextEditingController(text: product.stockQuantity.toString());
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(context).viewInsets.bottom + 24),
+        decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Update Stock', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text(product.name, style: TextStyle(color: Colors.grey.shade600)),
+            const SizedBox(height: 24),
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: 'Available Quantity',
+                suffixText: 'units',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 0,
+                ),
+                child: const Text('Update Inventory', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

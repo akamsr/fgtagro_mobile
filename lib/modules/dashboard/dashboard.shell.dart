@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.state.dart';
+import 'package:fgtagro_mobile/modules/business/widgets/seller_gate.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:fgtagro_mobile/widgets/bottom_navigation/navigation.dart';
@@ -92,7 +93,9 @@ class HomeDashBoardPage extends StatelessWidget {
                             ],
                           ),
                         ),
-                      Expanded(child: child),
+                      Expanded(
+                        child: isSeller ? SellerGate(child: child) : child,
+                      ),
                     ],
                   ),
                 );
