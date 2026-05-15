@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/models/equipment.dart';
+import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,8 @@ class SellerRentalListScreen extends StatefulWidget {
   State<SellerRentalListScreen> createState() => _SellerRentalListScreenState();
 }
 
-class _SellerRentalListScreenState extends State<SellerRentalListScreen> with SingleTickerProviderStateMixin {
+class _SellerRentalListScreenState extends State<SellerRentalListScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final List<String> _tabs = ['ACTIVE', 'PENDING', 'HISTORY', 'MY_EQUIPMENT'];
 
@@ -28,7 +30,10 @@ class _SellerRentalListScreenState extends State<SellerRentalListScreen> with Si
       appBar: AppBar(
         title: const Text(
           'Rentals & Equipment',
-          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -37,8 +42,12 @@ class _SellerRentalListScreenState extends State<SellerRentalListScreen> with Si
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: IconButton(
-              icon: const Icon(Icons.add_box_outlined, color: AppColors.primaryColor),
-              onPressed: () => context.router.push(const EquipmentPublicationRoute()),
+              icon: const Icon(
+                Icons.add_box_outlined,
+                color: AppColors.primaryColor,
+              ),
+              onPressed: () =>
+                  context.router.push(const EquipmentPublicationRoute()),
             ),
           ),
         ],
@@ -49,8 +58,13 @@ class _SellerRentalListScreenState extends State<SellerRentalListScreen> with Si
           unselectedLabelColor: Colors.grey,
           indicatorColor: AppColors.primaryColor,
           indicatorWeight: 3,
-          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-          tabs: _tabs.map((tab) => Tab(text: tab.replaceAll('_', ' '))).toList(),
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+          tabs: _tabs
+              .map((tab) => Tab(text: tab.replaceAll('_', ' ')))
+              .toList(),
         ),
       ),
       body: TabBarView(
@@ -68,7 +82,9 @@ class _SellerRentalListScreenState extends State<SellerRentalListScreen> with Si
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            tab == 'MY_EQUIPMENT' ? Icons.handyman_outlined : Icons.calendar_month_outlined,
+            tab == 'MY_EQUIPMENT'
+                ? Icons.handyman_outlined
+                : Icons.calendar_month_outlined,
             size: 64,
             color: Colors.grey.shade300,
           ),

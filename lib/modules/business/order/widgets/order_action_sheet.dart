@@ -43,9 +43,9 @@ class OrderActionSheet extends StatelessWidget {
                   color: AppColors.primaryTint.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text(
-                  'PENDING',
-                  style: TextStyle(
+                child: Text(
+                  order.status.name.toUpperCase(),
+                  style: const TextStyle(
                     color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
@@ -57,7 +57,7 @@ class OrderActionSheet extends StatelessWidget {
           const SizedBox(height: 32),
           const Text('Customer Details', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
-          _buildDetailRow(Icons.person_outline, 'Jean Dupont'),
+          _buildDetailRow(Icons.person_outline, order.customerName ?? 'Client #${order.id.substring(0, 5)}'),
           _buildDetailRow(Icons.location_on_outlined, order.shippingAddress ?? 'No address provided'),
           const SizedBox(height: 32),
           const Text('Order Items', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -66,9 +66,9 @@ class OrderActionSheet extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(
                   children: [
-                    Text('${item.quantity}x ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Expanded(child: Text(item.product.name)),
-                    Text('${item.price * item.quantity} FCFA'),
+                    Text('${item.qty}x ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Expanded(child: Text(item.productName ?? 'Produit')),
+                    Text('${(item.finalPrice * item.qty).toStringAsFixed(0)} FCFA'),
                   ],
                 ),
               )),

@@ -65,7 +65,7 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen> with Sing
           return TabBarView(
             controller: _tabController,
             children: _statusTabs.map((status) {
-              final filteredOrders = state.orders; // Mock filtering logic
+              final filteredOrders = state.orders.where((o) => o.status.name.toUpperCase() == status).toList();
               
               if (filteredOrders.isEmpty) {
                 return _buildEmptyState(status);

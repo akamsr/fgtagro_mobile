@@ -45,8 +45,96 @@ class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen>
       case 3: return _buildDocumentStep();
       case 4: return _buildPricingStep();
       case 5: return _buildLocationStep();
+      case 6: return _buildAvailabilityStep();
+      case 7: return _buildReviewStep();
       default: return Center(child: Text('Step $_currentStep Implementation'));
     }
+  }
+
+  Widget _buildAvailabilityStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Availability & Rules', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        const Text('Set when your equipment is available and who can rent it.', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: 32),
+        const Text('Working Days', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => FilterChip(
+            label: Text(day),
+            selected: true,
+            onSelected: (v) {},
+            selectedColor: AppColors.primaryTint.withOpacity(0.2),
+            labelStyle: const TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold),
+          )).toList(),
+        ),
+        const SizedBox(height: 32),
+        const Text('Operational Rules', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        _buildCheckbox('Operator included in rental'),
+        _buildCheckbox('Fuel provided by owner'),
+        _buildCheckbox('Daily maintenance included'),
+      ],
+    );
+  }
+
+  Widget _buildReviewStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Review & Publish', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        const Text('Review your equipment details before submitting.', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: 32),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Column(
+            children: [
+              _buildReviewRow('Manufacturer', 'John Deere'),
+              _buildReviewRow('Model', '5050E'),
+              _buildReviewRow('Daily Rate', '45,000 FCFA'),
+              _buildReviewRow('Radius', '50 km'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 32),
+        _buildCheckbox('I agree to the FGT AGRO Rental Terms & Conditions'),
+        _buildCheckbox('I confirm that all documents are valid and genuine'),
+      ],
+    );
+  }
+
+  Widget _buildReviewRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(color: Colors.grey.shade600)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCheckbox(String label) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Checkbox(value: true, onChanged: (v) {}, activeColor: AppColors.primaryColor),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
+        ],
+      ),
+    );
   }
 
   Widget _buildPhotoStep() {

@@ -35,6 +35,8 @@ class OrderModel {
   final String? shippingAddress;
   @HiveField(7)
   final String? paymentMethod;
+  @HiveField(8)
+  final String? customerName;
 
   OrderModel({
     required this.id,
@@ -45,6 +47,7 @@ class OrderModel {
     required this.items,
     this.shippingAddress,
     this.paymentMethod,
+    this.customerName,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -60,6 +63,7 @@ class OrderModel {
           [],
       shippingAddress: json['shippingAddress'],
       paymentMethod: json['paymentMethod'],
+      customerName: json['customerName'],
     );
   }
 
@@ -73,6 +77,7 @@ class OrderModel {
       'items': items.map((e) => e.toJson()).toList(),
       'shippingAddress': shippingAddress,
       'paymentMethod': paymentMethod,
+      'customerName': customerName,
     };
   }
 
@@ -111,6 +116,7 @@ class OrderModel {
       items: items ?? this.items,
       shippingAddress: shippingAddress ?? this.shippingAddress,
       paymentMethod: paymentMethod ?? this.paymentMethod,
+      customerName: customerName ?? this.customerName,
     );
   }
 }

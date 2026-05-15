@@ -30,8 +30,13 @@ class ProfileScreen extends StatelessWidget {
             return Scaffold(
               backgroundColor: const Color(0xFFFBF8FD),
               appBar: AppBar(
-                title: Text(isSeller ? 'Tableau de bord Business' : 'Mon Profil', 
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor)),
+                title: Text(
+                  isSeller ? 'Tableau de bord Business' : 'Mon Profil',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.secondaryColor,
+                  ),
+                ),
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 centerTitle: true,
@@ -48,10 +53,19 @@ class ProfileScreen extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 radius: 50,
-                                backgroundColor: AppColors.primaryColor.withOpacity(0.1),
+                                backgroundColor: AppColors.primaryColor
+                                    .withOpacity(0.1),
                                 child: Text(
-                                  user?.fullNames?.isNotEmpty == true ? user!.fullNames!.substring(0, 1).toUpperCase() : 'U',
-                                  style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.primaryColor),
+                                  user?.fullNames?.isNotEmpty == true
+                                      ? user!.fullNames!
+                                            .substring(0, 1)
+                                            .toUpperCase()
+                                      : 'U',
+                                  style: const TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryColor,
+                                  ),
                                 ),
                               ),
                               if (isSeller)
@@ -60,20 +74,37 @@ class ProfileScreen extends StatelessWidget {
                                   bottom: 0,
                                   child: Container(
                                     padding: const EdgeInsets.all(4),
-                                    decoration: const BoxDecoration(color: Colors.amber, shape: BoxShape.circle),
-                                    child: const Icon(Icons.verified, color: Colors.white, size: 20),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.amber,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.verified,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                   ),
                                 ),
                             ],
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            isSeller ? (businessState.profile?.storeName ?? "Ma Business") : (user?.fullNames ?? "Utilisateur"),
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+                            isSeller
+                                ? (businessState.profile?.businessName ??
+                                      "Ma Business")
+                                : (user?.fullNames ?? "Utilisateur"),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.secondaryColor,
+                            ),
                           ),
                           Text(
                             user?.email ?? user?.phoneNumber ?? "",
-                            style: const TextStyle(fontSize: 14, color: Colors.grey),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
                           ),
                         ],
                       ),
@@ -82,9 +113,15 @@ class ProfileScreen extends StatelessWidget {
 
                     // Role Switcher
                     ProfileMenuItem(
-                      title: isSeller ? 'Passer en Mode Acheteur' : 'Passer en Mode Vendeur',
-                      icon: isSeller ? Icons.shopping_cart_outlined : Icons.storefront,
-                      onTap: () => context.read<BusinessCubit>().switchMode(isSeller ? AppMode.buyer : AppMode.seller),
+                      title: isSeller
+                          ? 'Passer en Mode Acheteur'
+                          : 'Passer en Mode Vendeur',
+                      icon: isSeller
+                          ? Icons.shopping_cart_outlined
+                          : Icons.storefront,
+                      onTap: () => context.read<BusinessCubit>().switchMode(
+                        isSeller ? AppMode.buyer : AppMode.seller,
+                      ),
                     ),
                     const Divider(),
                     const SizedBox(height: 8),
@@ -124,7 +161,8 @@ class ProfileScreen extends StatelessWidget {
                       ProfileMenuItem(
                         title: 'Mes Favoris',
                         icon: Icons.favorite_border,
-                        onTap: () => context.router.push(const FavouritesRoute()),
+                        onTap: () =>
+                            context.router.push(const FavouritesRoute()),
                       ),
                     ],
 
@@ -143,9 +181,17 @@ class ProfileScreen extends StatelessWidget {
                     // Logout
                     ListTile(
                       leading: const Icon(Icons.logout, color: Colors.red),
-                      title: const Text('Déconnexion', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                      title: const Text(
+                        'Déconnexion',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       onTap: () => context.read<AuthCubit>().logout(),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       tileColor: Colors.red.withOpacity(0.05),
                     ),
                   ],
@@ -156,6 +202,5 @@ class ProfileScreen extends StatelessWidget {
         );
       },
     );
-
   }
 }

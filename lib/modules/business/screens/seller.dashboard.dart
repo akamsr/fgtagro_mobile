@@ -8,6 +8,7 @@ import 'package:fgtagro_mobile/modules/business/widgets/revenue_chart.dart';
 import 'package:fgtagro_mobile/modules/business/widgets/product_mini_card.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.cubit.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.state.dart';
+import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,14 +38,23 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
         final String businessName = seller?.businessName ?? 'Chargement...';
         final String trustLevel = seller?.trustLevel.toUpperCase() ?? 'NEW';
 
+        final isSeller = state.appMode == AppMode.seller;
+
         return Scaffold(
           backgroundColor: AppColors.bgCanvas,
           floatingActionButton: isSeller
               ? FloatingActionButton.extended(
-                  onPressed: () => context.router.push(const ProductPublicationRoute()),
+                  onPressed: () =>
+                      context.router.push(const ProductPublicationRoute()),
                   backgroundColor: AppColors.primaryColor,
                   icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text('Add Product', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'Add Product',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 )
               : null,
           body: CustomScrollView(
@@ -63,8 +73,13 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                       children: [
                         CircleAvatar(
                           radius: 28,
-                          backgroundColor: AppColors.primaryTint.withOpacity(0.3),
-                          child: const Icon(Icons.storefront, color: AppColors.primaryColor),
+                          backgroundColor: AppColors.primaryTint.withOpacity(
+                            0.3,
+                          ),
+                          child: const Icon(
+                            Icons.storefront,
+                            color: AppColors.primaryColor,
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -81,9 +96,14 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                               ),
                               const SizedBox(height: 4),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFFD700).withOpacity(0.15),
+                                  color: const Color(
+                                    0xFFFFD700,
+                                  ).withOpacity(0.15),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
@@ -101,7 +121,10 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                         Stack(
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.notifications_outlined, color: AppColors.secondaryColor),
+                              icon: const Icon(
+                                Icons.notifications_outlined,
+                                color: AppColors.secondaryColor,
+                              ),
                               onPressed: () {},
                             ),
                             Positioned(
@@ -126,7 +149,10 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
 
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0,
+                    vertical: 20,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -143,6 +169,7 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       SizedBox(
                         height: 140,
                         child: ListView(
@@ -150,32 +177,36 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           clipBehavior: Clip.none,
                           children: [
-                            const BusinessKPICard(
-                              label: "Commandes",
-                              value: "12",
+                            BusinessKPICard(
+                              label: "Ventes Totales",
+                              value: seller?.totalSales.toString() ?? "0",
                               icon: Icons.shopping_bag_outlined,
                               color: AppColors.primaryColor,
                             ),
                             const SizedBox(width: 16),
-                            const BusinessKPICard(
-                              label: "Revenus (FCFA)",
-                              value: "84,500",
-                              icon: Icons.payments_outlined,
-                              color: Color(0xFF10b981),
+                            BusinessKPICard(
+                              label: "Note Moyenne",
+                              value:
+                                  seller?.averageRating.toStringAsFixed(1) ??
+                                  "0.0",
+                              icon: Icons.star_outline_rounded,
+                              color: const Color(0xFF10b981),
                             ),
                             const SizedBox(width: 16),
                             BusinessKPICard(
-                              label: "En attente",
-                              value: "12,000",
-                              icon: Icons.hourglass_empty_rounded,
+                              label: "Avis Clients",
+                              value: seller?.totalReviews.toString() ?? "0",
+                              icon: Icons.rate_review_outlined,
                               color: Colors.orange.shade600,
                             ),
                             const SizedBox(width: 16),
-                            const BusinessKPICard(
-                              label: "Produits Actifs",
-                              value: "45",
-                              icon: Icons.inventory_2_outlined,
-                              color: AppColors.secondaryColor,
+                            BlocBuilder<ProductCubit, ProductState>(
+                              builder: (context, pState) => BusinessKPICard(
+                                label: "Produits Actifs",
+                                value: pState.products.length.toString(),
+                                icon: Icons.inventory_2_outlined,
+                                color: AppColors.secondaryColor,
+                              ),
                             ),
                           ],
                         ),
@@ -200,14 +231,16 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                             const SizedBox(height: 16),
                             PendingActionTile(
                               title: "3 Commandes à préparer",
-                              subtitle: "Date limite de préparation : Aujourd'hui",
+                              subtitle:
+                                  "Date limite de préparation : Aujourd'hui",
                               actionLabel: "Voir tout",
                               icon: Icons.inventory_2,
                               onTap: () {},
                             ),
                             PendingActionTile(
                               title: "Produit refusé",
-                              subtitle: "Engrais NPK 15-15-15 nécessite correction",
+                              subtitle:
+                                  "Engrais NPK 15-15-15 nécessite correction",
                               actionLabel: "Corriger",
                               icon: Icons.warning_amber_rounded,
                               color: Colors.redAccent,
@@ -247,14 +280,22 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                                 DropdownButton<String>(
                                   value: '30 jours',
                                   underline: const SizedBox(),
-                                  icon: const Icon(Icons.keyboard_arrow_down, size: 18),
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    size: 18,
+                                  ),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.primaryColor,
                                   ),
                                   items: ['7 jours', '30 jours', '3 mois']
-                                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                                      .map(
+                                        (e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Text(e),
+                                        ),
+                                      )
                                       .toList(),
                                   onChanged: (v) {},
                                 ),
@@ -283,7 +324,9 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                       const SizedBox(height: 16),
                       BlocBuilder<ProductCubit, ProductState>(
                         builder: (context, productState) {
-                          final products = productState.products.take(5).toList();
+                          final products = productState.products
+                              .take(5)
+                              .toList();
                           if (products.isEmpty) {
                             return const SizedBox.shrink();
                           }
@@ -291,7 +334,9 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                             height: 85,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
                               itemCount: products.length,
                               itemBuilder: (context, index) => ProductMiniCard(
                                 product: products[index],

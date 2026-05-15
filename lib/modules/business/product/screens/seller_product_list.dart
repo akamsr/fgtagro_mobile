@@ -279,7 +279,7 @@ class _SellerProductCard extends StatelessWidget {
           ),
           Column(
             children: [
-              _StatusBadge(status: 'PUBLISHED'), // Hardcoded for MVP
+              _StatusBadge(status: product.status.toUpperCase()),
               IconButton(
                 icon: const Icon(Icons.more_vert, size: 20),
                 onPressed: () => _showMenu(context),

@@ -25,13 +25,14 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
       items: (fields[5] as List).cast<CartItem>(),
       shippingAddress: fields[6] as String?,
       paymentMethod: fields[7] as String?,
+      customerName: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, OrderModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
       ..writeByte(6)
       ..write(obj.shippingAddress)
       ..writeByte(7)
-      ..write(obj.paymentMethod);
+      ..write(obj.paymentMethod)
+      ..writeByte(8)
+      ..write(obj.customerName);
   }
 
   @override
