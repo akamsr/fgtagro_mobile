@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fgtagro_mobile/models/cart.dart';
 import 'package:fgtagro_mobile/models/product.dart';
 import 'package:fgtagro_mobile/services/cart/local_cart.service.dart';
 import 'package:fgtagro_mobile/utils/error/app_error.dart';
@@ -18,23 +19,28 @@ class CartCubit extends Cubit<CartState> {
     return super.close();
   }
 
-  // ── Load ──────────────────────────────────────────────────────────────────
-
   void fetchCart() {
     try {
       final cart = _service.getCart();
-      emit(state.copyWith(cart: cart, genLoading: false, genError: null, showError: false));
+      emit(
+        state.copyWith(
+          cart: cart,
+          genLoading: false,
+          genError: null,
+          showError: false,
+        ),
+      );
       _manageTimer(cart.expiresAt);
     } catch (e, s) {
-      emit(state.copyWith(
-        genLoading: false,
-        genError: ErrorMapper.map(e, s),
-        showError: true,
-      ));
+      emit(
+        state.copyWith(
+          genLoading: false,
+          genError: ErrorMapper.map(e, s),
+          showError: true,
+        ),
+      );
     }
   }
-
-  // ── Add ───────────────────────────────────────────────────────────────────
 
   void addToCart(ProductModel product, {int qty = 1}) {
     try {
@@ -46,14 +52,34 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  // ── Remove ────────────────────────────────────────────────────────────────
+  void toggleCart(ProductModel product) {
+    try {
+      final cart = _service.getCart();
+      final existingIndex = cart.items.indexWhere(
+        (i) => i.productId == product.id,
+      );
+
+      Cart updatedCart;
+      if (existingIndex >= 0) {
+        updatedCart = _service.removeItem(cart.items[existingIndex].id);
+      } else {
+        updatedCart = _service.addItem(product, qty: 1);
+      }
+      emit(state.copyWith(cart: updatedCart));
+      _manageTimer(updatedCart.expiresAt);
+    } catch (e, s) {
+      emit(state.copyWith(genError: ErrorMapper.map(e, s), showError: true));
+    }
+  }
 
   void removeFromCart(int cartItemId) {
     try {
       final cart = _service.removeItem(cartItemId);
       if (cart.items.isEmpty) {
         _timer?.cancel();
-        emit(state.copyWith(cart: cart, remainingSeconds: 0, timerProgress: 1.0));
+        emit(
+          state.copyWith(cart: cart, remainingSeconds: 0, timerProgress: 1.0),
+        );
       } else {
         emit(state.copyWith(cart: cart));
         _manageTimer(cart.expiresAt);
@@ -62,8 +88,6 @@ class CartCubit extends Cubit<CartState> {
       emit(state.copyWith(genError: ErrorMapper.map(e, s), showError: true));
     }
   }
-
-  // ── Update quantity ───────────────────────────────────────────────────────
 
   void updateQuantity(int cartItemId, int qty) {
     if (qty <= 0) {
@@ -79,15 +103,11 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  // ── Clear ─────────────────────────────────────────────────────────────────
-
   void clearCart() {
     _timer?.cancel();
     final cart = _service.clearCart();
     emit(state.copyWith(cart: cart, remainingSeconds: 0, timerProgress: 1.0));
   }
-
-  // ── Timer ─────────────────────────────────────────────────────────────────
 
   void _manageTimer(String? expiresAt) {
     _timer?.cancel();
@@ -102,10 +122,12 @@ class CartCubit extends Cubit<CartState> {
         timer.cancel();
         emit(state.copyWith(remainingSeconds: 0, timerProgress: 0.0));
       } else {
-        emit(state.copyWith(
-          remainingSeconds: remaining,
-          timerProgress: remaining / reservationDuration,
-        ));
+        emit(
+          state.copyWith(
+            remainingSeconds: remaining,
+            timerProgress: remaining / reservationDuration,
+          ),
+        );
       }
     });
   }

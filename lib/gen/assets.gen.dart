@@ -14,6 +14,9 @@ import 'package:flutter/widgets.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/cart-outlined.svg
+  String get cartOutlined => 'assets/icons/cart-outlined.svg';
+
   /// File path: assets/icons/cart.svg
   String get cart => 'assets/icons/cart.svg';
 
@@ -25,6 +28,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/favourite.svg
   String get favourite => 'assets/icons/favourite.svg';
+
+  /// File path: assets/icons/heart-outlined.svg
+  String get heartOutlined => 'assets/icons/heart-outlined.svg';
 
   /// File path: assets/icons/home.svg
   String get home => 'assets/icons/home.svg';
@@ -46,10 +52,12 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<dynamic> get values => [
+    cartOutlined,
     cart,
     category,
     delivery,
     favourite,
+    heartOutlined,
     home,
     logo,
     notification,

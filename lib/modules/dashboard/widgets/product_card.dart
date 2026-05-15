@@ -4,9 +4,12 @@ import 'package:fgtagro_mobile/models/product.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/modules/cart/cubit/cart.cubit.dart';
 import 'package:fgtagro_mobile/modules/cart/cubit/cart.state.dart';
+import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.cubit.dart';
+import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.state.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductModel product;
@@ -28,8 +31,6 @@ class _ProductCardState extends State<ProductCard>
     with TickerProviderStateMixin {
   late AnimationController _cartController;
   late AnimationController _favController;
-  bool _inCart = false;
-  bool _isFavorite = false;
 
   @override
   void initState() {
@@ -61,24 +62,12 @@ class _ProductCardState extends State<ProductCard>
       return;
     }
 
-    // Trigger adding to cart
-    context.read<CartCubit>().addToCart(widget.product);
-
-    setState(() => _inCart = true);
-    _cartController.forward();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${widget.product.name} added to cart')),
-    );
+    context.read<CartCubit>().toggleCart(widget.product);
   }
 
   void _toggleFavorite() {
-    setState(() => _isFavorite = !_isFavorite);
-    if (_isFavorite) {
-      _favController.forward(from: 0.0);
-    } else {
-      _favController.reverse();
-    }
+    context.read<FavouritesCubit>().toggleFavourite(widget.product);
+    _favController.forward(from: 0.0);
   }
 
   @override
@@ -90,7 +79,7 @@ class _ProductCardState extends State<ProductCard>
           context.router.push(ProductDetailRoute(id: widget.product.id)),
       child: Container(
         width: widget.width,
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
@@ -140,43 +129,43 @@ class _ProductCardState extends State<ProductCard>
                 Positioned(
                   top: 12,
                   right: 12,
-                  child: GestureDetector(
-                    onTap: _toggleFavorite,
-                    child: ScaleTransition(
-                      scale: Tween<double>(begin: 1.0, end: 1.2).animate(
-                        CurvedAnimation(
-                          parent: _favController,
-                          curve: const Interval(
-                            0.0,
-                            0.5,
-                            curve: Curves.elasticOut,
+                  child: BlocBuilder<FavouritesCubit, FavouritesState>(
+                    builder: (context, state) {
+                      final isFav = state.isFavourite(widget.product.id);
+                      return GestureDetector(
+                        onTap: _toggleFavorite,
+                        child: ScaleTransition(
+                          scale: Tween<double>(begin: 1.0, end: 1.2).animate(
+                            CurvedAnimation(
+                              parent: _favController,
+                              curve: const Interval(
+                                0.0,
+                                0.5,
+                                curve: Curves.elasticOut,
+                              ),
+                            ),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/icons/favourite.svg',
+                              width: 20,
+                              height: 20,
+                              colorFilter: ColorFilter.mode(
+                                isFav
+                                    ? AppColors.primaryColor
+                                    : Colors.grey.shade400,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: AnimatedBuilder(
-                          animation: _favController,
-                          builder: (context, child) {
-                            return Icon(
-                              _isFavorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              size: 23,
-                              color: Color.lerp(
-                                AppColors.textPlaceholder,
-                                AppColors.primaryColor,
-                                _favController.value,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ),
 
@@ -197,109 +186,114 @@ class _ProductCardState extends State<ProductCard>
 
             const SizedBox(height: 5),
 
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     widget.product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.secondaryColor,
                     ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  widget.product.seller.businessName,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                    height: 1.4,
+                  const SizedBox(height: 2),
+                  Text(
+                    widget.product.seller.businessName,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-
-                // const SizedBox(height: 10),
-              ],
+                ],
+              ),
             ),
 
             const Spacer(),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: _toggleCart,
-                  child: AnimatedBuilder(
-                    animation: _cartController,
-                    builder: (context, child) {
-                      final t = _cartController.value;
-                      double stretchFactor = 1.0;
-                      if (t > 0.1 && t < 0.9) {
-                        stretchFactor = 1.15 - (t - 0.5).abs() * 0.3;
-                      }
+            BlocBuilder<CartCubit, CartState>(
+              builder: (context, cartState) {
+                final inCart =
+                    cartState.cart?.items.any(
+                      (i) => i.productId == widget.product.id,
+                    ) ??
+                    false;
 
-                      final baseWidth = 110.0 - (110.0 - 44.0) * t;
-                      final stretchWidth = (baseWidth * stretchFactor).clamp(
-                        44.0,
-                        150.0,
-                      );
+                if (inCart) {
+                  _cartController.forward();
+                } else {
+                  _cartController.reverse();
+                }
 
-                      return Container(
-                        width: stretchWidth,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: Color.lerp(
-                            AppColors.secondaryPressed,
-                            AppColors.primaryColor,
-                            t,
-                          ),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Text Label (fades out)
-                            Opacity(
-                              opacity: (1 - t * 2).clamp(0.0, 1.0),
-                              child: Transform.scale(
-                                scale: (1 - t),
-                                child: Text(
-                                  s.addToCart,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: _toggleCart,
+                        child: AnimatedBuilder(
+                          animation: _cartController,
+                          builder: (context, child) {
+                            final t = _cartController.value;
+
+                            final baseWidth = 100.0 - (100.0 - 32.0) * t;
+
+                            return Container(
+                              width: baseWidth,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: Color.lerp(
+                                  AppColors.secondaryColor,
+                                  AppColors.primaryColor,
+                                  t,
                                 ),
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                            ),
-                            // Cart Icon (fades in)
-                            Opacity(
-                              opacity: (t * 2 - 1).clamp(0.0, 1.0),
-                              child: Transform.scale(
-                                scale: t,
-                                child: const Icon(
-                                  Icons.shopping_cart_outlined,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  if (t < 0.5)
+                                    Opacity(
+                                      opacity: (1 - t * 2).clamp(0.0, 1.0),
+                                      child: Text(
+                                        s.addToCart,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  if (t > 0.5)
+                                    Opacity(
+                                      opacity: (t * 2 - 1).clamp(0.0, 1.0),
+                                      child: SvgPicture.asset(
+                                        'assets/icons/cart.svg',
+                                        width: 16,
+                                        height: 16,
+                                        colorFilter: const ColorFilter.mode(
+                                          Colors.white,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                );
+              },
             ),
           ],
         ),

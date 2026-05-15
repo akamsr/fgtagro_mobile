@@ -5,10 +5,13 @@ import 'package:fgtagro_mobile/modules/cart/cubit/cart.state.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.cubit.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.state.dart';
 import 'package:fgtagro_mobile/modules/product/widgets/product_hero_action.dart';
+import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.cubit.dart';
+import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.state.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 @RoutePage()
 class ProductDetailScreen extends StatefulWidget {
@@ -129,7 +132,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                               clipBehavior: Clip.none,
                               children: [
                                 ProductHeroAction(
-                                  icon: Icons.shopping_cart,
+                                  icon: 'assets/icons/cart.svg',
                                   onTap: () =>
                                       context.router.push(const CartRoute()),
                                 ),
@@ -279,50 +282,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           ),
                           const SizedBox(height: 24),
 
-                          // Size Selector
-                          const Text(
-                            'Size',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: sizes.map((size) {
-                              final isSelected = selectedSize == size;
-                              return GestureDetector(
-                                onTap: () =>
-                                    setState(() => selectedSize = size),
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 12),
-                                  width: 44,
-                                  height: 44,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: isSelected
-                                        ? const Color(0xFF1E1E1E)
-                                        : Colors.white,
-                                    border: Border.all(
-                                      color: isSelected
-                                          ? Colors.transparent
-                                          : Colors.grey.withOpacity(0.3),
-                                    ),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    size,
-                                    style: TextStyle(
-                                      color: isSelected
-                                          ? Colors.white
-                                          : AppColors.textPrimary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
                           const SizedBox(height: 24),
 
                           // Description
@@ -505,7 +464,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                             child: Row(
                               children: [
                                 _FloatingActionButton(
-                                  icon: Icons.shopping_cart_outlined,
+                                  icon: 'assets/icons/cart-outlined.svg',
                                   color: const Color(0xFF1E1E1E),
                                   onTap: () {
                                     if (product.stockQuantity <= 0) {
@@ -530,12 +489,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                   },
                                 ),
                                 const SizedBox(width: 8),
-                                _FloatingActionButton(
-                                  icon: Icons.favorite_border,
-                                  color: Colors.white,
-                                  iconColor: AppColors.textPrimary,
-                                  border: true,
-                                  onTap: () {},
+                                BlocBuilder<FavouritesCubit, FavouritesState>(
+                                  builder: (context, favState) {
+                                    final isFav = favState.isFavourite(product.id);
+                                    return _FloatingActionButton(
+                                      icon: isFav ? 'assets/icons/favourite.svg' : 'assets/icons/heart-outlined.svg',
+                                      color: Colors.white,
+                                      iconColor: isFav ? AppColors.primaryColor : AppColors.textPrimary,
+                                      border: true,
+                                      onTap: () => context.read<FavouritesCubit>().toggleFavourite(product),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -589,7 +553,7 @@ class SliverToBoxAdapterThumbnails extends StatelessWidget {
 }
 
 class _FloatingActionButton extends StatelessWidget {
-  final IconData icon;
+  final dynamic icon; // Can be IconData or String (SVG path)
   final Color color;
   final Color iconColor;
   final bool border;
@@ -613,12 +577,21 @@ class _FloatingActionButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
-          border: border
-              ? Border.all(color: Colors.grey.withOpacity(0.3))
-              : null,
+          border:
+              border ? Border.all(color: Colors.grey.withOpacity(0.3)) : null,
         ),
         alignment: Alignment.center,
-        child: Icon(icon, color: iconColor, size: 20),
+        child: icon is String
+            ? SvgPicture.asset(
+                icon as String,
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  iconColor,
+                  BlendMode.srcIn,
+                ),
+              )
+            : Icon(icon as IconData, color: iconColor, size: 20),
       ),
     );
   }

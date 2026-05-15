@@ -77,18 +77,23 @@ class _CheckoutScreenState extends State<CheckoutScreen>
   void _next(Cart cart) async {
     if (!_canContinue) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez compléter tous les champs requis.')),
+        const SnackBar(
+          content: Text('Veuillez compléter tous les champs requis.'),
+        ),
       );
       return;
     }
     if (_step < 2) {
       setState(() => _step++);
-      _pageCtrl.animateToPage(_step,
-          duration: const Duration(milliseconds: 400), curve: Curves.easeInOutCubic);
+      _pageCtrl.animateToPage(
+        _step,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOutCubic,
+      );
     } else {
       // Confirm order
       setState(() => _ctaLoading = true);
-      await Future.delayed(const Duration(seconds: 2)); // Replace with real API call
+      await Future.delayed(const Duration(seconds: 2));
       if (mounted) {
         setState(() => _ctaLoading = false);
         context.read<CartCubit>().clearCart();
@@ -100,8 +105,11 @@ class _CheckoutScreenState extends State<CheckoutScreen>
   void _back() {
     if (_step > 0) {
       setState(() => _step--);
-      _pageCtrl.animateToPage(_step,
-          duration: const Duration(milliseconds: 400), curve: Curves.easeInOutCubic);
+      _pageCtrl.animateToPage(
+        _step,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOutCubic,
+      );
     } else {
       context.router.pop();
     }
@@ -118,16 +126,31 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           children: [
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(color: AppColors.successBg, shape: BoxShape.circle),
-              child: const Icon(Icons.check_circle_outline, color: AppColors.successFg, size: 56),
+              decoration: const BoxDecoration(
+                color: AppColors.successBg,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.check_circle_outline,
+                color: AppColors.successFg,
+                size: 56,
+              ),
             ),
             const SizedBox(height: 20),
-            const Text('Commande confirmée !',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.secondaryColor)),
+            const Text(
+              'Commande confirmée !',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryColor,
+              ),
+            ),
             const SizedBox(height: 8),
-            const Text('Vous recevrez une confirmation par SMS et email.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 13)),
+            const Text(
+              'Vous recevrez une confirmation par SMS et email.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey, fontSize: 13),
+            ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
@@ -138,9 +161,14 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                child: const Text('Voir mes commandes', style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Voir mes commandes',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -155,7 +183,9 @@ class _CheckoutScreenState extends State<CheckoutScreen>
       builder: (context, state) {
         final cart = state.cart;
         if (cart == null) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
         return Scaffold(
@@ -164,24 +194,35 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: Icon(_step == 0 ? Icons.close : Icons.arrow_back, color: AppColors.secondaryColor),
+              icon: Icon(
+                _step == 0 ? Icons.close : Icons.arrow_back,
+                color: AppColors.secondaryColor,
+              ),
               onPressed: _back,
             ),
-            title: const Text('Validation de commande',
-                style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor, fontSize: 16)),
+            title: const Text(
+              'Validation de commande',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryColor,
+                fontSize: 16,
+              ),
+            ),
             centerTitle: true,
           ),
           body: Column(
             children: [
-              // ── Progress stepper ─────────────────────────────────────────
               CheckoutStepper(activeStep: _step),
 
-              // ── Collapsible order summary ────────────────────────────────
-              _OrderSummaryBar(cart: cart, shippingFee: _shipping == ShippingMethod.homeDelivery ? 2500 : 0),
+              _OrderSummaryBar(
+                cart: cart,
+                shippingFee: _shipping == ShippingMethod.homeDelivery
+                    ? 2500
+                    : 0,
+              ),
 
               const Divider(height: 1),
 
-              // ── Step pages ───────────────────────────────────────────────
               Expanded(
                 child: PageView(
                   controller: _pageCtrl,
@@ -213,14 +254,18 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                         children: [
                           StepPayment(
                             selected: _payment,
-                            grandTotal: cart.grandTotal + (_shipping == ShippingMethod.homeDelivery ? 2500 : 0),
+                            grandTotal:
+                                cart.grandTotal +
+                                (_shipping == ShippingMethod.homeDelivery
+                                    ? 2500
+                                    : 0),
                             allowCash: _shipping == ShippingMethod.storePickup,
                             onChanged: (v) => setState(() => _payment = v),
                           ),
-                          // T&C consent
                           _TcCheckbox(
                             value: _tcAccepted,
-                            onChanged: (v) => setState(() => _tcAccepted = v ?? false),
+                            onChanged: (v) =>
+                                setState(() => _tcAccepted = v ?? false),
                           ),
                           const SizedBox(height: 16),
                         ],
@@ -230,12 +275,13 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                 ),
               ),
 
-              // ── CTA footer ───────────────────────────────────────────────
               _CtaFooter(
                 step: _step,
                 loading: _ctaLoading,
                 enabled: _canContinue,
-                grandTotal: cart.grandTotal + (_shipping == ShippingMethod.homeDelivery ? 2500 : 0),
+                grandTotal:
+                    cart.grandTotal +
+                    (_shipping == ShippingMethod.homeDelivery ? 2500 : 0),
                 onTap: () => _next(cart),
               ),
             ],
@@ -245,8 +291,6 @@ class _CheckoutScreenState extends State<CheckoutScreen>
     );
   }
 }
-
-// ─── Order summary collapsible bar ─────────────────────────────────────────
 
 class _OrderSummaryBar extends StatefulWidget {
   final dynamic cart;
@@ -276,20 +320,40 @@ class _OrderSummaryBarState extends State<_OrderSummaryBar> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(color: AppColors.primaryTint, borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(Icons.receipt_long_outlined, color: AppColors.primaryColor, size: 18),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryTint,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.receipt_long_outlined,
+                      color: AppColors.primaryColor,
+                      size: 18,
+                    ),
                   ),
                   const SizedBox(width: 10),
-                  Text('${widget.cart.totalItems} article(s)',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  Text(
+                    '${widget.cart.totalItems} article(s)',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
                   const Spacer(),
-                  Text('${total.toStringAsFixed(0)} FCFA',
-                      style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.primaryColor)),
+                  Text(
+                    '${total.toStringAsFixed(0)} FCFA',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
                   const SizedBox(width: 6),
                   AnimatedRotation(
                     turns: _expanded ? 0.5 : 0.0,
                     duration: const Duration(milliseconds: 300),
-                    child: const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                    child: const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),
@@ -297,8 +361,13 @@ class _OrderSummaryBarState extends State<_OrderSummaryBar> {
           ),
           AnimatedCrossFade(
             firstChild: const SizedBox.shrink(),
-            secondChild: _SummaryDetails(cart: widget.cart, shippingFee: widget.shippingFee),
-            crossFadeState: _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            secondChild: _SummaryDetails(
+              cart: widget.cart,
+              shippingFee: widget.shippingFee,
+            ),
+            crossFadeState: _expanded
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 300),
           ),
         ],
@@ -318,24 +387,49 @@ class _SummaryDetails extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
       child: Column(
         children: [
-          ...cart.items.map<Widget>((item) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Text('${item.qty}x ', style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                    Expanded(child: Text(item.productName ?? 'Produit', style: const TextStyle(fontSize: 12))),
-                    Text('${(item.finalPrice * item.qty).toStringAsFixed(0)} F',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                  ],
-                ),
-              )),
+          ...cart.items.map<Widget>(
+            (item) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Text(
+                    '${item.qty}x ',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                  Expanded(
+                    child: Text(
+                      item.productName ?? 'Produit',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Text(
+                    '${(item.finalPrice * item.qty).toStringAsFixed(0)} F',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           const Divider(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Livraison', style: TextStyle(color: Colors.grey, fontSize: 12)),
-              Text(shippingFee == 0 ? 'Gratuit' : '${shippingFee.toStringAsFixed(0)} F',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              const Text(
+                'Livraison',
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+              Text(
+                shippingFee == 0
+                    ? 'Gratuit'
+                    : '${shippingFee.toStringAsFixed(0)} F',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
             ],
           ),
         ],
@@ -343,8 +437,6 @@ class _SummaryDetails extends StatelessWidget {
     );
   }
 }
-
-// ─── T&C checkbox ───────────────────────────────────────────────────────────
 
 class _TcCheckbox extends StatelessWidget {
   final bool value;
@@ -363,7 +455,9 @@ class _TcCheckbox extends StatelessWidget {
             value: value,
             onChanged: onChanged,
             activeColor: AppColors.primaryColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
           ),
         ),
         const SizedBox(width: 8),
@@ -377,8 +471,6 @@ class _TcCheckbox extends StatelessWidget {
     );
   }
 }
-
-// ─── CTA footer ─────────────────────────────────────────────────────────────
 
 class _CtaFooter extends StatelessWidget {
   final int step;
@@ -397,12 +489,22 @@ class _CtaFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = ['Continuer vers l\'expédition', 'Continuer vers le paiement', 'Confirmer et payer'];
+    final labels = [
+      'Continuer vers l\'expédition',
+      'Continuer vers le paiement',
+      'Confirmer et payer',
+    ];
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 14, 24, 0),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 16, offset: const Offset(0, -6))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 16,
+            offset: const Offset(0, -6),
+          ),
+        ],
       ),
       child: SafeArea(
         child: SizedBox(
@@ -414,19 +516,32 @@ class _CtaFooter extends StatelessWidget {
             child: ElevatedButton(
               onPressed: enabled && !loading ? onTap : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: step == 2 ? AppColors.primaryColor : AppColors.secondaryColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                backgroundColor: step == 2
+                    ? AppColors.primaryColor
+                    : AppColors.secondaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 elevation: 0,
               ),
               child: loading
                   ? const SizedBox(
                       width: 24,
                       height: 24,
-                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      ),
                     )
                   : Text(
-                      step == 2 ? '${labels[step]}  •  ${grandTotal.toStringAsFixed(0)} FCFA' : labels[step],
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, letterSpacing: 0.3),
+                      step == 2
+                          ? '${labels[step]}  •  ${grandTotal.toStringAsFixed(0)} FCFA'
+                          : labels[step],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.3,
+                      ),
                     ),
             ),
           ),

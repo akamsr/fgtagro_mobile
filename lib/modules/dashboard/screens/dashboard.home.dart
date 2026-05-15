@@ -4,12 +4,13 @@ import 'package:fgtagro_mobile/modules/cart/cubit/cart.state.dart';
 import 'package:fgtagro_mobile/modules/dashboard/widgets/category_item.dart';
 import 'package:fgtagro_mobile/modules/dashboard/widgets/flash_sale_banner.dart';
 import 'package:fgtagro_mobile/modules/dashboard/widgets/product_card.dart';
+import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.cubit.dart';
+import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.state.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.cubit.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.state.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
-import 'package:fgtagro_mobile/widgets/locale/locale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -93,11 +94,16 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                       const SizedBox(width: 12),
 
                       // Favorite Icon
-                      _HeaderIcon(
-                        icon: 'assets/icons/favourite.svg',
-                        count: 0, // Logic for fav count can be added later
-                        onTap: () {},
+                      BlocBuilder<FavouritesCubit, FavouritesState>(
+                        builder: (context, favState) {
+                          return _HeaderIcon(
+                            icon: 'assets/icons/favourite.svg',
+                            count: favState.items.length,
+                            onTap: () => context.router.push(const FavouritesRoute()),
+                          );
+                        },
                       ),
+
                       const SizedBox(width: 12),
 
                       // Cart Icon
@@ -424,6 +430,7 @@ class _HeaderIcon extends StatelessWidget {
             ),
             if (hasData)
               Positioned(
+                top: 5,
                 child: Text(
                   '$count',
                   style: const TextStyle(

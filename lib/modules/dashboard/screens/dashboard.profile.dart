@@ -274,7 +274,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: Icons.notifications_outlined,
                             label: S.of(context).notifications,
                             divider: true,
-                            onTap: () {},
+                            onTap: () => context.router.push(const NotificationsRoute()),
+                          ),
+                          DashboardMenuItem(
+                            icon: Icons.favorite_border,
+                            label: S.of(context).favorites,
+                            divider: true,
+                            onTap: () => context.router.push(const FavouritesRoute()),
                           ),
 
                           // Biometric toggle
