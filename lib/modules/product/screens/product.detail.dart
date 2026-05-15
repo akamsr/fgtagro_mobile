@@ -129,21 +129,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                         padding: const EdgeInsets.all(8.0),
                         child: BlocBuilder<CartCubit, CartState>(
                           builder: (context, cartState) {
-                            final inCart = cartState.cart?.items.any((i) => i.productId == product.id) ?? false;
+                            final inCart =
+                                cartState.cart?.items.any(
+                                  (i) => i.productId == product.id,
+                                ) ??
+                                false;
                             return ProductHeroAction(
                               icon: 'assets/icons/cart.svg',
                               onTap: () {
                                 if (product.stockQuantity <= 0) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Produit en rupture de stock')),
+                                    const SnackBar(
+                                      content: Text(
+                                        'Produit en rupture de stock',
+                                      ),
+                                    ),
                                   );
                                   return;
                                 }
                                 context.read<CartCubit>().toggleCart(product);
                               },
                               // Custom style to show if in cart
-                              color: inCart ? AppColors.primaryColor : Colors.white,
-                              iconColor: inCart ? Colors.white : AppColors.secondaryColor,
+                              color: inCart
+                                  ? AppColors.primaryColor
+                                  : Colors.white,
+                              iconColor: inCart
+                                  ? Colors.white
+                                  : AppColors.secondaryColor,
                             );
                           },
                         ),
@@ -466,11 +478,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           ),
                           const SizedBox(height: 12),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFF9F9F9),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.1),
+                              ),
                             ),
                             child: Row(
                               children: [
@@ -485,7 +502,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                 ),
                                 IconButton(
                                   onPressed: () {},
-                                  icon: const Icon(Icons.send_rounded, color: AppColors.primaryColor),
+                                  icon: const Icon(
+                                    Icons.send_rounded,
+                                    color: AppColors.primaryColor,
+                                  ),
                                 ),
                               ],
                             ),
@@ -493,11 +513,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           const SizedBox(height: 32),
 
                           // Similar Products
-                          const _HorizontalProductList(title: 'Similar Products'),
+                          const _HorizontalProductList(
+                            title: 'Similar Products',
+                          ),
                           const SizedBox(height: 24),
 
                           // Recommended Products
-                          const _HorizontalProductList(title: 'Recommended for you'),
+                          const _HorizontalProductList(
+                            title: 'Recommended for you',
+                          ),
 
                           const SizedBox(height: 120), // Bottom space for bar
                         ],
@@ -575,12 +599,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           // Add to Cart Button
                           BlocBuilder<CartCubit, CartState>(
                             builder: (context, cartState) {
-                              final inCart = cartState.cart?.items.any((i) => i.productId == product.id) ?? false;
+                              final inCart =
+                                  cartState.cart?.items.any(
+                                    (i) => i.productId == product.id,
+                                  ) ??
+                                  false;
                               return ElevatedButton.icon(
                                 onPressed: () {
                                   if (product.stockQuantity <= 0) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Produit en rupture de stock')),
+                                      const SnackBar(
+                                        content: Text(
+                                          'Produit en rupture de stock',
+                                        ),
+                                      ),
                                     );
                                     return;
                                   }
@@ -591,18 +623,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                   width: 18,
                                   height: 18,
                                   colorFilter: ColorFilter.mode(
-                                    inCart ? AppColors.primaryColor : Colors.white, 
+                                    inCart
+                                        ? AppColors.primaryColor
+                                        : Colors.white,
                                     BlendMode.srcIn,
                                   ),
                                 ),
                                 label: Text(
                                   inCart ? 'Retirer' : 'Ajouter',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: inCart ? AppColors.primaryTint.withOpacity(0.3) : AppColors.primaryColor,
-                                  foregroundColor: inCart ? AppColors.primaryColor : Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                  backgroundColor: inCart
+                                      ? AppColors.primaryTint.withOpacity(0.3)
+                                      : AppColors.primaryColor,
+                                  foregroundColor: inCart
+                                      ? AppColors.primaryColor
+                                      : Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                    vertical: 12,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
@@ -618,11 +661,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                             builder: (context, favState) {
                               final isFav = favState.isFavourite(product.id);
                               return _FloatingActionButton(
-                                icon: isFav ? 'assets/icons/favourite.svg' : 'assets/icons/heart-outlined.svg',
+                                icon: isFav
+                                    ? 'assets/icons/favourite.svg'
+                                    : 'assets/icons/heart-outlined.svg',
                                 color: AppColors.primaryTint.withOpacity(0.3),
-                                iconColor: isFav ? AppColors.primaryColor : AppColors.secondaryColor,
+                                iconColor: isFav
+                                    ? AppColors.primaryColor
+                                    : AppColors.secondaryColor,
                                 border: false,
-                                onTap: () => context.read<FavouritesCubit>().toggleFavourite(product),
+                                onTap: () => context
+                                    .read<FavouritesCubit>()
+                                    .toggleFavourite(product),
                               );
                             },
                           ),
@@ -633,7 +682,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 ),
               ),
 
-              const SizedBox(height: 150),
+              const SizedBox(height: 200),
             ],
           ),
         );
@@ -657,15 +706,9 @@ class _HorizontalProductList extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            TextButton(
-              onPressed: () {},
-              child: const Text('See All'),
-            ),
+            TextButton(onPressed: () {}, child: const Text('See All')),
           ],
         ),
         const SizedBox(height: 12),
@@ -713,7 +756,9 @@ class _SmallProductCard extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: const Color(0xFFF5F3F8),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
                   image: product.photos.isNotEmpty
                       ? DecorationImage(
                           image: NetworkImage(product.photos[0]),
