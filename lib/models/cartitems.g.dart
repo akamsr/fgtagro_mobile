@@ -30,13 +30,19 @@ class CartItemAdapter extends TypeAdapter<CartItem> {
       originalPrice: fields[10] == null ? 0 : (fields[10] as num).toDouble(),
       finalPrice: fields[11] == null ? 0 : (fields[11] as num).toDouble(),
       shippingRateId: (fields[12] as num?)?.toInt(),
+      productName: fields[13] as String?,
+      productPhoto: fields[14] as String?,
+      sellerName: fields[15] as String?,
+      sellerCity: fields[16] as String?,
+      availableStock: fields[17] == null ? 0 : (fields[17] as num).toInt(),
+      unit: fields[18] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CartItem obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -62,7 +68,19 @@ class CartItemAdapter extends TypeAdapter<CartItem> {
       ..writeByte(11)
       ..write(obj.finalPrice)
       ..writeByte(12)
-      ..write(obj.shippingRateId);
+      ..write(obj.shippingRateId)
+      ..writeByte(13)
+      ..write(obj.productName)
+      ..writeByte(14)
+      ..write(obj.productPhoto)
+      ..writeByte(15)
+      ..write(obj.sellerName)
+      ..writeByte(16)
+      ..write(obj.sellerCity)
+      ..writeByte(17)
+      ..write(obj.availableStock)
+      ..writeByte(18)
+      ..write(obj.unit);
   }
 
   @override

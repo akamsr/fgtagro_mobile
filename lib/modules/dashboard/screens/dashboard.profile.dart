@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/modules/dashboard/widgets/dashboard_menu_item.dart';
 import 'package:fgtagro_mobile/modules/dashboard/widgets/dashboard_profile_stat.dart';
+import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -354,77 +355,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onTap: () {},
                           ),
 
-                          // Language Selector
-                          Container(
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                  color: Color.fromRGBO(197, 198, 208, 0.5),
-                                  width: 0.5,
-                                ),
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: const Color.fromRGBO(
-                                      16,
-                                      185,
-                                      129,
-                                      0.1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: const Icon(
-                                    Icons.language,
-                                    size: 20,
-                                    color: AppColors.primaryColor,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Text(
-                                    S.of(context).language,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.secondaryColor,
-                                    ),
-                                  ),
-                                ),
-                                Consumer<LocaleProvider>(
-                                  builder: (context, provider, _) {
-                                    return DropdownButton<String>(
-                                      value: provider.locale.languageCode,
-                                      underline: const SizedBox(),
-                                      onChanged: (String? newValue) {
-                                        if (newValue != null) {
-                                          provider.setLocale(Locale(newValue));
-                                        }
-                                      },
-                                      items: [
-                                        DropdownMenuItem(
-                                          value: 'en',
-                                          child: Text(S.of(context).english),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 'fr',
-                                          child: Text(S.of(context).french),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
+                          DashboardMenuItem(
+                            icon: Icons.language,
+                            label: S.of(context).language,
+                            divider: true,
+                            onTap: () => context.router.push(const LanguageSettingsRoute()),
                           ),
                         ],
                       ),

@@ -81,5 +81,7 @@
     "navMessages": "Messages",
     "navOrders": "Commandes",
     "navProfile": "Profil",
-    "addToCart": "Ajouter au panier"
+    "addToCart": "Ajouter au panier",
+    "selectLanguage": "Choisir la langue",
+    "languageSettingsNote": "L'application sera mise à jour instantanément."
 }

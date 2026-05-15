@@ -12,7 +12,9 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:fgtagro_mobile/widgets/locale/locale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:fgtagro_mobile/modules/notifications/cubit/notification.cubit.dart';
 
 const catStyles = {
   'engrais': {'bg': Color(0xFFFFF8E7), 'icon': Icons.eco},
@@ -76,69 +78,25 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                       ),
                       const Spacer(),
 
-                      Consumer<LocaleProvider>(
-                        builder: (context, localeProvider, child) {
-                          final currentLocale = localeProvider.locale;
-                          return PopupMenuButton<Locale>(
-                            initialValue: currentLocale,
-                            onSelected: (Locale locale) {
-                              localeProvider.setLocale(locale);
-                            },
-                            offset: const Offset(0, 40),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            itemBuilder: (BuildContext context) =>
-                                <PopupMenuEntry<Locale>>[
-                                  PopupMenuItem<Locale>(
-                                    value: const Locale('en'),
-                                    child: Text(
-                                      '${S.of(context).english} (EN)',
-                                    ),
-                                  ),
-                                  PopupMenuItem<Locale>(
-                                    value: const Locale('fr'),
-                                    child: Text('${S.of(context).french} (FR)'),
-                                  ),
-                                ],
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppColors.borderStrong,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    currentLocale.languageCode.toUpperCase(),
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                  const Icon(Icons.arrow_drop_down, size: 16),
-                                ],
-                              ),
-                            ),
+                      // Notifications Icon
+                      BlocBuilder<NotificationCubit, NotificationState>(
+                        builder: (context, state) {
+                          final count = state.unreadCount;
+                          return _HeaderIcon(
+                            icon: 'assets/icons/notification.svg',
+                            count: count,
+                            onTap: () =>
+                                context.router.push(const NotificationsRoute()),
                           );
                         },
                       ),
                       const SizedBox(width: 12),
 
                       // Favorite Icon
-                      InkWell(
+                      _HeaderIcon(
+                        icon: 'assets/icons/favourite.svg',
+                        count: 0, // Logic for fav count can be added later
                         onTap: () {},
-                        child: const Icon(
-                          Icons.favorite_border,
-                          color: AppColors.textPrimary,
-                          size: 26,
-                        ),
                       ),
                       const SizedBox(width: 12),
 
@@ -146,43 +104,10 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                       BlocBuilder<CartCubit, CartState>(
                         builder: (context, cartState) {
                           final count = cartState.cart?.totalItems ?? 0;
-                          return InkWell(
+                          return _HeaderIcon(
+                            icon: 'assets/icons/cart.svg',
+                            count: count,
                             onTap: () => context.router.push(const CartRoute()),
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                const Icon(
-                                  Icons.shopping_cart,
-                                  color: AppColors.textPrimary,
-                                  size: 26,
-                                ),
-                                if (count > 0)
-                                  Positioned(
-                                    top: -4,
-                                    right: -4,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: const BoxDecoration(
-                                        color: AppColors.primaryColor,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      constraints: const BoxConstraints(
-                                        minWidth: 16,
-                                        minHeight: 16,
-                                      ),
-                                      child: Text(
-                                        '$count',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
                           );
                         },
                       ),
@@ -459,6 +384,59 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class _HeaderIcon extends StatelessWidget {
+  final String icon;
+  final int count;
+  final VoidCallback onTap;
+
+  const _HeaderIcon({
+    required this.icon,
+    required this.count,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool hasData = count > 0;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SvgPicture.asset(
+              icon,
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                hasData ? AppColors.primaryColor : AppColors.textPrimary,
+                BlendMode.srcIn,
+              ),
+            ),
+            if (hasData)
+              Positioned(
+                child: Text(
+                  '$count',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 8,
+                    fontWeight: FontWeight.w900,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

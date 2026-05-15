@@ -25,6 +25,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SellerDashboardRoute.page),
     AutoRoute(page: CreateStoreRoute.page),
     AutoRoute(page: SellerOnboardRoute.page),
+     AutoRoute(page: NotificationsRoute.page),
+     AutoRoute(page: LanguageSettingsRoute.page),
 
     // Main navigation home page
     AutoRoute(

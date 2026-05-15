@@ -14,11 +14,49 @@ import 'package:flutter/widgets.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/cart.svg
+  String get cart => 'assets/icons/cart.svg';
+
+  /// File path: assets/icons/category.svg
+  String get category => 'assets/icons/category.svg';
+
+  /// File path: assets/icons/delivery.svg
+  String get delivery => 'assets/icons/delivery.svg';
+
+  /// File path: assets/icons/favourite.svg
+  String get favourite => 'assets/icons/favourite.svg';
+
+  /// File path: assets/icons/home.svg
+  String get home => 'assets/icons/home.svg';
+
   /// File path: assets/icons/logo.jpeg
   AssetGenImage get logo => const AssetGenImage('assets/icons/logo.jpeg');
 
+  /// File path: assets/icons/notification.svg
+  String get notification => 'assets/icons/notification.svg';
+
+  /// File path: assets/icons/order.svg
+  String get order => 'assets/icons/order.svg';
+
+  /// File path: assets/icons/rental.svg
+  String get rental => 'assets/icons/rental.svg';
+
+  /// File path: assets/icons/user.svg
+  String get user => 'assets/icons/user.svg';
+
   /// List of all assets
-  List<AssetGenImage> get values => [logo];
+  List<dynamic> get values => [
+    cart,
+    category,
+    delivery,
+    favourite,
+    home,
+    logo,
+    notification,
+    order,
+    rental,
+    user,
+  ];
 }
 
 class $AssetsImagesGen {

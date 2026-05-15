@@ -29,13 +29,15 @@ class CartAdapter extends TypeAdapter<Cart> {
       items: fields[9] == null
           ? const []
           : (fields[9] as List).cast<CartItem>(),
+      reservedAt: fields[10] as String?,
+      expiresAt: fields[11] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Cart obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -55,7 +57,11 @@ class CartAdapter extends TypeAdapter<Cart> {
       ..writeByte(8)
       ..write(obj.appliedCouponCode)
       ..writeByte(9)
-      ..write(obj.items);
+      ..write(obj.items)
+      ..writeByte(10)
+      ..write(obj.reservedAt)
+      ..writeByte(11)
+      ..write(obj.expiresAt);
   }
 
   @override
