@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/models/order.dart';
 import 'package:fgtagro_mobile/modules/dashboard/cubit/order.cubit.dart';
 import 'package:fgtagro_mobile/modules/dashboard/cubit/order.state.dart';
@@ -16,7 +17,8 @@ class SellerOrderListScreen extends StatefulWidget {
   State<SellerOrderListScreen> createState() => _SellerOrderListScreenState();
 }
 
-class _SellerOrderListScreenState extends State<SellerOrderListScreen> with SingleTickerProviderStateMixin {
+class _SellerOrderListScreenState extends State<SellerOrderListScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final List<String> _statusTabs = [
     'PENDING',
@@ -24,7 +26,7 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen> with Sing
     'READY',
     'SHIPPED',
     'DELIVERED',
-    'CANCELLED'
+    'CANCELLED',
   ];
 
   @override
@@ -38,9 +40,12 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen> with Sing
     return Scaffold(
       backgroundColor: AppColors.bgCanvas,
       appBar: AppBar(
-        title: const Text(
-          'Orders Management',
-          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        title: Text(
+          S.of(context).ordersManagement,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -52,8 +57,34 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen> with Sing
           unselectedLabelColor: Colors.grey,
           indicatorColor: AppColors.primaryColor,
           indicatorWeight: 3,
-          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-          tabs: _statusTabs.map((tab) => Tab(text: tab.replaceAll('_', ' '))).toList(),
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+          tabs: _statusTabs.map((tab) {
+            String label = tab;
+            switch (tab) {
+              case 'PENDING':
+                label = S.of(context).statusPending;
+                break;
+              case 'PREPARING':
+                label = S.of(context).statusPreparing;
+                break;
+              case 'READY':
+                label = S.of(context).statusReady;
+                break;
+              case 'SHIPPED':
+                label = S.of(context).statusShipped;
+                break;
+              case 'DELIVERED':
+                label = S.of(context).statusDelivered;
+                break;
+              case 'CANCELLED':
+                label = S.of(context).statusCancelled;
+                break;
+            }
+            return Tab(text: label);
+          }).toList(),
         ),
       ),
       body: BlocBuilder<OrderCubit, OrderState>(
@@ -65,17 +96,42 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen> with Sing
           return TabBarView(
             controller: _tabController,
             children: _statusTabs.map((status) {
-              final filteredOrders = state.orders.where((o) => o.status.name.toUpperCase() == status).toList();
-              
+              final filteredOrders = state.orders
+                  .where((o) => o.status.name.toUpperCase() == status)
+                  .toList();
+
               if (filteredOrders.isEmpty) {
-                return _buildEmptyState(status);
+                String label = status;
+                switch (status) {
+                  case 'PENDING':
+                    label = S.of(context).statusPending;
+                    break;
+                  case 'PREPARING':
+                    label = S.of(context).statusPreparing;
+                    break;
+                  case 'READY':
+                    label = S.of(context).statusReady;
+                    break;
+                  case 'SHIPPED':
+                    label = S.of(context).statusShipped;
+                    break;
+                  case 'DELIVERED':
+                    label = S.of(context).statusDelivered;
+                    break;
+                  case 'CANCELLED':
+                    label = S.of(context).statusCancelled;
+                    break;
+                }
+                return _buildEmptyState(label);
               }
 
               return ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: filteredOrders.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 12),
-                itemBuilder: (context, index) => _OrderCard(order: filteredOrders[index]),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
+                itemBuilder: (context, index) =>
+                    _OrderCard(order: filteredOrders[index]),
               );
             }).toList(),
           );
@@ -89,10 +145,14 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen> with Sing
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.assignment_outlined, size: 64, color: Colors.grey.shade300),
+          Icon(
+            Icons.assignment_outlined,
+            size: 64,
+            color: Colors.grey.shade300,
+          ),
           const SizedBox(height: 16),
           Text(
-            'No $status orders',
+            S.of(context).noOrdersWithStatus(status),
             style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
           ),
         ],
@@ -109,7 +169,7 @@ class _OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateStr = DateFormat('dd MMM yyyy, HH:mm').format(order.createdAt);
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -131,8 +191,11 @@ class _OrderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Order #${order.orderNumber}',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                S.of(context).orderNumber(order.orderNumber),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
               ),
               _buildSLAIndicator(),
             ],
@@ -142,7 +205,10 @@ class _OrderCard extends StatelessWidget {
             children: [
               const Icon(Icons.calendar_today, size: 14, color: Colors.grey),
               const SizedBox(width: 6),
-              Text(dateStr, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              Text(
+                dateStr,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -155,8 +221,11 @@ class _OrderCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${order.items.length} Items',
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                      S.of(context).itemsCount(order.items.length),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -182,11 +251,22 @@ class _OrderCard extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   elevation: 0,
                 ),
-                child: const Text('Manage', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                child: Text(
+                  S.of(context).manage,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
               ),
             ],
           ),
@@ -204,12 +284,12 @@ class _OrderCard extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
-          Icon(Icons.timer_outlined, size: 12, color: Colors.orange),
-          SizedBox(width: 4),
+        children: [
+          const Icon(Icons.timer_outlined, size: 12, color: Colors.orange),
+          const SizedBox(width: 4),
           Text(
-            '2h 45m left',
-            style: TextStyle(
+            '2h 45m',
+            style: const TextStyle(
               color: Colors.orange,
               fontSize: 10,
               fontWeight: FontWeight.bold,

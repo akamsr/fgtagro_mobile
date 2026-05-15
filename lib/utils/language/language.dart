@@ -22,9 +22,7 @@ class LanguageService {
   static String get current {
     final lang = locator<HiveDbService>().readData(settingsBox, languageKey);
     if (lang != null) return lang;
-    return PlatformDispatcher.instance.locale.languageCode.contains('fr')
-        ? 'fr'
-        : 'en';
+    return 'en';
   }
 
   Locale loadLanguage() {
@@ -32,20 +30,7 @@ class LanguageService {
     final supportedLocales = S.delegate.supportedLocales;
     
     if (lang == null) {
-      final deviceLocale = PlatformDispatcher.instance.locale;
-      final supportedLanguageCodes = supportedLocales
-          .map((locale) => locale.languageCode)
-          .toList();
-
-      final deviceLanguageCode = deviceLocale.languageCode;
-      final defaultLanguageCode =
-          supportedLanguageCodes.contains(deviceLanguageCode)
-          ? deviceLanguageCode
-          : supportedLanguageCodes.first;
-
-      return supportedLocales.firstWhere(
-        (locale) => locale.languageCode == defaultLanguageCode,
-      );
+      return const Locale('en');
     } else {
       return supportedLocales.firstWhere(
         (locale) => locale.languageCode == lang,

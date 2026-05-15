@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.state.dart';
 import 'package:fgtagro_mobile/modules/business/widgets/seller_gate.dart';
@@ -28,7 +29,7 @@ class HomeDashBoardPage extends StatelessWidget {
               routes: isSeller
                   ? [
                       const SellerDashboardRoute(),
-                      const SellerProductListRoute(), 
+                      const SellerProductListRoute(),
                       const SellerOrderListRoute(),
                       const SellerRentalListRoute(),
                       const ProfileRoute(),
@@ -49,55 +50,7 @@ class HomeDashBoardPage extends StatelessWidget {
                   extraPadding: false,
                   safeAreaTop: false,
                   bottomNavigationBar: const CustomBottomNavBar(),
-                  child: Column(
-                    children: [
-                      if (isSeller)
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
-                          color: AppColors.primaryColor.withOpacity(0.1),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.storefront,
-                                size: 16,
-                                color: AppColors.primaryColor,
-                              ),
-                              const SizedBox(width: 8),
-                              const Text(
-                                'You are in Seller Mode',
-                                style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: () =>
-                                    context.read<BusinessCubit>().toggleMode(),
-                                child: const Text(
-                                  'Switch back',
-                                  style: TextStyle(
-                                    color: AppColors.primaryColor,
-                                    fontSize: 12,
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      Expanded(
-                        child: isSeller ? SellerGate(child: child) : child,
-                      ),
-                    ],
-                  ),
+                  child: isSeller ? SellerGate(child: child) : child,
                 );
               },
             );

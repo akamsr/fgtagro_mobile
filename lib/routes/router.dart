@@ -38,10 +38,19 @@ class AppRouter extends RootStackRouter {
     AutoRoute(
       page: HomeDashBoardRoute.page,
       children: [
-        AutoRoute(page: DashboardHomeRoute.page, initial: true),
+        // Buyer Tabs
+        AutoRoute(page: DashboardHomeRoute.page),
         AutoRoute(page: CategoriesRoute.page),
         AutoRoute(page: ConversationListRoute.page),
         AutoRoute(page: OrdersRoute.page),
+        
+        // Seller Tabs
+        AutoRoute(page: SellerDashboardRoute.page),
+        AutoRoute(page: SellerProductListRoute.page),
+        AutoRoute(page: SellerOrderListRoute.page),
+        AutoRoute(page: SellerRentalListRoute.page),
+
+        // Shared
         AutoRoute(page: ProfileRoute.page),
       ],
     ),

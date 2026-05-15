@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.state.dart';
@@ -31,7 +32,9 @@ class ProfileScreen extends StatelessWidget {
               backgroundColor: const Color(0xFFFBF8FD),
               appBar: AppBar(
                 title: Text(
-                  isSeller ? 'Tableau de bord Business' : 'Mon Profil',
+                  isSeller
+                      ? S.of(context).businessDashboard
+                      : S.of(context).myProfile,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: AppColors.secondaryColor,
@@ -91,8 +94,8 @@ class ProfileScreen extends StatelessWidget {
                           Text(
                             isSeller
                                 ? (businessState.profile?.businessName ??
-                                      "Ma Business")
-                                : (user?.fullNames ?? "Utilisateur"),
+                                      S.of(context).myBusiness)
+                                : (user?.fullNames ?? S.of(context).userLabel),
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -114,8 +117,8 @@ class ProfileScreen extends StatelessWidget {
                     // Role Switcher
                     ProfileMenuItem(
                       title: isSeller
-                          ? 'Passer en Mode Acheteur'
-                          : 'Passer en Mode Vendeur',
+                          ? S.of(context).switchToBuyerMode
+                          : S.of(context).switchToSellerMode,
                       icon: isSeller
                           ? Icons.shopping_cart_outlined
                           : Icons.storefront,
@@ -128,38 +131,38 @@ class ProfileScreen extends StatelessWidget {
 
                     if (isSeller) ...[
                       ProfileMenuItem(
-                        title: 'Profil Business & Logo',
+                        title: S.of(context).businessProfileLogo,
                         icon: Icons.business_outlined,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
-                        title: 'Vérification & Documents',
+                        title: S.of(context).verificationDocuments,
                         icon: Icons.assignment_outlined,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
-                        title: 'Modes de Paiement & Retrait',
+                        title: S.of(context).paymentWithdrawalMethods,
                         icon: Icons.account_balance_wallet_outlined,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
-                        title: 'Statistiques & Performance',
+                        title: S.of(context).statsPerformance,
                         icon: Icons.analytics_outlined,
                         onTap: () {},
                       ),
                     ] else ...[
                       ProfileMenuItem(
-                        title: 'Mes Commandes',
+                        title: S.of(context).myOrders,
                         icon: Icons.shopping_bag_outlined,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
-                        title: 'Adresses de Livraison',
+                        title: S.of(context).shippingAddresses,
                         icon: Icons.location_on_outlined,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
-                        title: 'Mes Favoris',
+                        title: S.of(context).favorites,
                         icon: Icons.favorite_border,
                         onTap: () =>
                             context.router.push(const FavouritesRoute()),
@@ -167,12 +170,12 @@ class ProfileScreen extends StatelessWidget {
                     ],
 
                     ProfileMenuItem(
-                      title: 'Paramètres',
+                      title: S.of(context).settings,
                       icon: Icons.settings_outlined,
                       onTap: () {},
                     ),
                     ProfileMenuItem(
-                      title: 'Aide & Support',
+                      title: S.of(context).helpSupport,
                       icon: Icons.help_outline,
                       onTap: () {},
                     ),
@@ -181,9 +184,9 @@ class ProfileScreen extends StatelessWidget {
                     // Logout
                     ListTile(
                       leading: const Icon(Icons.logout, color: Colors.red),
-                      title: const Text(
-                        'Déconnexion',
-                        style: TextStyle(
+                      title: Text(
+                        S.of(context).deconnexion,
+                        style: const TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
                         ),

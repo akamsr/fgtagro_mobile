@@ -98,7 +98,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                               currentIndex: _currentIndex,
                               prevIndex: _prevIndex,
                               progress: _controller,
-                              label: isSeller ? "Dashboard" : s.navHome,
+                              label: isSeller ? s.navDashboard : s.navHome,
                               icon: 'assets/icons/home.svg',
                               onTap: () => _tabsRouter.setActiveIndex(0),
                             ),
@@ -107,7 +107,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                               currentIndex: _currentIndex,
                               prevIndex: _prevIndex,
                               progress: _controller,
-                              label: isSeller ? "Products" : s.navCategories,
+                              label: isSeller ? s.navProducts : s.navCategories,
                               icon: 'assets/icons/category.svg',
                               onTap: () => _tabsRouter.setActiveIndex(1),
                             ),
@@ -116,10 +116,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                               currentIndex: _currentIndex,
                               prevIndex: _prevIndex,
                               progress: _controller,
-                              label: isSeller ? "Orders" : "Rentals",
+                              label: isSeller ? s.navOrders : s.navMessages,
                               icon: isSeller
                                   ? 'assets/icons/order.svg'
-                                  : 'assets/icons/rental.svg',
+                                  : 'assets/icons/notification.svg',
                               onTap: () => _tabsRouter.setActiveIndex(2),
                             ),
                             _NavItem(
@@ -127,7 +127,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                               currentIndex: _currentIndex,
                               prevIndex: _prevIndex,
                               progress: _controller,
-                              label: isSeller ? "Rentals" : s.navOrders,
+                              label: isSeller ? s.navRentals : s.navOrders,
                               icon: isSeller
                                   ? 'assets/icons/rental.svg'
                                   : 'assets/icons/order.svg',

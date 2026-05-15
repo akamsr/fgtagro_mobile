@@ -2,6 +2,7 @@ import 'package:fgtagro_mobile/models/order.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 
 class OrderActionSheet extends StatelessWidget {
   final OrderModel order;
@@ -27,12 +28,12 @@ class OrderActionSheet extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Order #${order.orderNumber}',
+                    S.of(context).orderNumber(order.orderNumber),
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Received ${DateFormat('MMM dd, HH:mm').format(order.createdAt)}',
+                    S.of(context).received(DateFormat('MMM dd, HH:mm').format(order.createdAt)),
                     style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
                   ),
                 ],
@@ -55,19 +56,19 @@ class OrderActionSheet extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 32),
-          const Text('Customer Details', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(S.of(context).customerDetails, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
-          _buildDetailRow(Icons.person_outline, order.customerName ?? 'Client #${order.id.substring(0, 5)}'),
-          _buildDetailRow(Icons.location_on_outlined, order.shippingAddress ?? 'No address provided'),
+          _buildDetailRow(Icons.person_outline, order.customerName ?? '${S.of(context).userLabel} #${order.id.substring(0, 5)}'),
+          _buildDetailRow(Icons.location_on_outlined, order.shippingAddress ?? S.of(context).noAddressProvided),
           const SizedBox(height: 32),
-          const Text('Order Items', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(S.of(context).orderItems, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           ...order.items.map((item) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(
                   children: [
                     Text('${item.qty}x ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Expanded(child: Text(item.productName ?? 'Produit')),
+                    Expanded(child: Text(item.productName ?? S.of(context).product)),
                     Text('${(item.finalPrice * item.qty).toStringAsFixed(0)} FCFA'),
                   ],
                 ),
@@ -81,7 +82,7 @@ class OrderActionSheet extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.chat_bubble_outline, size: 18),
-                  label: const Text('Contact'),
+                  label: Text(S.of(context).contact),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -93,7 +94,7 @@ class OrderActionSheet extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.check, size: 18),
-                  label: const Text('Mark as Ready'),
+                  label: Text(S.of(context).markAsReady),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
                     foregroundColor: Colors.white,
@@ -111,7 +112,7 @@ class OrderActionSheet extends StatelessWidget {
             child: TextButton.icon(
               onPressed: () {},
               icon: const Icon(Icons.print_outlined, size: 18),
-              label: const Text('Download Shipping Label'),
+              label: Text(S.of(context).downloadShippingLabel),
               style: TextButton.styleFrom(foregroundColor: Colors.grey.shade600),
             ),
           ),

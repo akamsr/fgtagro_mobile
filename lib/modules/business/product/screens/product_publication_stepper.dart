@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 
 @RoutePage()
 class ProductPublicationScreen extends StatefulWidget {
@@ -40,9 +41,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'New Product',
-          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        title: Text(
+          S.of(context).newProduct,
+          style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -55,7 +56,7 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Text(
-                'Step $_currentStep of $_totalSteps',
+                S.of(context).stepOf(_currentStep, _totalSteps),
                 style: const TextStyle(
                   color: Colors.grey,
                   fontWeight: FontWeight.bold,
@@ -106,7 +107,7 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
-                      child: const Text('Back'),
+                      child: Text(S.of(context).back),
                     ),
                   ),
                 if (_currentStep > 1) const SizedBox(width: 16),
@@ -120,7 +121,7 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       elevation: 0,
                     ),
-                    child: Text(_currentStep == _totalSteps ? 'Submit' : 'Continue'),
+                    child: Text(_currentStep == _totalSteps ? S.of(context).submit : S.of(context).continueText),
                   ),
                 ),
               ],
@@ -156,9 +157,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Photos',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        Text(
+          S.of(context).photos,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
         ),
         const SizedBox(height: 8),
         const Text(
@@ -201,9 +202,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Name & Category',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        Text(
+          S.of(context).nameCategory,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
         ),
         const SizedBox(height: 32),
         const Text('Product Name', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -240,9 +241,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Description',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        Text(
+          S.of(context).description,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
         ),
         const SizedBox(height: 32),
         TextField(
@@ -267,9 +268,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Pricing & Stock',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        Text(
+          S.of(context).pricingStock,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
         ),
         const SizedBox(height: 32),
         const Text('Price (FCFA)', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -313,9 +314,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Stock Location',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        Text(
+          S.of(context).stockLocation,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
         ),
         const SizedBox(height: 8),
         const Text(
@@ -371,9 +372,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Optional Details',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        Text(
+          S.of(context).optionalDetails,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
         ),
         const SizedBox(height: 32),
         _buildFieldLabel('Variety / Type'),
@@ -395,9 +396,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Preview',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        Text(
+          S.of(context).preview,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
         ),
         const SizedBox(height: 24),
         Container(

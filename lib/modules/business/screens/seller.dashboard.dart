@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.state.dart';
 import 'package:fgtagro_mobile/models/seller.dart';
@@ -35,7 +36,8 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
     return BlocBuilder<BusinessCubit, BusinessState>(
       builder: (context, state) {
         final seller = state.profile;
-        final String businessName = seller?.businessName ?? 'Chargement...';
+        final String businessName =
+            seller?.businessName ?? S.of(context).loading;
         final String trustLevel = seller?.trustLevel.toUpperCase() ?? 'NEW';
 
         final isSeller = state.appMode == AppMode.seller;
@@ -48,9 +50,9 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                       context.router.push(const ProductPublicationRoute()),
                   backgroundColor: AppColors.primaryColor,
                   icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text(
-                    'Add Product',
-                    style: TextStyle(
+                  label: Text(
+                    S.of(context).addProduct,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -157,11 +159,11 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // KPI Row
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
-                          "Aujourd'hui",
-                          style: TextStyle(
+                          S.of(context).today,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: AppColors.secondaryColor,
@@ -178,14 +180,14 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                           clipBehavior: Clip.none,
                           children: [
                             BusinessKPICard(
-                              label: "Ventes Totales",
+                              label: S.of(context).totalSales,
                               value: seller?.totalSales.toString() ?? "0",
                               icon: Icons.shopping_bag_outlined,
                               color: AppColors.primaryColor,
                             ),
                             const SizedBox(width: 16),
                             BusinessKPICard(
-                              label: "Note Moyenne",
+                              label: S.of(context).averageRating,
                               value:
                                   seller?.averageRating.toStringAsFixed(1) ??
                                   "0.0",
@@ -194,7 +196,7 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                             ),
                             const SizedBox(width: 16),
                             BusinessKPICard(
-                              label: "Avis Clients",
+                              label: S.of(context).customerReviews,
                               value: seller?.totalReviews.toString() ?? "0",
                               icon: Icons.rate_review_outlined,
                               color: Colors.orange.shade600,
@@ -202,7 +204,7 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                             const SizedBox(width: 16),
                             BlocBuilder<ProductCubit, ProductState>(
                               builder: (context, pState) => BusinessKPICard(
-                                label: "Produits Actifs",
+                                label: S.of(context).activeProducts,
                                 value: pState.products.length.toString(),
                                 icon: Icons.inventory_2_outlined,
                                 color: AppColors.secondaryColor,
@@ -220,9 +222,9 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Actions en attente",
-                              style: TextStyle(
+                            Text(
+                              S.of(context).pendingActions,
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.secondaryColor,
@@ -230,26 +232,32 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                             ),
                             const SizedBox(height: 16),
                             PendingActionTile(
-                              title: "3 Commandes à préparer",
-                              subtitle:
-                                  "Date limite de préparation : Aujourd'hui",
-                              actionLabel: "Voir tout",
+                              title: S.of(context).ordersToPrepare(3),
+                              subtitle: S
+                                  .of(context)
+                                  .preparationDeadline(S.of(context).today),
+                              actionLabel: S.of(context).viewAll,
                               icon: Icons.inventory_2,
                               onTap: () {},
                             ),
                             PendingActionTile(
-                              title: "Produit refusé",
-                              subtitle:
-                                  "Engrais NPK 15-15-15 nécessite correction",
-                              actionLabel: "Corriger",
+                              title: S.of(context).productRejected,
+                              subtitle: S
+                                  .of(context)
+                                  .productCorrectionNeeded(
+                                    "Engrais NPK 15-15-15",
+                                  ),
+                              actionLabel: S.of(context).correct,
                               icon: Icons.warning_amber_rounded,
                               color: Colors.redAccent,
                               onTap: () {},
                             ),
                             PendingActionTile(
-                              title: "Stock faible",
-                              subtitle: "Semences de Maïs (2 unités restantes)",
-                              actionLabel: "Réapprov.",
+                              title: S.of(context).lowStock,
+                              subtitle: S
+                                  .of(context)
+                                  .stockRemaining("Semences de Maïs", 2),
+                              actionLabel: S.of(context).restock,
                               icon: Icons.low_priority_rounded,
                               color: Colors.orange,
                               onTap: () {},
@@ -269,16 +277,16 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Performance Revenus",
-                                  style: TextStyle(
+                                Text(
+                                  S.of(context).revenuePerformance,
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.secondaryColor,
                                   ),
                                 ),
                                 DropdownButton<String>(
-                                  value: '30 jours',
+                                  value: S.of(context).days30,
                                   underline: const SizedBox(),
                                   icon: const Icon(
                                     Icons.keyboard_arrow_down,
@@ -289,14 +297,19 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.primaryColor,
                                   ),
-                                  items: ['7 jours', '30 jours', '3 mois']
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e,
-                                          child: Text(e),
-                                        ),
-                                      )
-                                      .toList(),
+                                  items:
+                                      [
+                                            S.of(context).days7,
+                                            S.of(context).days30,
+                                            S.of(context).months3,
+                                          ]
+                                          .map(
+                                            (e) => DropdownMenuItem(
+                                              value: e,
+                                              child: Text(e),
+                                            ),
+                                          )
+                                          .toList(),
                                   onChanged: (v) {},
                                 ),
                               ],
@@ -312,9 +325,9 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                       // Top Products
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: const Text(
-                          "Top Produits (Ce mois)",
-                          style: TextStyle(
+                        child: Text(
+                          S.of(context).topProductsMonth,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: AppColors.secondaryColor,
