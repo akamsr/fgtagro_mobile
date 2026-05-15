@@ -1,14 +1,14 @@
 import 'package:fgtagro_mobile/services/seller/seller.services.dart';
 import 'package:fgtagro_mobile/utils/error/app_error.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'seller.state.dart';
+import 'business.state.dart';
 
-class SellerCubit extends Cubit<SellerState> {
+class BusinessCubit extends Cubit<BusinessState> {
   final SellerService sellerService;
 
-  SellerCubit({SellerService? sellerService})
+  BusinessCubit({SellerService? sellerService})
       : sellerService = sellerService ?? SellerService(),
-        super(SellerState());
+        super(BusinessState());
 
   void emitLoading() {
     emit(state.copyWith(genLoading: true, genError: null, showError: false));
@@ -26,6 +26,15 @@ class SellerCubit extends Cubit<SellerState> {
         showError: true,
       ),
     );
+  }
+
+  void switchMode(AppMode mode) {
+    emit(state.copyWith(appMode: mode));
+  }
+
+  void toggleMode() {
+    final nextMode = state.isSellerMode ? AppMode.buyer : AppMode.seller;
+    switchMode(nextMode);
   }
 
   Future<void> onboardSeller(Map<String, dynamic> data) async {

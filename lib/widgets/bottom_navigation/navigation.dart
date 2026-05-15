@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
+import 'package:fgtagro_mobile/modules/business/cubit/business.state.dart';
 import 'package:fgtagro_mobile/modules/dashboard/cubit/order.cubit.dart';
 import 'package:fgtagro_mobile/modules/dashboard/cubit/order.state.dart';
 import 'package:flutter/material.dart';
@@ -71,111 +73,86 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Container(
-      decoration: const BoxDecoration(color: AppColors.bgSurface),
-      child: SafeArea(
-        top: false,
-        child: Container(
-          height: 65,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Stack(
-                children: [
-                  Positioned.fill(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _NavItem(
-                          index: 0,
-                          currentIndex: _currentIndex,
-                          prevIndex: _prevIndex,
-                          progress: _controller,
-                          label: s.navHome,
-                          icon: 'assets/icons/home.svg',
-                          onTap: () => _tabsRouter.setActiveIndex(0),
+    return BlocBuilder<BusinessCubit, BusinessState>(
+      builder: (context, businessState) {
+        final isSeller = businessState.isSellerMode;
+
+        return Container(
+          decoration: const BoxDecoration(color: AppColors.bgSurface),
+          child: SafeArea(
+            top: false,
+            child: Container(
+              height: 65,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            _NavItem(
+                              index: 0,
+                              currentIndex: _currentIndex,
+                              prevIndex: _prevIndex,
+                              progress: _controller,
+                              label: isSeller ? "Dashboard" : s.navHome,
+                              icon: 'assets/icons/home.svg',
+                              onTap: () => _tabsRouter.setActiveIndex(0),
+                            ),
+                            _NavItem(
+                              index: 1,
+                              currentIndex: _currentIndex,
+                              prevIndex: _prevIndex,
+                              progress: _controller,
+                              label: isSeller ? "Products" : s.navCategories,
+                              icon: 'assets/icons/category.svg',
+                              onTap: () => _tabsRouter.setActiveIndex(1),
+                            ),
+                            _NavItem(
+                              index: 2,
+                              currentIndex: _currentIndex,
+                              prevIndex: _prevIndex,
+                              progress: _controller,
+                              label: isSeller ? "Orders" : "Rentals",
+                              icon: isSeller
+                                  ? 'assets/icons/order.svg'
+                                  : 'assets/icons/rental.svg',
+                              onTap: () => _tabsRouter.setActiveIndex(2),
+                            ),
+                            _NavItem(
+                              index: 3,
+                              currentIndex: _currentIndex,
+                              prevIndex: _prevIndex,
+                              progress: _controller,
+                              label: isSeller ? "Rentals" : s.navOrders,
+                              icon: isSeller
+                                  ? 'assets/icons/rental.svg'
+                                  : 'assets/icons/order.svg',
+                              onTap: () => _tabsRouter.setActiveIndex(3),
+                            ),
+                            _NavItem(
+                              index: 4,
+                              currentIndex: _currentIndex,
+                              prevIndex: _prevIndex,
+                              progress: _controller,
+                              label: s.navProfile,
+                              icon: 'assets/icons/user.svg',
+                              onTap: () => _tabsRouter.setActiveIndex(4),
+                            ),
+                          ],
                         ),
-                        _NavItem(
-                          index: 1,
-                          currentIndex: _currentIndex,
-                          prevIndex: _prevIndex,
-                          progress: _controller,
-                          label: s.navCategories,
-                          icon: 'assets/icons/category.svg',
-                          onTap: () => _tabsRouter.setActiveIndex(1),
-                        ),
-                        _NavItem(
-                          index: 2,
-                          currentIndex: _currentIndex,
-                          prevIndex: _prevIndex,
-                          progress: _controller,
-                          label: "Rentals",
-                          icon: 'assets/icons/rental.svg',
-                          onTap: () => _tabsRouter.setActiveIndex(2),
-                        ),
-                        BlocBuilder<OrderCubit, OrderState>(
-                          builder: (context, state) {
-                            final totalItems = state.orders.length;
-                            return Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                _NavItem(
-                                  index: 3,
-                                  currentIndex: _currentIndex,
-                                  prevIndex: _prevIndex,
-                                  progress: _controller,
-                                  label: s.navOrders,
-                                  icon: 'assets/icons/order.svg',
-                                  onTap: () => _tabsRouter.setActiveIndex(3),
-                                ),
-                                if (totalItems > 0)
-                                  Positioned(
-                                    top: 10,
-                                    right: 4,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: const BoxDecoration(
-                                        color: Colors.red,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      constraints: const BoxConstraints(
-                                        minWidth: 16,
-                                        minHeight: 16,
-                                      ),
-                                      child: Text(
-                                        '$totalItems',
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            );
-                          },
-                        ),
-                        _NavItem(
-                          index: 4,
-                          currentIndex: _currentIndex,
-                          prevIndex: _prevIndex,
-                          progress: _controller,
-                          label: s.navProfile,
-                          icon: 'assets/icons/user.svg',
-                          onTap: () => _tabsRouter.setActiveIndex(4),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

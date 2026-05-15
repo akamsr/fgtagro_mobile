@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "176372532745",
+    "project_id": "fgtagro-dev",
+    "storage_bucket": "fgtagro-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176372532745:android:69cb805284efe15adb9ad8",
+        "android_client_info": {
+          "package_name": "com.example.fgtagro_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpq_IgPuO6dhkHchQgMcHttwI50-OQjTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

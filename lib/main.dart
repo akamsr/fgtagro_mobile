@@ -3,7 +3,7 @@ import 'package:fgtagro_mobile/modules/cart/cubit/cart.cubit.dart';
 import 'package:fgtagro_mobile/modules/conversation/cubit/conversation.cubit.dart';
 import 'package:fgtagro_mobile/modules/dashboard/cubit/order.cubit.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.cubit.dart';
-import 'package:fgtagro_mobile/modules/seller/cubit/seller.cubit.dart';
+import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/notifications/cubit/notification.cubit.dart';
 import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.cubit.dart';
 import 'package:fgtagro_mobile/utils/storage/locator.storage.dart';
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           providers: [
             BlocProvider(create: (context) => AuthCubit()),
             BlocProvider(create: (context) => ProductCubit()),
-            BlocProvider(create: (context) => SellerCubit()),
+            BlocProvider(create: (context) => BusinessCubit()),
             BlocProvider(create: (context) => ConversationCubit()),
             BlocProvider(create: (context) => OrderCubit()),
             BlocProvider(create: (context) => CartCubit()),

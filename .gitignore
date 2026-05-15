@@ -57,3 +57,6 @@ notes.md
 error.md
 package-lock.json
 pubspec.lock
+
+# Android Keystore (contains private keys!)
+android/key.properties
