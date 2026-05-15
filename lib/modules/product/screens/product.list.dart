@@ -59,10 +59,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
           // Filter by category if categoryId is provided (Similar Products)
           if (widget.categoryId != null) {
-            displayedProducts =
-                displayedProducts
-                    .where((p) => p.category.id == widget.categoryId)
-                    .toList();
+            displayedProducts = displayedProducts
+                .where((p) => p.category.id == widget.categoryId)
+                .toList();
           }
 
           if (displayedProducts.isEmpty) {
@@ -78,10 +77,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   const SizedBox(height: 16),
                   Text(
                     'Aucun produit trouvé',
-                    style: TextStyle(
-                      color: Colors.grey.shade500,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
                   ),
                 ],
               ),
@@ -96,9 +92,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
               padding: const EdgeInsets.all(16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.72,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
+                childAspectRatio: 0.7,
               ),
               itemCount: displayedProducts.length,
               itemBuilder: (context, index) {
