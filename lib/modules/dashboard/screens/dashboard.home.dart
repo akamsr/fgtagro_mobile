@@ -99,7 +99,8 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                           return _HeaderIcon(
                             icon: 'assets/icons/favourite.svg',
                             count: favState.items.length,
-                            onTap: () => context.router.push(const FavouritesRoute()),
+                            onTap: () =>
+                                context.router.push(const FavouritesRoute()),
                           );
                         },
                       ),
@@ -379,7 +380,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                                     },
                                   ),
                           ),
-                          const SizedBox(height: 100),
+                          const SizedBox(height: 150),
                         ],
                       ),
                     ),

@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/models/product.dart';
 import 'package:fgtagro_mobile/modules/cart/cubit/cart.cubit.dart';
 import 'package:fgtagro_mobile/modules/cart/cubit/cart.state.dart';
+import 'package:fgtagro_mobile/modules/dashboard/screens/dashboard.home.dart';
+import 'package:fgtagro_mobile/modules/dashboard/widgets/product_card.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.cubit.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.state.dart';
 import 'package:fgtagro_mobile/modules/product/widgets/product_hero_action.dart';
@@ -513,8 +515,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           const SizedBox(height: 32),
 
                           // Similar Products
-                          const _HorizontalProductList(
+                          _HorizontalProductList(
                             title: 'Similar Products',
+                            categoryId: product.category.id,
                           ),
                           const SizedBox(height: 24),
 
@@ -682,7 +685,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 ),
               ),
 
-              const SizedBox(height: 200),
+              const SizedBox(height: 250),
             ],
           ),
         );
@@ -693,11 +696,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
 
 class _HorizontalProductList extends StatelessWidget {
   final String title;
+  final String? categoryId;
 
-  const _HorizontalProductList({required this.title});
+  const _HorizontalProductList({required this.title, this.categoryId});
 
   @override
   Widget build(BuildContext context) {
+    final double cardW = (MediaQuery.of(context).size.width - 48) / 2;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -708,20 +713,41 @@ class _HorizontalProductList extends StatelessWidget {
               title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            TextButton(onPressed: () {}, child: const Text('See All')),
+            TextButton(
+              onPressed: () => context.router.push(
+                ProductListRoute(title: title, categoryId: categoryId),
+              ),
+              child: const Text('See All'),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         BlocBuilder<ProductCubit, ProductState>(
           builder: (context, state) {
-            final products = state.products.take(5).toList();
-            return SizedBox(
-              height: 220,
-              child: ListView.builder(
+            var products = state.products;
+            if (categoryId != null) {
+              products = products.where((p) => p.category.id == categoryId).toList();
+            }
+            products = products.take(5).toList();
+
+            return Container(
+              height: 260,
+              color: AppColors.bgCanvas,
+              child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: products.length,
                 itemBuilder: (context, index) {
-                  return _SmallProductCard(product: products[index]);
+                  return ProductCard(
+                    product: products[index],
+                    width: cardW,
+                    categoryStyle:
+                        catStyles[products[index].category.slug
+                            .toLowerCase()] ??
+                        catStyles['promotions']!,
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(width: 10);
                 },
               ),
             );
@@ -732,81 +758,8 @@ class _HorizontalProductList extends StatelessWidget {
   }
 }
 
-class _SmallProductCard extends StatelessWidget {
-  final ProductModel product;
-
-  const _SmallProductCard({required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.router.push(ProductDetailRoute(id: product.id)),
-      child: Container(
-        width: 160,
-        margin: const EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.withOpacity(0.1)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F3F8),
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
-                  image: product.photos.isNotEmpty
-                      ? DecorationImage(
-                          image: NetworkImage(product.photos[0]),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
-                ),
-                alignment: Alignment.center,
-                child: product.photos.isEmpty
-                    ? const Icon(Icons.inventory_2, color: Colors.black12)
-                    : null,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${product.unitPrice} FCFA',
-                    style: const TextStyle(
-                      color: AppColors.primaryColor,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _FloatingActionButton extends StatelessWidget {
-  final dynamic icon; // Can be IconData or String (SVG path)
+  final dynamic icon;
   final Color color;
   final Color iconColor;
   final bool border;
