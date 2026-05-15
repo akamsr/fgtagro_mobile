@@ -5,11 +5,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 class ProductHeroAction extends StatelessWidget {
   final dynamic icon; // Can be IconData or String (SVG path)
   final VoidCallback onTap;
+  final Color color;
+  final Color iconColor;
 
   const ProductHeroAction({
     super.key,
     required this.icon,
     required this.onTap,
+    this.color = Colors.white,
+    this.iconColor = AppColors.secondaryColor,
   });
 
   @override
@@ -19,8 +23,8 @@ class ProductHeroAction extends StatelessWidget {
       child: Container(
         width: 38,
         height: 38,
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: color,
           shape: BoxShape.circle,
         ),
         alignment: Alignment.center,
@@ -29,15 +33,15 @@ class ProductHeroAction extends StatelessWidget {
                 icon as String,
                 width: 20,
                 height: 20,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.secondaryColor,
+                colorFilter: ColorFilter.mode(
+                  iconColor,
                   BlendMode.srcIn,
                 ),
               )
             : Icon(
                 icon as IconData,
                 size: 20,
-                color: AppColors.secondaryColor,
+                color: iconColor,
               ),
       ),
     );
