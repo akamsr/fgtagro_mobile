@@ -38,7 +38,7 @@ class _SellerRentalListScreenState extends State<SellerRentalListScreen> with Si
             padding: const EdgeInsets.only(right: 16),
             child: IconButton(
               icon: const Icon(Icons.add_box_outlined, color: AppColors.primaryColor),
-              onPressed: () {}, // Add Equipment
+              onPressed: () => context.router.push(const EquipmentPublicationRoute()),
             ),
           ),
         ],

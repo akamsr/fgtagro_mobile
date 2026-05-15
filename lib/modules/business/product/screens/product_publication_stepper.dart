@@ -309,7 +309,138 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
     );
   }
 
-  Widget _buildLocationStep() => const Center(child: Text('Step 5: Location'));
-  Widget _buildOptionalDetailsStep() => const Center(child: Text('Step 6: Optional Details'));
-  Widget _buildPreviewStep() => const Center(child: Text('Step 7: Preview & Submit'));
+  Widget _buildLocationStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Stock Location',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Where is this product currently stored?',
+          style: TextStyle(color: Colors.grey, height: 1.4),
+        ),
+        const SizedBox(height: 32),
+        _buildLocationOption(
+          title: 'Existing Store',
+          subtitle: 'Select from your registered warehouses',
+          icon: Icons.storefront,
+          isSelected: true,
+        ),
+        const SizedBox(height: 16),
+        _buildLocationOption(
+          title: 'Specific Address',
+          subtitle: 'Enter a custom location for this batch',
+          icon: Icons.location_on_outlined,
+          isSelected: false,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLocationOption({required String title, required String subtitle, required IconData icon, required bool isSelected}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isSelected ? AppColors.primaryTint.withOpacity(0.05) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: isSelected ? AppColors.primaryColor : Colors.grey.shade200, width: isSelected ? 2 : 1),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: isSelected ? AppColors.primaryColor : Colors.grey),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+              ],
+            ),
+          ),
+          if (isSelected) const Icon(Icons.check_circle, color: AppColors.primaryColor),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOptionalDetailsStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Optional Details',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        ),
+        const SizedBox(height: 32),
+        _buildFieldLabel('Variety / Type'),
+        TextField(decoration: InputDecoration(hintText: 'e.g. Yellow Maize', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
+        const SizedBox(height: 24),
+        _buildFieldLabel('Harvest Date'),
+        TextField(decoration: InputDecoration(hintText: 'Select date', suffixIcon: const Icon(Icons.calendar_today), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
+        const SizedBox(height: 24),
+        _buildFieldLabel('Certifications'),
+        Wrap(
+          spacing: 8,
+          children: ['Organic', 'ISO 9001', 'Fair Trade'].map((c) => Chip(label: Text(c))).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPreviewStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Preview',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+        ),
+        const SizedBox(height: 24),
+        Container(
+          width: double.infinity,
+          height: 200,
+          decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(16)),
+          child: const Icon(Icons.image, size: 48, color: Colors.grey),
+        ),
+        const SizedBox(height: 24),
+        Text(_nameController.text.isEmpty ? 'Product Name' : _nameController.text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Text('${_priceController.text} FCFA / $_unit', style: const TextStyle(fontSize: 18, color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        const Divider(),
+        const SizedBox(height: 16),
+        _buildPreviewItem('Category', _selectedCategory ?? 'Not selected'),
+        _buildPreviewItem('Stock', '${_stockController.text} units'),
+        _buildPreviewItem('Location', 'Main Warehouse, Douala'),
+        const SizedBox(height: 24),
+        const Text('Description', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Text(_descriptionController.text, style: const TextStyle(color: Colors.grey, height: 1.4)),
+      ],
+    );
+  }
+
+  Widget _buildPreviewItem(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(color: Colors.grey)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFieldLabel(String label) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+    );
+  }
 }

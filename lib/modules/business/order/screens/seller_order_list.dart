@@ -3,6 +3,7 @@ import 'package:fgtagro_mobile/models/order.dart';
 import 'package:fgtagro_mobile/modules/dashboard/cubit/order.cubit.dart';
 import 'package:fgtagro_mobile/modules/dashboard/cubit/order.state.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
+import 'package:fgtagro_mobile/modules/business/order/widgets/order_action_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -170,7 +171,14 @@ class _OrderCard extends StatelessWidget {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => OrderActionSheet(order: order),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   foregroundColor: Colors.white,
