@@ -32,6 +32,18 @@ class CartItem {
   final double finalPrice;
   @HiveField(12)
   final int? shippingRateId;
+  @HiveField(13)
+  final String? productName;
+  @HiveField(14)
+  final String? productPhoto;
+  @HiveField(15)
+  final String? sellerName;
+  @HiveField(16)
+  final String? sellerCity;
+  @HiveField(17)
+  final int availableStock;
+  @HiveField(18)
+  final String? unit;
 
   CartItem({
     required this.id,
@@ -44,11 +56,15 @@ class CartItem {
     this.type = 'product',
     this.discountId,
     this.discountValue,
-    // this.item,
-    // this.restaurantItem,
     this.originalPrice = 0,
     this.finalPrice = 0,
     this.shippingRateId,
+    this.productName,
+    this.productPhoto,
+    this.sellerName,
+    this.sellerCity,
+    this.availableStock = 0,
+    this.unit,
   });
 
   factory CartItem.fromMap(Map<String, dynamic> map) {
@@ -66,6 +82,12 @@ class CartItem {
       originalPrice: map['originalPrice']?.toDouble() ?? 0.0,
       finalPrice: map['finalPrice']?.toDouble() ?? 0.0,
       shippingRateId: map['shippingRateId']?.toInt(),
+      productName: map['productName'],
+      productPhoto: map['productPhoto'],
+      sellerName: map['sellerName'],
+      sellerCity: map['sellerCity'],
+      availableStock: map['availableStock']?.toInt() ?? 0,
+      unit: map['unit'],
     );
   }
 
@@ -86,6 +108,12 @@ class CartItem {
       'originalPrice': originalPrice,
       'finalPrice': finalPrice,
       'shippingRateId': shippingRateId,
+      'productName': productName,
+      'productPhoto': productPhoto,
+      'sellerName': sellerName,
+      'sellerCity': sellerCity,
+      'availableStock': availableStock,
+      'unit': unit,
     };
   }
 
@@ -103,6 +131,12 @@ class CartItem {
     double? originalPrice,
     double? finalPrice,
     int? shippingRateId,
+    String? productName,
+    String? productPhoto,
+    String? sellerName,
+    String? sellerCity,
+    int? availableStock,
+    String? unit,
   }) {
     return CartItem(
       id: id ?? this.id,
@@ -118,6 +152,12 @@ class CartItem {
       originalPrice: originalPrice ?? this.originalPrice,
       finalPrice: finalPrice ?? this.finalPrice,
       shippingRateId: shippingRateId ?? this.shippingRateId,
+      productName: productName ?? this.productName,
+      productPhoto: productPhoto ?? this.productPhoto,
+      sellerName: sellerName ?? this.sellerName,
+      sellerCity: sellerCity ?? this.sellerCity,
+      availableStock: availableStock ?? this.availableStock,
+      unit: unit ?? this.unit,
     );
   }
 }

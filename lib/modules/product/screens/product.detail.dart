@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/models/product.dart';
 import 'package:fgtagro_mobile/modules/cart/cubit/cart.cubit.dart';
+import 'package:fgtagro_mobile/modules/cart/cubit/cart.state.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.cubit.dart';
 import 'package:fgtagro_mobile/modules/product/cubit/product.state.dart';
 import 'package:fgtagro_mobile/modules/product/widgets/product_hero_action.dart';
@@ -121,33 +122,45 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                     actions: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Stack(
-                          children: [
-                            ProductHeroAction(
-                              icon: Icons.shopping_cart,
-                              onTap: () =>
-                                  context.router.push(const CartRoute()),
-                            ),
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  shape: BoxShape.circle,
+                        child: BlocBuilder<CartCubit, CartState>(
+                          builder: (context, cartState) {
+                            final totalItems = cartState.cart?.totalItems ?? 0;
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                ProductHeroAction(
+                                  icon: Icons.shopping_cart,
+                                  onTap: () =>
+                                      context.router.push(const CartRoute()),
                                 ),
-                                child: const Text(
-                                  '12',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.bold,
+                                if (totalItems > 0)
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.primaryColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      constraints: const BoxConstraints(
+                                        minWidth: 16,
+                                        minHeight: 16,
+                                      ),
+                                      child: Text(
+                                        '$totalItems',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 8,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ],
@@ -495,13 +508,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                   icon: Icons.shopping_cart_outlined,
                                   color: const Color(0xFF1E1E1E),
                                   onTap: () {
+                                    if (product.stockQuantity <= 0) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('This product is currently out of stock.'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                      return;
+                                    }
                                     context.read<CartCubit>().addToCart(
-                                      product.id,
+                                      product,
                                       qty: qty,
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Added to cart!'),
+                                      SnackBar(
+                                        content: Text('${product.name} added to cart'),
+                                        backgroundColor: AppColors.primaryColor,
                                       ),
                                     );
                                   },

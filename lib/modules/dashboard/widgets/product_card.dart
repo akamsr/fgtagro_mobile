@@ -2,8 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/models/product.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
+import 'package:fgtagro_mobile/modules/cart/cubit/cart.cubit.dart';
+import 'package:fgtagro_mobile/modules/cart/cubit/cart.state.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductModel product;
@@ -49,12 +52,24 @@ class _ProductCardState extends State<ProductCard>
   }
 
   void _toggleCart() {
-    setState(() => _inCart = !_inCart);
-    if (_inCart) {
-      _cartController.forward();
-    } else {
-      _cartController.reverse();
+    if (widget.product.stockQuantity <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('This product is currently out of stock.'),
+        ),
+      );
+      return;
     }
+
+    // Trigger adding to cart
+    context.read<CartCubit>().addToCart(widget.product);
+
+    setState(() => _inCart = true);
+    _cartController.forward();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${widget.product.name} added to cart')),
+    );
   }
 
   void _toggleFavorite() {

@@ -26,6 +26,10 @@ class Cart {
   final String? appliedCouponCode;
   @HiveField(9)
   final List<CartItem> items;
+  @HiveField(10)
+  final String? reservedAt;
+  @HiveField(11)
+  final String? expiresAt;
 
   Cart({
     required this.id,
@@ -38,6 +42,8 @@ class Cart {
     this.grandTotal = 0,
     this.appliedCouponCode,
     this.items = const [],
+    this.reservedAt,
+    this.expiresAt,
   });
 
   factory Cart.fromMap(Map<String, dynamic> map) {
@@ -56,6 +62,8 @@ class Cart {
               ?.map((e) => CartItem.fromMap(e))
               .toList() ??
           [],
+      reservedAt: map['reservedAt'],
+      expiresAt: map['expiresAt'],
     );
   }
 
@@ -73,6 +81,8 @@ class Cart {
       'grandTotal': grandTotal,
       'appliedCouponCode': appliedCouponCode,
       'items': items.map((e) => e.toJson()).toList(),
+      'reservedAt': reservedAt,
+      'expiresAt': expiresAt,
     };
   }
 
@@ -91,6 +101,8 @@ class Cart {
     double? grandTotal,
     String? appliedCouponCode,
     List<CartItem>? items,
+    String? reservedAt,
+    String? expiresAt,
   }) {
     return Cart(
       id: id ?? this.id,
@@ -103,6 +115,8 @@ class Cart {
       grandTotal: grandTotal ?? this.grandTotal,
       appliedCouponCode: appliedCouponCode ?? this.appliedCouponCode,
       items: items ?? this.items,
+      reservedAt: reservedAt ?? this.reservedAt,
+      expiresAt: expiresAt ?? this.expiresAt,
     );
   }
 }

@@ -8,12 +8,16 @@ class CartState extends GlobalAppState {
   final AppFailure? genError;
   final bool showError;
   final Cart? cart;
+  final double timerProgress; // 0.0 to 1.0
+  final int remainingSeconds;
 
   CartState({
     this.genLoading = false,
     this.genError,
     this.showError = false,
     this.cart,
+    this.timerProgress = 1.0,
+    this.remainingSeconds = 0,
   });
 
   @override
@@ -24,17 +28,28 @@ class CartState extends GlobalAppState {
     AppFailure? genError,
     bool? showError,
     Cart? cart,
+    double? timerProgress,
+    int? remainingSeconds,
   }) {
     return CartState(
       genLoading: genLoading ?? this.genLoading,
       genError: genError, // Allow clearing
       showError: showError ?? this.showError,
       cart: cart ?? this.cart,
+      timerProgress: timerProgress ?? this.timerProgress,
+      remainingSeconds: remainingSeconds ?? this.remainingSeconds,
     );
   }
 
   @override
-  List<Object?> get extraprops => [genLoading, genError, showError, cart];
+  List<Object?> get extraprops => [
+    genLoading,
+    genError,
+    showError,
+    cart,
+    timerProgress,
+    remainingSeconds,
+  ];
 }
 
 class CartLoading extends CartState {}

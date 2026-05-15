@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/modules/dashboard/cubit/order.cubit.dart';
+import 'package:fgtagro_mobile/modules/dashboard/cubit/order.state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({Key? key}) : super(key: key);
@@ -27,8 +30,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     );
     _animation = CurvedAnimation(
       parent: _controller,
-      curve: Curves
-          .easeInOutCubic, // Base curve, we'll use custom intervals for stretch
+      curve: Curves.easeInOutCubic,
     );
     _controller.value = 1.0;
   }
@@ -69,88 +71,21 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-
     return Container(
       decoration: const BoxDecoration(color: AppColors.bgSurface),
       child: SafeArea(
         top: false,
         child: Container(
-          height: 72,
+          height: 65,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final totalWidth = constraints.maxWidth;
-              final tabWidth = totalWidth / 5;
-
               return Stack(
                 children: [
-                  // Directional Stretching Indicator
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      final t = _controller.value;
-                      final isMovingRight = _currentIndex > _prevIndex;
-
-                      // Directional stretch logic:
-                      // Leading edge moves with a faster curve, trailing edge follows.
-                      final leadingCurve = Curves.easeOutCubic;
-                      final trailingCurve = Curves.easeInCubic;
-
-                      double leadingT, trailingT;
-                      if (isMovingRight) {
-                        leadingT = leadingCurve.transform(t);
-                        trailingT = trailingCurve.transform(t);
-                      } else {
-                        // Moving left: leading edge is the left one
-                        leadingT = leadingCurve.transform(t);
-                        trailingT = trailingCurve.transform(t);
-                      }
-
-                      final startLeft =
-                          _prevIndex * tabWidth + (tabWidth - 40) / 2;
-                      final endLeft =
-                          _currentIndex * tabWidth + (tabWidth - 40) / 2;
-                      final startRight = startLeft + 40;
-                      final endRight = endLeft + 40;
-
-                      double currentLeft, currentRight;
-
-                      if (isMovingRight) {
-                        // Moving Right: Right edge is leading, Left edge is trailing
-                        currentRight =
-                            startRight + (endRight - startRight) * leadingT;
-                        currentLeft =
-                            startLeft + (endLeft - startLeft) * trailingT;
-                      } else {
-                        // Moving Left: Left edge is leading, Right edge is trailing
-                        currentLeft =
-                            startLeft + (endLeft - startLeft) * leadingT;
-                        currentRight =
-                            startRight + (endRight - startRight) * trailingT;
-                      }
-
-                      return Positioned(
-                        left: currentLeft,
-                        width: (currentRight - currentLeft).clamp(
-                          40.0,
-                          tabWidth * 2,
-                        ),
-                        top: 16,
-                        height: 40,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryTint,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  // Icons and Labels Row
                   Positioned.fill(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         _NavItem(
                           index: 0,
@@ -176,17 +111,52 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                           prevIndex: _prevIndex,
                           progress: _controller,
                           label: "Rentals",
-                          icon: 'assets/icons/message.svg',
+                          icon: 'assets/icons/rental.svg',
                           onTap: () => _tabsRouter.setActiveIndex(2),
                         ),
-                        _NavItem(
-                          index: 3,
-                          currentIndex: _currentIndex,
-                          prevIndex: _prevIndex,
-                          progress: _controller,
-                          label: s.navOrders,
-                          icon: 'assets/icons/cart.svg',
-                          onTap: () => _tabsRouter.setActiveIndex(3),
+                        BlocBuilder<OrderCubit, OrderState>(
+                          builder: (context, state) {
+                            final totalItems = state.orders.length;
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                _NavItem(
+                                  index: 3,
+                                  currentIndex: _currentIndex,
+                                  prevIndex: _prevIndex,
+                                  progress: _controller,
+                                  label: s.navOrders,
+                                  icon: 'assets/icons/order.svg',
+                                  onTap: () => _tabsRouter.setActiveIndex(3),
+                                ),
+                                if (totalItems > 0)
+                                  Positioned(
+                                    top: 10,
+                                    right: 4,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      constraints: const BoxConstraints(
+                                        minWidth: 16,
+                                        minHeight: 16,
+                                      ),
+                                      child: Text(
+                                        '$totalItems',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
                         ),
                         _NavItem(
                           index: 4,
@@ -194,7 +164,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                           prevIndex: _prevIndex,
                           progress: _controller,
                           label: s.navProfile,
-                          icon: 'assets/icons/profile.svg',
+                          icon: 'assets/icons/user.svg',
                           onTap: () => _tabsRouter.setActiveIndex(4),
                         ),
                       ],
@@ -238,10 +208,11 @@ class _NavItem extends StatelessWidget {
         constraints: const BoxConstraints(minWidth: 60, minHeight: 48),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: 40,
-              height: 40,
+              width: 30,
+              height: 30,
               child: AnimatedBuilder(
                 animation: progress,
                 builder: (context, child) {
@@ -262,51 +233,43 @@ class _NavItem extends StatelessWidget {
                               );
                   }
 
-                  return Center(
-                    child: SvgPicture.asset(
-                      icon,
-                      width: 22,
-                      height: 22,
-                      colorFilter: ColorFilter.mode(
-                        Color.lerp(
-                          AppColors.textPrimary,
-                          AppColors.primaryColor,
-                          activeLevel,
-                        )!,
-                        BlendMode.srcIn,
-                      ),
+                  return SvgPicture.asset(
+                    icon,
+                    width: 18,
+                    height: 18,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.center,
+                    colorFilter: ColorFilter.mode(
+                      Color.lerp(
+                        AppColors.textPrimary,
+                        AppColors.primaryColor,
+                        activeLevel,
+                      )!,
+                      BlendMode.srcIn,
                     ),
                   );
                 },
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 4),
             AnimatedBuilder(
               animation: progress,
               builder: (context, child) {
                 final isActive = index == currentIndex;
-
-                double visibility;
-
-                if (isActive) {
-                  visibility = Curves.easeOut.transform(progress.value);
-                } else {
-                  visibility = 0.6; // inactive items still visible
-                }
+                double visibility = isActive
+                    ? Curves.easeOut.transform(progress.value)
+                    : 0.6;
 
                 return Opacity(
                   opacity: visibility,
-                  child: Transform.translate(
-                    offset: Offset(0, isActive ? (1 - visibility) * 4 : 0),
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: isActive
-                            ? AppColors.primaryColor
-                            : AppColors.textPrimary.withOpacity(0.7),
-                      ),
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                      color: isActive
+                          ? AppColors.primaryColor
+                          : AppColors.textPrimary.withOpacity(0.6),
                     ),
                   ),
                 );

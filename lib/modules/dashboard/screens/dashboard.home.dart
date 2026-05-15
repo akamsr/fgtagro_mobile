@@ -145,7 +145,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                       // Cart Icon
                       BlocBuilder<CartCubit, CartState>(
                         builder: (context, cartState) {
-                          final count = cartState.cart?.items.length ?? 0;
+                          final count = cartState.cart?.totalItems ?? 0;
                           return InkWell(
                             onTap: () => context.router.push(const CartRoute()),
                             child: Stack(
