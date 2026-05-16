@@ -70,10 +70,14 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen>
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: TextField(
                   controller: _searchController,
-                  onChanged: (v) => context.read<OrderCubit>().setSearchQuery(v),
+                  onChanged: (v) =>
+                      context.read<OrderCubit>().setSearchQuery(v),
                   decoration: InputDecoration(
                     hintText: S.of(context).searchOrdersHint,
                     prefixIcon: const Icon(Icons.search, size: 20),
@@ -115,7 +119,9 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen>
           return TabBarView(
             controller: _tabController,
             children: _statusTabs.map((status) {
-              final filteredOrders = context.read<OrderCubit>().getFilteredOrders(status);
+              final filteredOrders = context
+                  .read<OrderCubit>()
+                  .getFilteredOrders(status);
 
               if (filteredOrders.isEmpty) {
                 return _buildEmptyState(_getStatusLabel(status));
@@ -124,8 +130,10 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen>
               return ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: filteredOrders.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 12),
-                itemBuilder: (context, index) => _OrderCard(order: filteredOrders[index]),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
+                itemBuilder: (context, index) =>
+                    _OrderCard(order: filteredOrders[index]),
               );
             }).toList(),
           );
@@ -157,7 +165,11 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.assignment_outlined, size: 64, color: Colors.grey.shade300),
+          Icon(
+            Icons.assignment_outlined,
+            size: 64,
+            color: Colors.grey.shade300,
+          ),
           const SizedBox(height: 16),
           Text(
             S.of(context).noOrdersWithStatus(status),
@@ -176,7 +188,10 @@ class _OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(symbol: 'FCFA', decimalDigits: 0);
+    final currencyFormatter = NumberFormat.currency(
+      symbol: 'FCFA',
+      decimalDigits: 0,
+    );
     final dateStr = DateFormat('dd MMM yyyy, HH:mm').format(order.createdAt);
 
     return InkWell(
@@ -203,15 +218,25 @@ class _OrderCard extends StatelessWidget {
               children: [
                 Text(
                   '#${order.orderNumber}',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
                 ),
                 _StatusBadge(status: order.status),
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              dateStr,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  dateStr,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                if (order.status == OrderStatus.pending)
+                  _buildSLATimer(context),
+              ],
             ),
             const SizedBox(height: 12),
             Row(
@@ -241,7 +266,9 @@ class _OrderCard extends StatelessWidget {
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     backgroundColor: AppColors.primaryTint.withOpacity(0.1),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   child: Text(
                     S.of(context).viewDetails,
@@ -256,6 +283,61 @@ class _OrderCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSLATimer(BuildContext context) {
+    // 48 hours SLA
+    final deadline = order.createdAt.add(const Duration(hours: 48));
+    final remaining = deadline.difference(DateTime.now());
+
+    if (remaining.isNegative) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: Colors.red.shade50,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.timer_off, color: Colors.red, size: 12),
+            SizedBox(width: 4),
+            Text(
+              'SLA Expired',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final isUrgent = remaining.inHours < 24;
+    final color = isUrgent ? Colors.red : Colors.orange.shade700;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.timer_outlined, color: color, size: 12),
+          const SizedBox(width: 4),
+          Text(
+            '${remaining.inHours}h ${remaining.inMinutes % 60}m left',
+            style: TextStyle(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -310,7 +392,11 @@ class _StatusBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -341,7 +427,11 @@ class _DeliveryBadge extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             isHome ? S.of(context).deliveryHome : S.of(context).deliveryStore,
-            style: TextStyle(fontSize: 11, color: Colors.grey.shade700, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),

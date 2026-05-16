@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.state.dart';
-import 'package:fgtagro_mobile/models/seller.dart';
 import 'package:fgtagro_mobile/modules/business/widgets/kpi_card.dart';
 import 'package:fgtagro_mobile/modules/business/widgets/pending_action_tile.dart';
 import 'package:fgtagro_mobile/modules/business/widgets/revenue_chart.dart';
@@ -158,6 +157,84 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Seller Performance Score
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.03),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      value: 0.92,
+                                      backgroundColor: Colors.grey.shade100,
+                                      valueColor:
+                                          const AlwaysStoppedAnimation<Color>(
+                                            Colors.green,
+                                          ),
+                                      strokeWidth: 6,
+                                    ),
+                                    const Center(
+                                      child: Text(
+                                        '92',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Excellent Performance',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: AppColors.secondaryColor,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      'Your performance score is based on response times, cancellation rates, and buyer reviews.',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       // KPI Row
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -238,8 +315,9 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                                   .preparationDeadline(S.of(context).today),
                               actionLabel: S.of(context).viewAll,
                               icon: Icons.inventory_2,
-                              onTap: () =>
-                                  context.router.push(const SellerOrderListRoute()),
+                              onTap: () => context.router.push(
+                                const SellerOrderListRoute(),
+                              ),
                             ),
                             PendingActionTile(
                               title: '2 New Rental Requests',
@@ -247,8 +325,9 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                               actionLabel: S.of(context).viewAll,
                               icon: Icons.agriculture,
                               color: AppColors.primaryColor,
-                              onTap: () =>
-                                  context.router.push(const SellerRentalListRoute()),
+                              onTap: () => context.router.push(
+                                const SellerRentalListRoute(),
+                              ),
                             ),
                             PendingActionTile(
                               title: S.of(context).productRejected,

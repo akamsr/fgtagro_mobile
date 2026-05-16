@@ -33,7 +33,19 @@ class _PricingStockStepState extends State<PricingStockStep> {
   void _checkPriceAnomaly() {
     final price = double.tryParse(widget.priceController.text) ?? 0;
     // Mock anomaly detection: if price > 50,000 for this generic category
-    setState(() => _showAnomalyWarning = price > 50000 || (price < 100 && price > 0));
+    setState(
+      () => _showAnomalyWarning = price > 50000 || (price < 100 && price > 0),
+    );
+  }
+
+  String _getCommissionText() {
+    final price = double.tryParse(widget.priceController.text) ?? 0;
+    if (price <= 0) {
+      return 'FGT AGRO commission for this category: 5%. For a sale of 100,000 FCFA you will receive 95,000 FCFA. Commission is deducted automatically at payout — sellers never pay upfront.';
+    }
+    final payout = price * 0.95;
+    final commission = price * 0.05;
+    return 'FGT AGRO commission for this category: 5% (${commission.toInt()} FCFA). For a sale of ${price.toInt()} FCFA, you will receive ${payout.toInt()} FCFA. Commission is deducted automatically at payout — sellers never pay upfront.';
   }
 
   @override
@@ -43,10 +55,17 @@ class _PricingStockStepState extends State<PricingStockStep> {
       children: [
         const Text(
           'Pricing & Inventory',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         const SizedBox(height: 32),
-        const Text('Unit Price (FCFA)', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text(
+          'Unit Price (FCFA)',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 8),
         TextField(
           controller: widget.priceController,
@@ -56,25 +75,80 @@ class _PricingStockStepState extends State<PricingStockStep> {
             prefixText: 'FCFA ',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
+          onChanged: (v) => setState(() {}),
         ),
         if (_showAnomalyWarning)
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(
               'This price seems unusual for this category. Please verify before submitting.',
-              style: TextStyle(color: Colors.orange.shade800, fontSize: 11, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.orange.shade800,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.blue.shade50,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.info_outline, color: Colors.blue, size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Commission Transparency',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _getCommissionText(),
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
         const SizedBox(height: 24),
         const Text('Sales Unit', style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           value: widget.unit,
-          items: ['kg', 'bag', 'tonne', 'litre', 'piece', 'bunch', 'crate', 'bottle'].map((u) {
-            return DropdownMenuItem(value: u, child: Text(u));
-          }).toList(),
+          items:
+              [
+                'kg',
+                'bag',
+                'tonne',
+                'litre',
+                'piece',
+                'bunch',
+                'crate',
+                'bottle',
+              ].map((u) {
+                return DropdownMenuItem(value: u, child: Text(u));
+              }).toList(),
           onChanged: (v) => widget.onUnitChange(v!),
-          decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         ),
         const SizedBox(height: 24),
         Row(
@@ -83,12 +157,20 @@ class _PricingStockStepState extends State<PricingStockStep> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Available Stock', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Available Stock',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: widget.stockController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(hintText: '0', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+                    decoration: InputDecoration(
+                      hintText: '0',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -98,12 +180,20 @@ class _PricingStockStepState extends State<PricingStockStep> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Min. Order (MOQ)', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Min. Order (MOQ)',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: widget.moqController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(hintText: 'Optional', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+                    decoration: InputDecoration(
+                      hintText: 'Optional',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                 ],
               ),
