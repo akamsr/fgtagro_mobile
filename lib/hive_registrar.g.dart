@@ -3,6 +3,7 @@
 // Check in to version control
 
 import 'package:hive_ce/hive_ce.dart';
+import 'package:fgtagro_mobile/models/booking.dart';
 import 'package:fgtagro_mobile/models/cache/cache_record.dart';
 import 'package:fgtagro_mobile/models/cart.dart';
 import 'package:fgtagro_mobile/models/cartitems.dart';
@@ -18,6 +19,7 @@ import 'package:fgtagro_mobile/models/user.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(BookingModelAdapter());
     registerAdapter(CacheRecordAdapter());
     registerAdapter(CartAdapter());
     registerAdapter(CartGroupAdapter());
@@ -25,6 +27,7 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(CategoryModelAdapter());
     registerAdapter(ConversationModelAdapter());
     registerAdapter(CustomDevInfoAdapter());
+    registerAdapter(EquipmentDocumentAdapter());
     registerAdapter(EquipmentModelAdapter());
     registerAdapter(MessageModelAdapter());
     registerAdapter(MessageRoleAdapter());
@@ -43,6 +46,7 @@ extension HiveRegistrar on HiveInterface {
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(BookingModelAdapter());
     registerAdapter(CacheRecordAdapter());
     registerAdapter(CartAdapter());
     registerAdapter(CartGroupAdapter());
@@ -50,6 +54,7 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
     registerAdapter(CategoryModelAdapter());
     registerAdapter(ConversationModelAdapter());
     registerAdapter(CustomDevInfoAdapter());
+    registerAdapter(EquipmentDocumentAdapter());
     registerAdapter(EquipmentModelAdapter());
     registerAdapter(MessageModelAdapter());
     registerAdapter(MessageRoleAdapter());

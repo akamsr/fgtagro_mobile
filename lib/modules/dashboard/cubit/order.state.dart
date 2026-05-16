@@ -7,12 +7,14 @@ class OrderState extends GlobalAppState {
   final AppFailure? genError;
   final bool showError;
   final List<OrderModel> orders;
+  final String searchQuery;
 
   OrderState({
     this.genLoading = false,
     this.genError,
     this.showError = false,
     this.orders = const [],
+    this.searchQuery = '',
   });
 
   @override
@@ -23,15 +25,17 @@ class OrderState extends GlobalAppState {
     AppFailure? genError,
     bool? showError,
     List<OrderModel>? orders,
+    String? searchQuery,
   }) {
     return OrderState(
       genLoading: genLoading ?? this.genLoading,
       genError: genError,
       showError: showError ?? this.showError,
       orders: orders ?? this.orders,
+      searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 
   @override
-  List<Object?> get extraprops => [genLoading, genError, showError, orders];
+  List<Object?> get extraprops => [genLoading, genError, showError, orders, searchQuery];
 }

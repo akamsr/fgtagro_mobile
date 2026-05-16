@@ -238,7 +238,17 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                                   .preparationDeadline(S.of(context).today),
                               actionLabel: S.of(context).viewAll,
                               icon: Icons.inventory_2,
-                              onTap: () {},
+                              onTap: () =>
+                                  context.router.push(const SellerOrderListRoute()),
+                            ),
+                            PendingActionTile(
+                              title: '2 New Rental Requests',
+                              subtitle: 'Requires immediate approval',
+                              actionLabel: S.of(context).viewAll,
+                              icon: Icons.agriculture,
+                              color: AppColors.primaryColor,
+                              onTap: () =>
+                                  context.router.push(const SellerRentalListRoute()),
                             ),
                             PendingActionTile(
                               title: S.of(context).productRejected,

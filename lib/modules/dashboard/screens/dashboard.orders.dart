@@ -154,7 +154,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
         color = Colors.orange;
         label = 'En attente';
         break;
-      case OrderStatus.processing:
+      case OrderStatus.preparing:
         color = Colors.blue;
         label = 'En cours';
         break;
@@ -169,6 +169,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
       case OrderStatus.cancelled:
         color = Colors.red;
         label = 'Annulé';
+        break;
+      case OrderStatus.paymentConfirmed:
+        color = Colors.teal;
+        label = 'Confirmé';
         break;
     }
 

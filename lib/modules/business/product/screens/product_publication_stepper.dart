@@ -1,7 +1,14 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:fgtagro_mobile/generated/l10n.dart';
+import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/photo_step.dart';
+import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/name_category_step.dart';
+import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/description_step.dart';
+import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/pricing_stock_step.dart';
+import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/stock_location_step.dart';
+import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/optional_details_step.dart';
+import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/preview_step.dart';
 
 @RoutePage()
 class ProductPublicationScreen extends StatefulWidget {
@@ -15,25 +22,107 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
   int _currentStep = 1;
   final int _totalSteps = 7;
 
-  // Form Data
+  // Global State for the wizard
   final List<String> _photos = [];
   final TextEditingController _nameController = TextEditingController();
-  String? _selectedCategory;
+  final List<String> _categoryPath = [];
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   String _unit = 'kg';
   final TextEditingController _stockController = TextEditingController();
+  final TextEditingController _moqController = TextEditingController();
+  String _locationOption = 'GIA_STORE'; // 'MY_ADDRESS'
+  final Map<String, int> _storeQuantities = {};
+  final Map<String, String> _optionalDetails = {};
 
   void _nextStep() {
     if (_currentStep < _totalSteps) {
-      setState(() => _currentStep++);
+      if (_validateCurrentStep()) {
+        setState(() => _currentStep++);
+      }
+    } else {
+      _submitProduct();
     }
   }
 
-  void _prevStep() {
-    if (_currentStep > 1) {
-      setState(() => _currentStep--);
+  bool _validateCurrentStep() {
+    switch (_currentStep) {
+      case 1:
+        if (_photos.length < 2) {
+          _showError('Please upload at least 2 photos.');
+          return false;
+        }
+        return true;
+      case 2:
+        if (_nameController.text.isEmpty || _categoryPath.isEmpty) {
+          _showError('Name and Category are required.');
+          return false;
+        }
+        return true;
+      case 3:
+        if (_descriptionController.text.length < 500) {
+          _showError('Description must be at least 500 characters.');
+          return false;
+        }
+        return true;
+      case 4:
+        if (_priceController.text.isEmpty || _stockController.text.isEmpty) {
+          _showError('Price and Stock are required.');
+          return false;
+        }
+        return true;
+      default:
+        return true;
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message), backgroundColor: Colors.red));
+  }
+
+  void _submitProduct() {
+    // Show success dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.check_circle, size: 64, color: Colors.green),
+            const SizedBox(height: 16),
+            const Text(
+              'Product submitted for review ✓',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Our team will review your product within 24 hours. You will be notified by push notification and email.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  context.router.pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('View my products'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -56,12 +145,8 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Text(
-                S.of(context).stepOf(_currentStep, _totalSteps),
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
+                'Step $_currentStep of $_totalSteps',
+                style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ),
           ),
@@ -69,64 +154,19 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
       ),
       body: Column(
         children: [
-          // Progress Bar
           LinearProgressIndicator(
             value: _currentStep / _totalSteps,
             backgroundColor: Colors.grey.shade100,
             valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
             minHeight: 4,
           ),
-          
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: _buildStepContent(),
             ),
           ),
-          
-          // Bottom Navigation
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, -5),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                if (_currentStep > 1)
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _prevStep,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: Text(S.of(context).back),
-                    ),
-                  ),
-                if (_currentStep > 1) const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _nextStep,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 0,
-                    ),
-                    child: Text(_currentStep == _totalSteps ? S.of(context).submit : S.of(context).continueText),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildBottomBar(),
         ],
       ),
     );
@@ -134,314 +174,71 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
 
   Widget _buildStepContent() {
     switch (_currentStep) {
-      case 1:
-        return _buildPhotoStep();
-      case 2:
-        return _buildNameCategoryStep();
-      case 3:
-        return _buildDescriptionStep();
-      case 4:
-        return _buildPricingStep();
-      case 5:
-        return _buildLocationStep();
-      case 6:
-        return _buildOptionalDetailsStep();
-      case 7:
-        return _buildPreviewStep();
-      default:
-        return const SizedBox();
+      case 1: return PhotoStep(photos: _photos, onUpdate: (p) => setState(() => _photos.assignAll(p)));
+      case 2: return NameCategoryStep(nameController: _nameController, categoryPath: _categoryPath, onCategorySelect: (p) => setState(() => _categoryPath.assignAll(p)));
+      case 3: return DescriptionStep(controller: _descriptionController);
+      case 4: return PricingStockStep(priceController: _priceController, stockController: _stockController, unit: _unit, moqController: _moqController, onUnitChange: (u) => setState(() => _unit = u));
+      case 5: return StockLocationStep(option: _locationOption, storeQuantities: _storeQuantities, targetTotal: int.tryParse(_stockController.text) ?? 0, onOptionChange: (o) => setState(() => _locationOption = o));
+      case 6: return OptionalDetailsStep(details: _optionalDetails);
+      case 7: return PreviewStep(
+        photos: _photos,
+        name: _nameController.text,
+        category: _categoryPath.join(' > '),
+        price: _priceController.text,
+        unit: _unit,
+        stock: _stockController.text,
+        description: _descriptionController.text,
+        details: _optionalDetails,
+      );
+      default: return const SizedBox();
     }
   }
 
-  Widget _buildPhotoStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          S.of(context).photos,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Upload between 2 and 5 high-quality photos of your product.',
-          style: TextStyle(color: Colors.grey, height: 1.4),
-        ),
-        const SizedBox(height: 32),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 1,
-          ),
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            final hasPhoto = index < _photos.length;
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: hasPhoto ? AppColors.primaryColor : Colors.grey.shade200,
-                  width: hasPhoto ? 2 : 1,
+  Widget _buildBottomBar() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
+      ),
+      child: SafeArea(
+        child: Row(
+          children: [
+            if (_currentStep > 1)
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => setState(() => _currentStep--),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text(S.of(context).back),
                 ),
               ),
-              child: hasPhoto
-                  ? const Center(child: Icon(Icons.image, size: 40, color: AppColors.primaryColor))
-                  : const Center(child: Icon(Icons.add_a_photo_outlined, color: Colors.grey)),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNameCategoryStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          S.of(context).nameCategory,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
-        ),
-        const SizedBox(height: 32),
-        const Text('Product Name', style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _nameController,
-          decoration: InputDecoration(
-            hintText: 'e.g. Organic NPK Fertilizer',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-        const SizedBox(height: 24),
-        const Text('Category', style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(_selectedCategory ?? 'Select category', style: TextStyle(color: _selectedCategory == null ? Colors.grey : Colors.black)),
-              const Icon(Icons.chevron_right, color: Colors.grey),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDescriptionStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          S.of(context).description,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
-        ),
-        const SizedBox(height: 32),
-        TextField(
-          controller: _descriptionController,
-          maxLines: 10,
-          decoration: InputDecoration(
-            hintText: 'Describe your product in detail...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            counterText: '${_descriptionController.text.length} / 2000',
-          ),
-        ),
-        const SizedBox(height: 12),
-        const Text(
-          'Minimum 500 characters required.',
-          style: TextStyle(fontSize: 12, color: Colors.grey),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPricingStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          S.of(context).pricingStock,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
-        ),
-        const SizedBox(height: 32),
-        const Text('Price (FCFA)', style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _priceController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            hintText: '0',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AppColors.primaryTint.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Text(
-            'FGT AGRO commission: 5%. You will receive 95,000 FCFA for a 100,000 FCFA sale.',
-            style: TextStyle(fontSize: 12, color: AppColors.primaryColor, fontWeight: FontWeight.w600),
-          ),
-        ),
-        const SizedBox(height: 24),
-        const Text('Stock Quantity', style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _stockController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            hintText: '0',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLocationStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          S.of(context).stockLocation,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Where is this product currently stored?',
-          style: TextStyle(color: Colors.grey, height: 1.4),
-        ),
-        const SizedBox(height: 32),
-        _buildLocationOption(
-          title: 'Existing Store',
-          subtitle: 'Select from your registered warehouses',
-          icon: Icons.storefront,
-          isSelected: true,
-        ),
-        const SizedBox(height: 16),
-        _buildLocationOption(
-          title: 'Specific Address',
-          subtitle: 'Enter a custom location for this batch',
-          icon: Icons.location_on_outlined,
-          isSelected: false,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLocationOption({required String title, required String subtitle, required IconData icon, required bool isSelected}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isSelected ? AppColors.primaryTint.withOpacity(0.05) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isSelected ? AppColors.primaryColor : Colors.grey.shade200, width: isSelected ? 2 : 1),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: isSelected ? AppColors.primaryColor : Colors.grey),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
-              ],
+            if (_currentStep > 1) const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _nextStep,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 0,
+                ),
+                child: Text(_currentStep == _totalSteps ? S.of(context).submitForReview : S.of(context).continueText),
+              ),
             ),
-          ),
-          if (isSelected) const Icon(Icons.check_circle, color: AppColors.primaryColor),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
 
-  Widget _buildOptionalDetailsStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          S.of(context).optionalDetails,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
-        ),
-        const SizedBox(height: 32),
-        _buildFieldLabel('Variety / Type'),
-        TextField(decoration: InputDecoration(hintText: 'e.g. Yellow Maize', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-        const SizedBox(height: 24),
-        _buildFieldLabel('Harvest Date'),
-        TextField(decoration: InputDecoration(hintText: 'Select date', suffixIcon: const Icon(Icons.calendar_today), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-        const SizedBox(height: 24),
-        _buildFieldLabel('Certifications'),
-        Wrap(
-          spacing: 8,
-          children: ['Organic', 'ISO 9001', 'Fair Trade'].map((c) => Chip(label: Text(c))).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPreviewStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          S.of(context).preview,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
-        ),
-        const SizedBox(height: 24),
-        Container(
-          width: double.infinity,
-          height: 200,
-          decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(16)),
-          child: const Icon(Icons.image, size: 48, color: Colors.grey),
-        ),
-        const SizedBox(height: 24),
-        Text(_nameController.text.isEmpty ? 'Product Name' : _nameController.text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Text('${_priceController.text} FCFA / $_unit', style: const TextStyle(fontSize: 18, color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 16),
-        const Divider(),
-        const SizedBox(height: 16),
-        _buildPreviewItem('Category', _selectedCategory ?? 'Not selected'),
-        _buildPreviewItem('Stock', '${_stockController.text} units'),
-        _buildPreviewItem('Location', 'Main Warehouse, Douala'),
-        const SizedBox(height: 24),
-        const Text('Description', style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Text(_descriptionController.text, style: const TextStyle(color: Colors.grey, height: 1.4)),
-      ],
-    );
-  }
-
-  Widget _buildPreviewItem(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(color: Colors.grey)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFieldLabel(String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-    );
+extension ListAssign<T> on List<T> {
+  void assignAll(Iterable<T> iterable) {
+    clear();
+    addAll(iterable);
   }
 }
