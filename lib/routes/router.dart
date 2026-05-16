@@ -16,27 +16,32 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ResetPasswordOtpRoute.page),
     AutoRoute(page: VerifyEmailRoute.page),
 
-     // Standalone Screens
-     AutoRoute(page: ProductListRoute.page),
-     AutoRoute(page: ProductDetailRoute.page),
-     AutoRoute(page: CartRoute.page),
-     AutoRoute(page: CheckoutRoute.page),
-     AutoRoute(page: ConversationDetailRoute.page),
-     // Seller Management
-     AutoRoute(page: SellerDashboardRoute.page),
-     AutoRoute(page: SellerProductListRoute.page),
-     AutoRoute(page: ProductPublicationRoute.page),
-     AutoRoute(page: CreateStoreRoute.page),
-     AutoRoute(page: SellerOnboardRoute.page),
-     AutoRoute(page: SellerOrderListRoute.page),
-     AutoRoute(page: SellerOrderDetailRoute.page),
-     AutoRoute(page: SellerRentalListRoute.page),
-     AutoRoute(page: EquipmentPublicationRoute.page),
+    // Standalone Screens
+    AutoRoute(page: ProductListRoute.page),
+    AutoRoute(page: ProductDetailRoute.page),
+    AutoRoute(page: CartRoute.page),
+    AutoRoute(page: CheckoutRoute.page),
+    AutoRoute(page: ConversationDetailRoute.page),
+    // Seller Management
+    AutoRoute(page: SellerDashboardRoute.page),
+    AutoRoute(page: SellerProductListRoute.page),
+    AutoRoute(page: ProductPublicationRoute.page),
+    AutoRoute(page: CreateStoreRoute.page),
+    AutoRoute(page: SellerOnboardRoute.page),
+    AutoRoute(page: SellerOrderListRoute.page),
+    AutoRoute(page: SellerOrderDetailRoute.page),
+    AutoRoute(page: SellerRentalListRoute.page),
+    AutoRoute(page: EquipmentPublicationRoute.page),
 
-     // Shared & Settings
-     AutoRoute(page: NotificationsRoute.page),
-     AutoRoute(page: LanguageSettingsRoute.page),
-     AutoRoute(page: FavouritesRoute.page),
+    // Shared & Settings
+    AutoRoute(page: NotificationsRoute.page),
+    AutoRoute(page: LanguageSettingsRoute.page),
+    AutoRoute(page: FavouritesRoute.page),
+    AutoRoute(page: PersonalInformationRoute.page),
+    AutoRoute(page: MyAddressesRoute.page),
+    AutoRoute(page: NotificationPreferencesRoute.page),
+    AutoRoute(page: ContactSupportRoute.page),
+    AutoRoute(page: ChangePasswordRoute.page),
 
     // Main navigation home page (Shell)
     AutoRoute(
@@ -47,7 +52,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: CategoriesRoute.page),
         AutoRoute(page: ConversationListRoute.page),
         AutoRoute(page: OrdersRoute.page),
-        
+
         // Seller Tabs
         AutoRoute(page: SellerDashboardRoute.page),
         AutoRoute(page: SellerProductListRoute.page),
