@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/models/order.dart';
 import 'package:fgtagro_mobile/modules/orders/cubit/order_system.cubit.dart';
 import 'package:fgtagro_mobile/modules/orders/cubit/order_system_state.dart';
@@ -18,10 +17,14 @@ class OrdersScreen extends StatefulWidget {
   State<OrdersScreen> createState() => _OrdersScreenState();
 }
 
-class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderStateMixin {
+class _OrdersScreenState extends State<OrdersScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+
+  // Buyer filter: 0=All, 1=Active, 2=Completed, 3=Cancelled
+  int _buyerFilter = 0;
 
   @override
   void initState() {
@@ -36,6 +39,38 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
     super.dispose();
   }
 
+  List<OrderModel> _filteredBuyerOrders(List<OrderModel> orders) {
+    var list = orders.where((o) {
+      if (_searchQuery.isNotEmpty) {
+        return o.orderNumber
+            .toLowerCase()
+            .contains(_searchQuery.toLowerCase());
+      }
+      return true;
+    }).toList();
+
+    switch (_buyerFilter) {
+      case 1:
+        list = list.where((o) => o.status.isActive).toList();
+        break;
+      case 2:
+        list = list.where((o) => o.status.isCompleted || o.status.isRefundable).toList();
+        break;
+      case 3:
+        list = list.where((o) => o.status.isCancelled).toList();
+        break;
+    }
+
+    // Active orders float to the top
+    list.sort((a, b) {
+      if (a.status.isActive && !b.status.isActive) return -1;
+      if (!a.status.isActive && b.status.isActive) return 1;
+      return b.createdAt.compareTo(a.createdAt);
+    });
+
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OrderSystemCubit, OrderSystemState>(
@@ -46,7 +81,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
             backgroundColor: Colors.white,
             elevation: 0,
             title: const Text(
-              'Système de Commandes',
+              'Order Management',
               style: TextStyle(
                 color: AppColors.secondaryColor,
                 fontWeight: FontWeight.bold,
@@ -67,7 +102,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       _buildRoleTab(
                         context,
                         role: OrderSystemRole.buyer,
-                        label: 'Acheteur',
+                        label: 'Buyer',
                         icon: Icons.shopping_bag_outlined,
                         isActive: state.currentRole == OrderSystemRole.buyer,
                       ),
@@ -75,7 +110,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       _buildRoleTab(
                         context,
                         role: OrderSystemRole.seller,
-                        label: 'Vendeur',
+                        label: 'Seller',
                         icon: Icons.storefront_outlined,
                         isActive: state.currentRole == OrderSystemRole.seller,
                       ),
@@ -83,7 +118,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       _buildRoleTab(
                         context,
                         role: OrderSystemRole.driver,
-                        label: 'Livreur',
+                        label: 'Driver',
                         icon: Icons.local_shipping_outlined,
                         isActive: state.currentRole == OrderSystemRole.driver,
                       ),
@@ -91,9 +126,10 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       _buildRoleTab(
                         context,
                         role: OrderSystemRole.storeManager,
-                        label: 'Boutique',
+                        label: 'Store',
                         icon: Icons.warehouse_outlined,
-                        isActive: state.currentRole == OrderSystemRole.storeManager,
+                        isActive:
+                            state.currentRole == OrderSystemRole.storeManager,
                       ),
                     ],
                   ),
@@ -106,6 +142,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
       },
     );
   }
+
 
   Widget _buildRoleTab(
     BuildContext context, {
@@ -173,16 +210,12 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
   // BUYER DASHBOARD
   // ==========================================
   Widget _buildBuyerDashboard(OrderSystemState state) {
-    final filteredOrders = state.orders.where((o) {
-      if (_searchQuery.isNotEmpty) {
-        return o.orderNumber.toLowerCase().contains(_searchQuery.toLowerCase());
-      }
-      return true;
-    }).toList();
+    final filteredOrders = _filteredBuyerOrders(state.orders);
 
     return Column(
       children: [
         _buildSearchBar(),
+        _buildBuyerFilterChips(),
         Expanded(
           child: filteredOrders.isEmpty
               ? _buildEmptyState()
@@ -191,6 +224,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                     await Future.delayed(const Duration(seconds: 1));
                   },
                   child: ListView.builder(
+
                     padding: const EdgeInsets.all(16),
                     itemCount: filteredOrders.length,
                     itemBuilder: (context, index) {
@@ -206,7 +240,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: TextField(
         controller: _searchController,
         onChanged: (val) {
@@ -215,7 +249,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
           });
         },
         decoration: InputDecoration(
-          hintText: 'Rechercher par N° de commande...',
+          hintText: 'Search by order number...',
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
@@ -236,6 +270,58 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
           ),
           contentPadding: const EdgeInsets.symmetric(vertical: 14),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBuyerFilterChips() {
+    final labels = ['All', 'Active', 'Completed', 'Cancelled'];
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Row(
+        children: List.generate(labels.length, (i) {
+          final isSelected = _buyerFilter == i;
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: GestureDetector(
+              onTap: () => setState(() => _buyerFilter = i),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? AppColors.primaryColor
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppColors.primaryColor
+                        : Colors.grey.shade200,
+                  ),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: AppColors.primaryColor.withOpacity(0.2),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          )
+                        ]
+                      : null,
+                ),
+                child: Text(
+                  labels[i],
+                  style: TextStyle(
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: isSelected ? Colors.white : Colors.grey.shade700,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -694,46 +780,49 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Colis récupéré avec succès !'),
+                      content: Text('Package picked up ✓ En route!'),
                       backgroundColor: Colors.green,
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryColor),
-                child: const Text('Confirmer la récupération (Scan QR)'),
+                child: const Text('Confirm Pickup (Scan QR)',
+                    style: TextStyle(color: Colors.white)),
               ),
             )
           else
-            Row(
+            Column(
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.read<OrderSystemCubit>().selectOrder(order.id);
-                      context.read<OrderSystemCubit>().startTrackingSimulation();
-                      CustomNavigate.push(
-                        const RealTimeTrackingRoute(),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                    child: const Text('Lancer la simulation GPS'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 30),
-                  onPressed: () {
-                    context.read<OrderSystemCubit>().updateOrderStatus(
-                          order.id,
-                          OrderStatus.delivered,
-                        );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Commande marquée livrée !'),
-                        backgroundColor: Colors.green,
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.map_outlined, color: Colors.white, size: 16),
+                        label: const Text('Track Live',
+                            style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          context.read<OrderSystemCubit>().selectOrder(order.id);
+                          context.read<OrderSystemCubit>().startTrackingSimulation();
+                          CustomNavigate.push(const RealTimeTrackingRoute());
+                        },
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                       ),
-                    );
-                  },
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 16),
+                        label: const Text('Confirm Delivery',
+                            style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          context.read<OrderSystemCubit>().selectOrder(order.id);
+                          CustomNavigate.push(
+                              DriverDeliveryConfirmRoute(orderId: order.id));
+                        },
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -782,7 +871,13 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
   }
 
   Widget _buildStoreManagerOrderCard(OrderModel order) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        context.read<OrderSystemCubit>().selectOrder(order.id);
+        CustomNavigate.push(StoreManagerOrderDetailRoute(orderId: order.id));
+      },
+      child: Container(
+
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -875,12 +970,14 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                   );
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                child: const Text('Scanner le QR du Client (Livrer)'),
+                child: const Text('Manage Pickup',
+                    style: TextStyle(color: Colors.white)),
               ),
             ),
         ],
       ),
-    );
+    ),  // end GestureDetector child Container
+    );  // end GestureDetector
   }
 
   Widget _buildEmptyRoleState(String message) {
@@ -903,36 +1000,76 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
   // UTIL METHODS
   // ==========================================
   Color _getStatusColor(OrderStatus status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return Colors.grey.shade500;
-      case OrderStatus.preparing:
-        return Colors.blue;
-      case OrderStatus.shipped:
-        return Colors.purple;
-      case OrderStatus.delivered:
-        return Colors.green;
-      case OrderStatus.cancelled:
-        return Colors.red;
-      case OrderStatus.paymentConfirmed:
-        return Colors.teal;
+    if (status.isActive) {
+      switch (status) {
+        case OrderStatus.paymentPending:
+        case OrderStatus.pending:
+          return Colors.orange;
+        case OrderStatus.paymentConfirmed:
+          return Colors.teal;
+        case OrderStatus.preparing:
+          return Colors.blue;
+        case OrderStatus.driverAssigned:
+        case OrderStatus.pickedUp:
+        case OrderStatus.outForDelivery:
+        case OrderStatus.shipped:
+          return Colors.purple;
+        case OrderStatus.readyForPickup:
+          return Colors.indigo;
+        case OrderStatus.delivered:
+          return Colors.green;
+        default:
+          return Colors.grey;
+      }
     }
+    if (status.isCompleted || status.isRefundable) return Colors.green;
+    if (status.isCancelled) return Colors.red;
+    return Colors.grey.shade500;
   }
 
   String _getStatusLabel(OrderStatus status) {
     switch (status) {
+      case OrderStatus.paymentPending:
       case OrderStatus.pending:
-        return 'En attente';
-      case OrderStatus.preparing:
-        return 'Préparation';
-      case OrderStatus.shipped:
-        return 'Expédiée';
-      case OrderStatus.delivered:
-        return 'Livrée';
-      case OrderStatus.cancelled:
-        return 'Annulée';
+        return 'Pending';
       case OrderStatus.paymentConfirmed:
-        return 'Confirmée';
+        return 'Confirmed';
+      case OrderStatus.preparing:
+        return 'Preparing';
+      case OrderStatus.driverAssigned:
+        return 'Driver Assigned';
+      case OrderStatus.pickedUp:
+        return 'Picked Up';
+      case OrderStatus.outForDelivery:
+      case OrderStatus.shipped:
+        return 'Out for Delivery';
+      case OrderStatus.readyForPickup:
+        return 'Ready for Pickup';
+      case OrderStatus.delivered:
+        return 'Delivered';
+      case OrderStatus.completed:
+        return 'Completed';
+      case OrderStatus.refundRequested:
+        return 'Dispute Open';
+      case OrderStatus.refunded:
+        return 'Refunded';
+      case OrderStatus.refundRejected:
+        return 'Dispute Rejected';
+      case OrderStatus.deliveryFailed:
+        return 'Delivery Failed';
+      case OrderStatus.pickupExpired:
+        return 'Pickup Expired';
+      case OrderStatus.cancelledByBuyer:
+      case OrderStatus.cancelledAuto:
+      case OrderStatus.cancelledByAdmin:
+      case OrderStatus.cancelled:
+        return 'Cancelled';
+      case OrderStatus.paymentFailed:
+        return 'Payment Failed';
+      case OrderStatus.expired:
+        return 'Expired';
     }
   }
 }
+
+

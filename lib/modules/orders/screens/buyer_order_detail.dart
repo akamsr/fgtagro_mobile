@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/models/order.dart';
 import 'package:fgtagro_mobile/modules/orders/cubit/order_system.cubit.dart';
 import 'package:fgtagro_mobile/modules/orders/cubit/order_system_state.dart';
+import 'package:fgtagro_mobile/modules/orders/screens/dispute_screen.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
@@ -650,86 +651,215 @@ class BuyerOrderDetailScreen extends StatelessWidget {
     );
   }
 
-  // ==========================================
-  // ACTION BUTTONS
-  // ==========================================
   Widget _buildActionButtons(BuildContext context, OrderModel order) {
     final cubit = context.read<OrderSystemCubit>();
 
     return Column(
       children: [
-        if (order.status == OrderStatus.shipped)
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: () {
-                cubit.startTrackingSimulation();
-                CustomNavigate.push(
-                  const RealTimeTrackingRoute(),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text(
-                'Suivre ma livraison en direct',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-            ),
+        // TRACK — when out for delivery
+        if (order.status.canTrack)
+          _actionBtn(
+            label: 'Track my delivery',
+            icon: Icons.local_shipping_outlined,
+            color: AppColors.primaryColor,
+            onTap: () {
+              cubit.startTrackingSimulation();
+              CustomNavigate.push(const RealTimeTrackingRoute());
+            },
           ),
-        if (order.status == OrderStatus.delivered)
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: () {
-                cubit.updateOrderStatus(order.id, OrderStatus.completed);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Merci d\'avoir confirmé la réception !'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text(
-                'Confirmer la réception de ma commande',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-            ),
-          ),
-        if (order.status == OrderStatus.pending || order.status == OrderStatus.paymentConfirmed) ...[
+
+        // CONFIRM RECEIPT — DELIVERED (48h window)
+        if (order.status == OrderStatus.delivered) ...[
           const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: OutlinedButton(
-              onPressed: () {
-                cubit.cancelOrder(order.id, 'Annulation par le client');
+          _actionBtn(
+            label: 'Confirm I received my order ✓',
+            icon: Icons.check_circle_outline,
+            color: Colors.green,
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                builder: (_) => DeliveryConfirmationSheet(
+                  order: order,
+                  onConfirm: () {
+                    cubit.updateOrderStatus(order.id, OrderStatus.completed);
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Thank you! Order completed. Payout to seller scheduled.'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                  onDispute: () {
+                    Navigator.pop(context);
+                    CustomNavigate.push(DisputeRoute(orderId: order.id));
+                  },
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 8),
+          _actionBtn(
+            label: 'Open a dispute',
+            icon: Icons.flag_outlined,
+            color: Colors.orange,
+            isOutlined: true,
+            onTap: () => CustomNavigate.push(DisputeRoute(orderId: order.id)),
+          ),
+        ],
+
+        // COMPLETED — dispute (7 days) + buy again
+        if (order.status == OrderStatus.completed) ...[
+          _actionBtn(
+            label: 'Open a dispute',
+            icon: Icons.flag_outlined,
+            color: Colors.orange,
+            isOutlined: true,
+            onTap: () => CustomNavigate.push(DisputeRoute(orderId: order.id)),
+          ),
+          const SizedBox(height: 8),
+          _actionBtn(
+            label: 'Buy again',
+            icon: Icons.shopping_bag_outlined,
+            color: AppColors.primaryColor,
+            isOutlined: true,
+            onTap: () {},
+          ),
+        ],
+
+        // CANCEL — eligible statuses only
+        if (order.status.canCancel) ...[
+          const SizedBox(height: 8),
+          _actionBtn(
+            label: 'Cancel order',
+            icon: Icons.cancel_outlined,
+            color: Colors.red,
+            isOutlined: true,
+            onTap: () {
+              if (order.status == OrderStatus.preparing) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Commande annulée avec succès.'),
-                    backgroundColor: Colors.red,
+                    content: Text(
+                        'Your order is already being prepared and cannot be cancelled. Please contact support.'),
+                    backgroundColor: Colors.orange,
                   ),
                 );
-              },
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.red),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text(
-                'Annuler la commande',
-                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
+              } else {
+                CustomNavigate.push(OrderCancellationRoute(orderId: order.id));
+              }
+            },
+          ),
+        ],
+
+        // REFUND STATUS — cancelled with pending refund
+        if (order.status.isCancelled) ...[
+          const SizedBox(height: 8),
+          _actionBtn(
+            label: 'View refund status',
+            icon: Icons.account_balance_wallet_outlined,
+            color: Colors.blue,
+            isOutlined: true,
+            onTap: () {},
+          ),
+          const SizedBox(height: 8),
+          _actionBtn(
+            label: 'Contact support',
+            icon: Icons.headset_mic_outlined,
+            color: Colors.grey.shade600,
+            isOutlined: true,
+            onTap: () {},
+          ),
+        ],
+
+        // DELIVERY FAILED
+        if (order.status == OrderStatus.deliveryFailed) ...[
+          const SizedBox(height: 8),
+          _actionBtn(
+            label: 'Contact support',
+            icon: Icons.headset_mic_outlined,
+            color: Colors.grey.shade600,
+            isOutlined: true,
+            onTap: () {},
+          ),
+          const SizedBox(height: 8),
+          _actionBtn(
+            label: 'View refund status',
+            icon: Icons.account_balance_wallet_outlined,
+            color: Colors.blue,
+            isOutlined: true,
+            onTap: () {},
+          ),
+        ],
+
+        // DISPUTE IN PROGRESS
+        if (order.status.isRefundable) ...[
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.amber.shade50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.amber.shade200),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.pending_outlined, color: Colors.amber.shade700, size: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    order.status == OrderStatus.refundRequested
+                        ? 'Dispute under review. Our team will respond within 72 hours.'
+                        : order.status == OrderStatus.refunded
+                            ? 'Refund processed ✓'
+                            : 'Dispute resolved — refund rejected.',
+                    style: TextStyle(
+                      color: Colors.amber.shade800,
+                      fontSize: 12,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ],
+    );
+  }
+
+  Widget _actionBtn({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+    bool isOutlined = false,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: isOutlined
+          ? OutlinedButton.icon(
+              onPressed: onTap,
+              icon: Icon(icon, size: 18, color: color),
+              label: Text(label, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: color),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            )
+          : ElevatedButton.icon(
+              onPressed: onTap,
+              icon: Icon(icon, size: 18, color: Colors.white),
+              label: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: color,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
     );
   }
 

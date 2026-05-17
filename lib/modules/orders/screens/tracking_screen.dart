@@ -5,6 +5,7 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:latlong2/latlong2.dart';
 
 @RoutePage()
@@ -55,7 +56,8 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    urlTemplate:
+                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     subdomains: const ['a', 'b', 'c'],
                   ),
                   PolylineLayer(
@@ -82,10 +84,18 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 2),
                             boxShadow: const [
-                              BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 3)),
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
                             ],
                           ),
-                          child: const Icon(Icons.home, color: Colors.white, size: 20),
+                          child: const Icon(
+                            Icons.home,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                       // Driver Marker
@@ -94,17 +104,30 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                         width: 50,
                         height: 50,
                         child: Transform.rotate(
-                          angle: (state.driverHeading ?? 0.0) * (3.1415926535 / 180),
+                          angle:
+                              (state.driverHeading ?? 0.0) *
+                              (3.1415926535 / 180),
                           child: Container(
                             decoration: BoxDecoration(
                               color: AppColors.primaryColor,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2.5),
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2.5,
+                              ),
                               boxShadow: const [
-                                BoxShadow(color: Colors.black38, blurRadius: 8, offset: Offset(0, 4)),
+                                BoxShadow(
+                                  color: Colors.black38,
+                                  blurRadius: 8,
+                                  offset: Offset(0, 4),
+                                ),
                               ],
                             ),
-                            child: const Icon(Icons.local_shipping, color: Colors.white, size: 22),
+                            child: const Icon(
+                              Icons.local_shipping,
+                              color: Colors.white,
+                              size: 22,
+                            ),
                           ),
                         ),
                       ),
@@ -130,10 +153,17 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                       color: Colors.white,
                       shape: BoxShape.circle,
                       boxShadow: [
-                        BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 3)),
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, 3),
+                        ),
                       ],
                     ),
-                    child: const Icon(Icons.arrow_back, color: AppColors.secondaryColor),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: AppColors.secondaryColor,
+                    ),
                   ),
                 ),
               ),
@@ -141,18 +171,26 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
               // ==========================================
               // PROXIMITY PUSH NOTIFICATION SIMULATION
               // ==========================================
-              if (state.trackingDistanceRemaining != null && state.trackingDistanceRemaining! < 1.0)
+              if (state.trackingDistanceRemaining != null &&
+                  state.trackingDistanceRemaining! < 1.0)
                 Positioned(
                   top: 110,
                   left: 16,
                   right: 16,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade900.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: const [
-                        BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
                       ],
                     ),
                     child: Row(
@@ -162,7 +200,11 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                         Expanded(
                           child: Text(
                             'Le chauffeur est presque arrivé ! Soyez prêt à le recevoir.',
-                            style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -181,9 +223,15 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                   padding: const EdgeInsets.all(20),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
                     boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 15, offset: Offset(0, -4)),
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 15,
+                        offset: Offset(0, -4),
+                      ),
                     ],
                   ),
                   child: Column(
@@ -207,7 +255,11 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                               color: Colors.grey.shade100,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.person, color: AppColors.primaryColor, size: 28),
+                            child: const Icon(
+                              Icons.person,
+                              color: AppColors.primaryColor,
+                              size: 28,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -216,15 +268,25 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                               children: [
                                 const Text(
                                   'Ebanda Samuel',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Row(
                                   children: [
-                                    const Icon(Icons.star, color: Colors.amber, size: 14),
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 14,
+                                    ),
                                     const SizedBox(width: 4),
                                     Text(
                                       '4.8 • Livreur Certifié',
-                                      style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -232,7 +294,10 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.phone_outlined, color: AppColors.primaryColor),
+                            icon: const Icon(
+                              Icons.phone_outlined,
+                              color: AppColors.primaryColor,
+                            ),
                             onPressed: () {},
                           ),
                         ],
@@ -280,12 +345,20 @@ class _RealTimeTrackingScreenState extends State<RealTimeTrackingScreen> {
         const SizedBox(height: 6),
         Text(
           label,
-          style: TextStyle(color: Colors.grey.shade500, fontSize: 10, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.grey.shade500,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.secondaryColor),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: AppColors.secondaryColor,
+          ),
         ),
       ],
     );

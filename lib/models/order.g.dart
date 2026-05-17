@@ -137,37 +137,101 @@ class OrderStatusAdapter extends TypeAdapter<OrderStatus> {
   OrderStatus read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return OrderStatus.pending;
+        return OrderStatus.paymentPending;
       case 1:
-        return OrderStatus.preparing;
-      case 2:
-        return OrderStatus.shipped;
-      case 3:
-        return OrderStatus.delivered;
-      case 4:
-        return OrderStatus.cancelled;
-      case 5:
         return OrderStatus.paymentConfirmed;
-      default:
+      case 2:
+        return OrderStatus.paymentFailed;
+      case 3:
         return OrderStatus.pending;
+      case 4:
+        return OrderStatus.preparing;
+      case 5:
+        return OrderStatus.driverAssigned;
+      case 6:
+        return OrderStatus.pickedUp;
+      case 7:
+        return OrderStatus.outForDelivery;
+      case 8:
+        return OrderStatus.shipped;
+      case 9:
+        return OrderStatus.readyForPickup;
+      case 10:
+        return OrderStatus.delivered;
+      case 11:
+        return OrderStatus.completed;
+      case 12:
+        return OrderStatus.cancelledByBuyer;
+      case 13:
+        return OrderStatus.cancelledAuto;
+      case 14:
+        return OrderStatus.cancelledByAdmin;
+      case 15:
+        return OrderStatus.cancelled;
+      case 16:
+        return OrderStatus.expired;
+      case 17:
+        return OrderStatus.deliveryFailed;
+      case 18:
+        return OrderStatus.pickupExpired;
+      case 19:
+        return OrderStatus.refundRequested;
+      case 20:
+        return OrderStatus.refunded;
+      case 21:
+        return OrderStatus.refundRejected;
+      default:
+        return OrderStatus.paymentPending;
     }
   }
 
   @override
   void write(BinaryWriter writer, OrderStatus obj) {
     switch (obj) {
-      case OrderStatus.pending:
+      case OrderStatus.paymentPending:
         writer.writeByte(0);
-      case OrderStatus.preparing:
-        writer.writeByte(1);
-      case OrderStatus.shipped:
-        writer.writeByte(2);
-      case OrderStatus.delivered:
-        writer.writeByte(3);
-      case OrderStatus.cancelled:
-        writer.writeByte(4);
       case OrderStatus.paymentConfirmed:
+        writer.writeByte(1);
+      case OrderStatus.paymentFailed:
+        writer.writeByte(2);
+      case OrderStatus.pending:
+        writer.writeByte(3);
+      case OrderStatus.preparing:
+        writer.writeByte(4);
+      case OrderStatus.driverAssigned:
         writer.writeByte(5);
+      case OrderStatus.pickedUp:
+        writer.writeByte(6);
+      case OrderStatus.outForDelivery:
+        writer.writeByte(7);
+      case OrderStatus.shipped:
+        writer.writeByte(8);
+      case OrderStatus.readyForPickup:
+        writer.writeByte(9);
+      case OrderStatus.delivered:
+        writer.writeByte(10);
+      case OrderStatus.completed:
+        writer.writeByte(11);
+      case OrderStatus.cancelledByBuyer:
+        writer.writeByte(12);
+      case OrderStatus.cancelledAuto:
+        writer.writeByte(13);
+      case OrderStatus.cancelledByAdmin:
+        writer.writeByte(14);
+      case OrderStatus.cancelled:
+        writer.writeByte(15);
+      case OrderStatus.expired:
+        writer.writeByte(16);
+      case OrderStatus.deliveryFailed:
+        writer.writeByte(17);
+      case OrderStatus.pickupExpired:
+        writer.writeByte(18);
+      case OrderStatus.refundRequested:
+        writer.writeByte(19);
+      case OrderStatus.refunded:
+        writer.writeByte(20);
+      case OrderStatus.refundRejected:
+        writer.writeByte(21);
     }
   }
 

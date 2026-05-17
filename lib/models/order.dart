@@ -5,18 +5,105 @@ part 'order.g.dart';
 
 @HiveType(typeId: 12)
 enum OrderStatus {
+  // ── Payment states ──
   @HiveField(0)
-  pending,
+  paymentPending,
   @HiveField(1)
-  preparing,
-  @HiveField(2)
-  shipped,
-  @HiveField(3)
-  delivered,
-  @HiveField(4)
-  cancelled,
-  @HiveField(5)
   paymentConfirmed,
+  @HiveField(2)
+  paymentFailed,
+  // ── Legacy alias kept for backward compat ──
+  @HiveField(3)
+  pending, // same as paymentPending
+  // ── Fulfillment states ──
+  @HiveField(4)
+  preparing,
+  @HiveField(5)
+  driverAssigned,
+  @HiveField(6)
+  pickedUp,
+  @HiveField(7)
+  outForDelivery,
+  @HiveField(8)
+  shipped, // alias for outForDelivery
+  // ── Store pickup branch ──
+  @HiveField(9)
+  readyForPickup,
+  // ── Success states ──
+  @HiveField(10)
+  delivered,
+  @HiveField(11)
+  completed,
+  // ── Cancellation states ──
+  @HiveField(12)
+  cancelledByBuyer,
+  @HiveField(13)
+  cancelledAuto,
+  @HiveField(14)
+  cancelledByAdmin,
+  @HiveField(15)
+  cancelled, // generic fallback
+  @HiveField(16)
+  expired,
+  @HiveField(17)
+  deliveryFailed,
+  @HiveField(18)
+  pickupExpired,
+  // ── Dispute / refund states ──
+  @HiveField(19)
+  refundRequested,
+  @HiveField(20)
+  refunded,
+  @HiveField(21)
+  refundRejected,
+}
+
+extension OrderStatusHelpers on OrderStatus {
+  bool get isActive => const {
+        OrderStatus.paymentPending,
+        OrderStatus.pending,
+        OrderStatus.paymentConfirmed,
+        OrderStatus.preparing,
+        OrderStatus.driverAssigned,
+        OrderStatus.pickedUp,
+        OrderStatus.outForDelivery,
+        OrderStatus.shipped,
+        OrderStatus.readyForPickup,
+        OrderStatus.delivered,
+      }.contains(this);
+
+  bool get isCompleted => this == OrderStatus.completed;
+
+  bool get isCancelled => const {
+        OrderStatus.cancelledByBuyer,
+        OrderStatus.cancelledAuto,
+        OrderStatus.cancelledByAdmin,
+        OrderStatus.cancelled,
+        OrderStatus.expired,
+        OrderStatus.paymentFailed,
+        OrderStatus.deliveryFailed,
+        OrderStatus.pickupExpired,
+      }.contains(this);
+
+  bool get isRefundable => const {
+        OrderStatus.refundRequested,
+        OrderStatus.refunded,
+        OrderStatus.refundRejected,
+      }.contains(this);
+
+  bool get canCancel => const {
+        OrderStatus.paymentPending,
+        OrderStatus.pending,
+        OrderStatus.paymentConfirmed,
+      }.contains(this);
+
+  bool get canDispute => this == OrderStatus.delivered || this == OrderStatus.completed;
+
+  bool get canTrack => const {
+        OrderStatus.pickedUp,
+        OrderStatus.outForDelivery,
+        OrderStatus.shipped,
+      }.contains(this);
 }
 
 @HiveType(typeId: 11)
@@ -197,17 +284,49 @@ class OrderModel {
 
   static OrderStatus _parseOrderStatus(dynamic value) {
     switch (value?.toString().toLowerCase()) {
+      case 'payment_pending':
+        return OrderStatus.paymentPending;
+      case 'payment_confirmed':
+        return OrderStatus.paymentConfirmed;
+      case 'payment_failed':
+        return OrderStatus.paymentFailed;
       case 'preparing':
       case 'processing':
         return OrderStatus.preparing;
+      case 'driver_assigned':
+        return OrderStatus.driverAssigned;
+      case 'picked_up':
+        return OrderStatus.pickedUp;
+      case 'out_for_delivery':
+        return OrderStatus.outForDelivery;
       case 'shipped':
         return OrderStatus.shipped;
+      case 'ready_for_pickup':
+        return OrderStatus.readyForPickup;
       case 'delivered':
         return OrderStatus.delivered;
+      case 'completed':
+        return OrderStatus.completed;
+      case 'cancelled_by_buyer':
+        return OrderStatus.cancelledByBuyer;
+      case 'cancelled_auto':
+        return OrderStatus.cancelledAuto;
+      case 'cancelled_by_admin':
+        return OrderStatus.cancelledByAdmin;
       case 'cancelled':
         return OrderStatus.cancelled;
-      case 'payment_confirmed':
-        return OrderStatus.paymentConfirmed;
+      case 'expired':
+        return OrderStatus.expired;
+      case 'delivery_failed':
+        return OrderStatus.deliveryFailed;
+      case 'pickup_expired':
+        return OrderStatus.pickupExpired;
+      case 'refund_requested':
+        return OrderStatus.refundRequested;
+      case 'refunded':
+        return OrderStatus.refunded;
+      case 'refund_rejected':
+        return OrderStatus.refundRejected;
       case 'pending':
       default:
         return OrderStatus.pending;
