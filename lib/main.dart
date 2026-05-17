@@ -6,6 +6,7 @@ import 'package:fgtagro_mobile/modules/product/cubit/product.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/notifications/cubit/notification.cubit.dart';
 import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.cubit.dart';
+import 'package:fgtagro_mobile/modules/orders/cubit/order_system.cubit.dart';
 import 'package:fgtagro_mobile/utils/storage/locator.storage.dart';
 import 'package:fgtagro_mobile/routes/router.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
             BlocProvider(create: (context) => CartCubit()),
             BlocProvider(create: (context) => NotificationCubit()),
             BlocProvider(create: (context) => FavouritesCubit()),
+            BlocProvider(create: (context) => OrderSystemCubit()),
           ],
           child: MultiProvider(
             providers: [
