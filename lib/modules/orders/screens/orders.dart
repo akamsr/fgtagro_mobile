@@ -481,7 +481,15 @@ class _OrdersScreenState extends State<OrdersScreen>
   Widget _buildSellerDashboard(OrderSystemState state) {
     final sellerOrders = state.orders.where((o) =>
         o.status == OrderStatus.paymentConfirmed ||
-        o.status == OrderStatus.preparing).toList();
+        o.status == OrderStatus.preparing ||
+        o.status == OrderStatus.completed).toList();
+
+    // Sort: active first, then completed
+    sellerOrders.sort((a, b) {
+      if (a.status == OrderStatus.completed && b.status != OrderStatus.completed) return 1;
+      if (b.status == OrderStatus.completed && a.status != OrderStatus.completed) return -1;
+      return a.createdAt.compareTo(b.createdAt);
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -489,7 +497,7 @@ class _OrdersScreenState extends State<OrdersScreen>
         const Padding(
           padding: EdgeInsets.all(16),
           child: Text(
-            'Commandes à Traiter (SLA 48h)',
+            'Orders to Prepare (48h SLA)',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -499,7 +507,7 @@ class _OrdersScreenState extends State<OrdersScreen>
         ),
         Expanded(
           child: sellerOrders.isEmpty
-              ? _buildEmptyRoleState('Aucune commande en attente de préparation.')
+              ? _buildEmptyRoleState('No pending orders to prepare.')
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: sellerOrders.length,
@@ -514,12 +522,35 @@ class _OrdersScreenState extends State<OrdersScreen>
   }
 
   Widget _buildSellerOrderCard(OrderModel order) {
+    // Real SLA deadline: 48h from paymentConfirmed
+    final confirmedAt = order.timeline[OrderStatus.paymentConfirmed] ??
+        order.createdAt;
+    final deadline = confirmedAt.add(const Duration(hours: 48));
+    final remaining = deadline.difference(DateTime.now());
+    final hoursLeft = remaining.inHours;
+    final Color timerColor = hoursLeft > 24
+        ? Colors.green
+        : hoursLeft > 6
+            ? Colors.orange
+            : Colors.red;
+
+    // Total items being prepared (for stock warning)
+    final totalItems = order.items.fold<int>(0, (sum, i) => sum + i.quantity);
+
+    // Payout info for completed orders
+    final isCompleted = order.status == OrderStatus.completed;
+    final payoutRef = isCompleted && order.payoutAmount != null
+        ? 'PAY-${order.orderNumber.replaceAll('CMD-', '')}'
+        : null;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.red.shade100),
+        border: Border.all(
+          color: isCompleted ? Colors.green.shade100 : Colors.red.shade100,
+        ),
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -535,17 +566,19 @@ class _OrdersScreenState extends State<OrdersScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.red.shade50,
+                  color: timerColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.timer_outlined, color: Colors.red, size: 14),
+                    Icon(Icons.timer_outlined, color: timerColor, size: 14),
                     const SizedBox(width: 4),
                     Text(
-                      '36h restantes',
+                      remaining.isNegative
+                          ? 'EXPIRED'
+                          : '${hoursLeft}h ${remaining.inMinutes.remainder(60)}m left',
                       style: TextStyle(
-                        color: Colors.red.shade700,
+                        color: timerColor,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
@@ -555,36 +588,133 @@ class _OrdersScreenState extends State<OrdersScreen>
               ),
             ],
           ),
+
+          // Customer name
+          if (order.customerName != null) ...[
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(Icons.person_outline, size: 14, color: Colors.grey.shade500),
+                const SizedBox(width: 6),
+                Text(
+                  order.customerName!,
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                ),
+              ],
+            ),
+          ],
+
           const SizedBox(height: 12),
           ...order.items.map((item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Text(
-                  '• ${item.quantity}x ${item.name} (${item.unit})',
+                  '• ${item.quantity}× ${item.name} (${item.unit})',
                   style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
                 ),
               )),
+
+          // Stock warning (> 3 items)
+          if (totalItems > 3 && !isCompleted) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.amber.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.amber.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded,
+                      color: Colors.amber.shade700, size: 16),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Large order: $totalItems units. Please verify stock before confirming.',
+                      style: TextStyle(
+                          color: Colors.amber.shade800,
+                          fontSize: 11,
+                          height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          // Payout info for completed orders
+          if (isCompleted && payoutRef != null) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.green.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.green.shade100),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.green.shade600, size: 16),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Payout Scheduled',
+                        style: TextStyle(
+                            color: Colors.green.shade700,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Ref: $payoutRef',
+                    style: TextStyle(
+                        color: Colors.green.shade600,
+                        fontSize: 11,
+                        fontFamily: 'monospace'),
+                  ),
+                  Text(
+                    'Amount: ${order.payoutAmount?.toStringAsFixed(0)} FCFA',
+                    style: TextStyle(
+                        color: Colors.green.shade700,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13),
+                  ),
+                  if (order.payoutDate != null)
+                    Text(
+                      'Expected: ${_fmtDate(order.payoutDate!)}',
+                      style: TextStyle(
+                          color: Colors.green.shade600, fontSize: 11),
+                    ),
+                ],
+              ),
+            ),
+          ],
+
           const Divider(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Subtotal: ${order.subtotalAmount.toStringAsFixed(0)} FCFA',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                '${order.subtotalAmount.toStringAsFixed(0)} FCFA',
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
               if (order.status == OrderStatus.paymentConfirmed)
                 ElevatedButton(
-                  onPressed: () {
-                    _showSellerReadyDialog(order);
-                  },
+                  onPressed: () => _showSellerReadyDialog(order),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text('Confirmer le colis'),
+                  child: const Text('Confirm Packing',
+                      style: TextStyle(color: Colors.white)),
                 )
-              else
+              else if (order.status == OrderStatus.preparing)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
@@ -592,19 +722,27 @@ class _OrdersScreenState extends State<OrdersScreen>
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'En cours de préparation',
+                    'Awaiting Driver',
                     style: TextStyle(
                       color: Colors.blue.shade700,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                )
+              else if (isCompleted)
+                const Icon(Icons.check_circle, color: Colors.green, size: 24),
             ],
           ),
         ],
       ),
     );
+  }
+
+  String _fmtDate(DateTime dt) {
+    const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return '${dt.day} ${months[dt.month]} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
   void _showSellerReadyDialog(OrderModel order) {
@@ -675,15 +813,79 @@ class _OrdersScreenState extends State<OrdersScreen>
     final driverOrders = state.orders.where((o) =>
         o.deliveryMethod == 'HOME_DELIVERY' &&
         (o.status == OrderStatus.preparing ||
+            o.status == OrderStatus.driverAssigned ||
+            o.status == OrderStatus.pickedUp ||
+            o.status == OrderStatus.outForDelivery ||
             o.status == OrderStatus.shipped)).toList();
+
+    // Sort: newly assigned first, then oldest
+    driverOrders.sort((a, b) {
+      if (a.status == OrderStatus.driverAssigned) return -1;
+      if (b.status == OrderStatus.driverAssigned) return 1;
+      return a.createdAt.compareTo(b.createdAt);
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Pending assignment banner
+        if (state.pendingAssignmentOrderId != null)
+          GestureDetector(
+            onTap: () => CustomNavigate.push(
+                DriverAssignmentRoute(orderId: state.pendingAssignmentOrderId!)),
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.notifications_active, color: Colors.white, size: 22),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'New delivery request!',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14),
+                        ),
+                        Text(
+                          '${(state.assignmentSecondsRemaining ~/ 60).toString().padLeft(2, "0")}:${(state.assignmentSecondsRemaining % 60).toString().padLeft(2, "0")} to respond',
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.8), fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'View',
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
         const Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
           child: Text(
-            'Livraisons Assignées',
+            'Active Deliveries',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -693,7 +895,7 @@ class _OrdersScreenState extends State<OrdersScreen>
         ),
         Expanded(
           child: driverOrders.isEmpty
-              ? _buildEmptyRoleState('Aucune livraison active assignée.')
+              ? _buildEmptyRoleState('No active deliveries assigned.')
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: driverOrders.length,
@@ -735,19 +937,13 @@ class _OrdersScreenState extends State<OrdersScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: order.status == OrderStatus.preparing
-                      ? Colors.orange.shade50
-                      : Colors.purple.shade50,
+                  color: _getStatusColor(order.status).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  order.status == OrderStatus.preparing
-                      ? 'À récupérer'
-                      : 'En cours de livraison',
+                  _getStatusLabel(order.status),
                   style: TextStyle(
-                    color: order.status == OrderStatus.preparing
-                        ? Colors.orange.shade700
-                        : Colors.purple.shade700,
+                    color: _getStatusColor(order.status),
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -756,28 +952,66 @@ class _OrdersScreenState extends State<OrdersScreen>
             ],
           ),
           const SizedBox(height: 12),
+          if (order.customerName != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.person_outline, size: 16, color: Colors.grey),
+                  const SizedBox(width: 8),
+                  Text(
+                    order.customerName!,
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
           Row(
             children: [
               const Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Adresse: ${order.shippingAddress ?? "Non spécifiée"}',
+                  order.shippingAddress ?? 'Address not specified',
                   style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
                 ),
               ),
             ],
           ),
           const Divider(height: 24),
+
+          // ── DRIVER_ASSIGNED: tap to open assignment modal ──
+          if (order.status == OrderStatus.driverAssigned)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.notifications_active, color: Colors.white, size: 18),
+                label: const Text('Respond to Assignment',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                onPressed: () {
+                  context.read<OrderSystemCubit>().selectOrder(order.id);
+                  CustomNavigate.push(DriverAssignmentRoute(orderId: order.id));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ),
+
+          // ── PREPARING: pickup confirmation ──
           if (order.status == OrderStatus.preparing)
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 18),
+                label: const Text('Confirm Pickup',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 onPressed: () {
                   context.read<OrderSystemCubit>().updateOrderStatus(
-                        order.id,
-                        OrderStatus.shipped,
-                      );
+                    order.id,
+                    OrderStatus.pickedUp,
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Package picked up ✓ En route!'),
@@ -785,12 +1019,37 @@ class _OrdersScreenState extends State<OrdersScreen>
                     ),
                   );
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryColor),
-                child: const Text('Confirm Pickup (Scan QR)',
-                    style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
               ),
-            )
-          else
+            ),
+
+          // ── PICKED_UP: start delivery ──
+          if (order.status == OrderStatus.pickedUp)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.local_shipping, color: Colors.white, size: 18),
+                label: const Text('Start Delivery',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                onPressed: () {
+                  context.read<OrderSystemCubit>().updateOrderStatus(
+                    order.id,
+                    OrderStatus.outForDelivery,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ),
+
+          // ── OUT_FOR_DELIVERY / SHIPPED: track + confirm + absent ──
+          if (order.status == OrderStatus.outForDelivery ||
+              order.status == OrderStatus.shipped)
             Column(
               children: [
                 Row(
@@ -804,6 +1063,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                           context.read<OrderSystemCubit>().selectOrder(order.id);
                           context.read<OrderSystemCubit>().startTrackingSimulation();
                           CustomNavigate.push(const RealTimeTrackingRoute());
+
                         },
                         style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                       ),
@@ -824,6 +1084,29 @@ class _OrdersScreenState extends State<OrdersScreen>
                     ),
                   ],
                 ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.person_off_outlined,
+                        color: Colors.orange, size: 16),
+                    label: const Text(
+                      'Customer Absent',
+                      style: TextStyle(
+                          color: Colors.orange, fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      context.read<OrderSystemCubit>().selectOrder(order.id);
+                      CustomNavigate.push(
+                          CustomerAbsentRoute(orderId: order.id));
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.orange),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                ),
               ],
             ),
         ],
@@ -838,7 +1121,15 @@ class _OrdersScreenState extends State<OrdersScreen>
     final storeOrders = state.orders.where((o) =>
         o.deliveryMethod == 'STORE_PICKUP' &&
         (o.status == OrderStatus.paymentConfirmed ||
-            o.status == OrderStatus.preparing)).toList();
+            o.status == OrderStatus.preparing ||
+            o.status == OrderStatus.readyForPickup)).toList();
+
+    // Sort: ready for pickup first, then payment confirmed
+    storeOrders.sort((a, b) {
+      if (a.status == OrderStatus.readyForPickup) return -1;
+      if (b.status == OrderStatus.readyForPickup) return 1;
+      return b.createdAt.compareTo(a.createdAt);
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -846,7 +1137,7 @@ class _OrdersScreenState extends State<OrdersScreen>
         const Padding(
           padding: EdgeInsets.all(16),
           child: Text(
-            'Retraits Boutique en Attente',
+            'Store Pickup Orders',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,

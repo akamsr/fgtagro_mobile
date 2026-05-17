@@ -28,6 +28,9 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: DisputeRoute.page),
     AutoRoute(page: DriverDeliveryConfirmRoute.page),
     AutoRoute(page: StoreManagerOrderDetailRoute.page),
+    AutoRoute(page: DriverAssignmentRoute.page),
+    AutoRoute(page: CustomerAbsentRoute.page),
+
     // Seller Management
     AutoRoute(page: SellerDashboardRoute.page),
     AutoRoute(page: SellerProductListRoute.page),

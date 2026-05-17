@@ -9,7 +9,7 @@ class OrderSystemState extends Equatable {
   final bool isLoading;
   final String? error;
   final String? selectedOrderId;
-  
+
   // Simulated Real-Time tracking state
   final double? driverLatitude;
   final double? driverLongitude;
@@ -17,6 +17,13 @@ class OrderSystemState extends Equatable {
   final int? trackingMinutesRemaining;
   final double? trackingDistanceRemaining;
   final bool isTrackingActive;
+
+  // Driver assignment pending-acceptance state
+  final String? pendingAssignmentOrderId;
+  final int assignmentSecondsRemaining; // 600 → 0
+
+  // Customer-absent attempt tracking
+  final Map<String, int> absentAttempts; // orderId → attempt count (0–3)
 
   const OrderSystemState({
     required this.orders,
@@ -30,6 +37,9 @@ class OrderSystemState extends Equatable {
     this.trackingMinutesRemaining,
     this.trackingDistanceRemaining,
     this.isTrackingActive = false,
+    this.pendingAssignmentOrderId,
+    this.assignmentSecondsRemaining = 600,
+    this.absentAttempts = const {},
   });
 
   OrderSystemState copyWith({
@@ -44,6 +54,10 @@ class OrderSystemState extends Equatable {
     int? trackingMinutesRemaining,
     double? trackingDistanceRemaining,
     bool? isTrackingActive,
+    String? pendingAssignmentOrderId,
+    bool clearPendingAssignment = false,
+    int? assignmentSecondsRemaining,
+    Map<String, int>? absentAttempts,
   }) {
     return OrderSystemState(
       orders: orders ?? this.orders,
@@ -54,9 +68,17 @@ class OrderSystemState extends Equatable {
       driverLatitude: driverLatitude ?? this.driverLatitude,
       driverLongitude: driverLongitude ?? this.driverLongitude,
       driverHeading: driverHeading ?? this.driverHeading,
-      trackingMinutesRemaining: trackingMinutesRemaining ?? this.trackingMinutesRemaining,
-      trackingDistanceRemaining: trackingDistanceRemaining ?? this.trackingDistanceRemaining,
+      trackingMinutesRemaining:
+          trackingMinutesRemaining ?? this.trackingMinutesRemaining,
+      trackingDistanceRemaining:
+          trackingDistanceRemaining ?? this.trackingDistanceRemaining,
       isTrackingActive: isTrackingActive ?? this.isTrackingActive,
+      pendingAssignmentOrderId: clearPendingAssignment
+          ? null
+          : pendingAssignmentOrderId ?? this.pendingAssignmentOrderId,
+      assignmentSecondsRemaining:
+          assignmentSecondsRemaining ?? this.assignmentSecondsRemaining,
+      absentAttempts: absentAttempts ?? this.absentAttempts,
     );
   }
 
@@ -73,5 +95,8 @@ class OrderSystemState extends Equatable {
         trackingMinutesRemaining,
         trackingDistanceRemaining,
         isTrackingActive,
+        pendingAssignmentOrderId,
+        assignmentSecondsRemaining,
+        absentAttempts,
       ];
 }
