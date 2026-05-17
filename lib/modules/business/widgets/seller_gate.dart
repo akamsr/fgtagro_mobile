@@ -6,6 +6,7 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 class SellerGate extends StatelessWidget {
   final Widget child;
@@ -55,7 +56,7 @@ class SellerGate extends StatelessWidget {
           message: S.of(context).completeRegistrationMessage,
           color: AppColors.primaryColor,
           buttonLabel: S.of(context).completeRegistration,
-          onAction: () => context.router.push(const SellerOnboardRoute()),
+          onAction: () => CustomNavigate.push(const SellerOnboardRoute()),
         );
       },
     );

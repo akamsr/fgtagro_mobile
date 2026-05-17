@@ -286,8 +286,6 @@ class ApiService {
     }
   }
 
-  // --- End of new REST endpoints ---
-
   Future<UserModel?> getUserById(int id) async {
     final Map data = {"uid": id};
     final response = await locator<ApiClient>().dio.post(
@@ -360,7 +358,6 @@ class ApiService {
   void logout() async {
     await locator<StorageServices>().prefs.remove('businessId');
     await locator<StorageServices>().prefs.remove('userId');
-    await locator<StorageServices>().prefs.remove('isFirstTimeBuzpay');
     await locator<StorageServices>().prefs.remove('token');
     locator<StorageServices>().clearModel(key: 'loggedUser');
     CustomNavigate().changeIndex(0);

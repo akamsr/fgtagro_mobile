@@ -42,21 +42,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _submit(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
       if (!_acceptTerms) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).acceptTerms)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(S.of(context).acceptTerms)));
         return;
       }
 
       context.read<AuthCubit>().register(
-            firstName: _firstNameController.text,
-            lastName: _lastNameController.text,
-            email: _emailController.text,
-            phoneCode: '+237',
-            phoneNumber: _phoneController.text,
-            password: _passwordController.text,
-            acceptTerms: _acceptTerms,
-          );
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        email: _emailController.text,
+        phoneCode: '+237',
+        phoneNumber: _phoneController.text,
+        password: _passwordController.text,
+        acceptTerms: _acceptTerms,
+      );
     }
   }
 
@@ -65,7 +65,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.user != null) {
-          CustomNavigate.replace(VerifyEmailRoute(email: _emailController.text));
+          CustomNavigate.replace(
+            VerifyEmailRoute(email: _emailController.text),
+          );
         }
       },
       builder: (context, state) {
@@ -134,8 +136,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   label: S.of(context).email,
                   hintText: 'example@mail.com',
                   prefixIcon: Icons.mail_outline,
-                  validator: (val) =>
-                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                  validator: (val) => val == null || val.isEmpty
+                      ? S.of(context).requiredField
+                      : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -145,8 +148,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   label: S.of(context).phone,
                   hintText: '600 000 000',
                   prefixIcon: Icons.phone_outlined,
-                  validator: (val) =>
-                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                  validator: (val) => val == null || val.isEmpty
+                      ? S.of(context).requiredField
+                      : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -155,8 +159,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   obscureText: true,
                   label: S.of(context).password,
                   prefixIcon: Icons.lock_outline,
-                  validator: (val) =>
-                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                  validator: (val) => val == null || val.isEmpty
+                      ? S.of(context).requiredField
+                      : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -223,4 +228,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
-

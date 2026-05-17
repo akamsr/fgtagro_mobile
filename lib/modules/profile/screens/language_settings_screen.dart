@@ -4,6 +4,7 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:fgtagro_mobile/widgets/locale/locale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class LanguageSettingsScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class LanguageSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F3F8),
       appBar: AppBar(
@@ -28,7 +29,7 @@ class LanguageSettingsScreen extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.secondaryColor),
-          onPressed: () => context.router.pop(),
+          onPressed: () => CustomNavigate.back(),
         ),
       ),
       body: Consumer<LocaleProvider>(

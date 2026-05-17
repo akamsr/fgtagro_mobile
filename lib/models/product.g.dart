@@ -120,13 +120,27 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       seller: fields[14] as ProductSellerModel,
       publishedAt: fields[15] as String?,
       createdAt: fields[16] as String,
+      sellerId: fields[17] as String?,
+      categoryId: fields[18] as String?,
+      storeId: fields[19] as String?,
+      stockReserved: fields[20] == null ? 0 : (fields[20] as num).toInt(),
+      gpsLatitude: (fields[21] as num?)?.toDouble(),
+      gpsLongitude: (fields[22] as num?)?.toDouble(),
+      grade: fields[23] as String?,
+      variety: fields[24] as String?,
+      origin: fields[25] as String?,
+      harvestingDate: fields[26] as String?,
+      expirationDate: fields[27] as String?,
+      customAttributes: (fields[28] as List?)
+          ?.map((e) => (e as Map).cast<String, dynamic>())
+          .toList(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductModel obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(29)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -160,7 +174,31 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       ..writeByte(15)
       ..write(obj.publishedAt)
       ..writeByte(16)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(17)
+      ..write(obj.sellerId)
+      ..writeByte(18)
+      ..write(obj.categoryId)
+      ..writeByte(19)
+      ..write(obj.storeId)
+      ..writeByte(20)
+      ..write(obj.stockReserved)
+      ..writeByte(21)
+      ..write(obj.gpsLatitude)
+      ..writeByte(22)
+      ..write(obj.gpsLongitude)
+      ..writeByte(23)
+      ..write(obj.grade)
+      ..writeByte(24)
+      ..write(obj.variety)
+      ..writeByte(25)
+      ..write(obj.origin)
+      ..writeByte(26)
+      ..write(obj.harvestingDate)
+      ..writeByte(27)
+      ..write(obj.expirationDate)
+      ..writeByte(28)
+      ..write(obj.customAttributes);
   }
 
   @override

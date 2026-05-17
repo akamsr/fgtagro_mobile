@@ -36,10 +36,10 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
   void _submit(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthCubit>().resetPassword(
-            email: widget.email ?? '',
-            otp: _otpController.text,
-            newPassword: _passwordController.text,
-          );
+        email: widget.email ?? '',
+        otp: _otpController.text,
+        newPassword: _passwordController.text,
+      );
     }
   }
 
@@ -94,8 +94,9 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
                   obscureText: true,
                   label: S.of(context).newPassword,
                   prefixIcon: Icons.lock_outline,
-                  validator: (val) =>
-                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                  validator: (val) => val == null || val.isEmpty
+                      ? S.of(context).requiredField
+                      : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -127,4 +128,3 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
     );
   }
 }
-

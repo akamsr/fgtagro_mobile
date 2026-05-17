@@ -10,6 +10,7 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductModel product;
@@ -76,7 +77,7 @@ class _ProductCardState extends State<ProductCard>
 
     return InkWell(
       onTap: () =>
-          context.router.push(ProductDetailRoute(id: widget.product.id)),
+          CustomNavigate.push(ProductDetailRoute(id: widget.product.id)),
       child: Container(
         width: widget.width,
         padding: const EdgeInsets.all(5),

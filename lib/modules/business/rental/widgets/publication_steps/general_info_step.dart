@@ -14,8 +14,14 @@ class GeneralInfoStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final equipmentTypes = [
-      'Tractor', 'Harvester', 'Plough', 'Irrigation Pump', 
-      'Sprayer', 'Seeder', 'Generator', 'Other'
+      'Tractor',
+      'Harvester',
+      'Plough',
+      'Irrigation Pump',
+      'Sprayer',
+      'Seeder',
+      'Generator',
+      'Other',
     ];
     final conditions = ['Excellent', 'Good', 'Fair', 'Needs minor repairs'];
 
@@ -24,27 +30,36 @@ class GeneralInfoStep extends StatelessWidget {
       children: [
         const StepHeader(
           title: 'General Information',
-          subtitle: 'Tell us the basics about your equipment to help tenants find exactly what they need.',
+          subtitle:
+              'Tell us the basics about your equipment to help tenants find exactly what they need.',
         ),
         CustomDropdown<String>(
           label: 'Equipment Type',
           required: true,
           value: data['type'],
-          items: equipmentTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+          items: equipmentTypes
+              .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+              .toList(),
           onChanged: (v) => onUpdate('type', v),
         ),
         CustomTextField(
           label: 'Brand',
           required: true,
           hint: 'e.g. John Deere',
-          controller: TextEditingController(text: data['brand'])..selection = TextSelection.collapsed(offset: (data['brand'] ?? '').length),
+          controller: TextEditingController(text: data['brand'])
+            ..selection = TextSelection.collapsed(
+              offset: (data['brand'] ?? '').length,
+            ),
           onChanged: (v) => onUpdate('brand', v),
         ),
         CustomTextField(
           label: 'Model',
           required: true,
           hint: 'e.g. 5075E',
-          controller: TextEditingController(text: data['model'])..selection = TextSelection.collapsed(offset: (data['model'] ?? '').length),
+          controller: TextEditingController(text: data['model'])
+            ..selection = TextSelection.collapsed(
+              offset: (data['model'] ?? '').length,
+            ),
           onChanged: (v) => onUpdate('model', v),
         ),
         _buildYearPicker(context),
@@ -57,7 +72,11 @@ class GeneralInfoStep extends StatelessWidget {
                 label: 'Engine Power',
                 hint: 'e.g. 75',
                 keyboardType: TextInputType.number,
-                controller: TextEditingController(text: data['power']?.toString() ?? '')..selection = TextSelection.collapsed(offset: (data['power']?.toString() ?? '').length),
+                controller:
+                    TextEditingController(text: data['power']?.toString() ?? '')
+                      ..selection = TextSelection.collapsed(
+                        offset: (data['power']?.toString() ?? '').length,
+                      ),
                 onChanged: (v) => onUpdate('power', double.tryParse(v)),
               ),
             ),
@@ -67,7 +86,9 @@ class GeneralInfoStep extends StatelessWidget {
               child: CustomDropdown<String>(
                 label: 'Unit',
                 value: data['powerUnit'] ?? 'HP',
-                items: ['HP', 'kW'].map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),
+                items: ['HP', 'kW']
+                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                    .toList(),
                 onChanged: (v) => onUpdate('powerUnit', v),
               ),
             ),
@@ -77,7 +98,9 @@ class GeneralInfoStep extends StatelessWidget {
           label: 'Condition',
           required: true,
           value: data['condition'],
-          items: conditions.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+          items: conditions
+              .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+              .toList(),
           onChanged: (v) => onUpdate('condition', v),
         ),
       ],
@@ -153,7 +176,9 @@ class _YearPickerDialog extends StatelessWidget {
                 child: Text(
                   year.toString(),
                   style: TextStyle(
-                    fontWeight: year == selectedYear ? FontWeight.bold : FontWeight.normal,
+                    fontWeight: year == selectedYear
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                     color: year == selectedYear ? Colors.blue : Colors.black,
                   ),
                 ),

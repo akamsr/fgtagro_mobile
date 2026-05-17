@@ -37,5 +37,11 @@ class OrderState extends GlobalAppState {
   }
 
   @override
-  List<Object?> get extraprops => [genLoading, genError, showError, orders, searchQuery];
+  List<Object?> get extraprops => [
+    genLoading,
+    genError,
+    showError,
+    orders,
+    searchQuery,
+  ];
 }

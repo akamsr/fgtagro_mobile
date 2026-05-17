@@ -14,7 +14,11 @@ class PhotoStep extends StatelessWidget {
       children: [
         const Text(
           'Product Photos',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         const SizedBox(height: 8),
         const Text(
@@ -22,10 +26,7 @@ class PhotoStep extends StatelessWidget {
           style: TextStyle(color: Colors.grey, height: 1.4),
         ),
         const SizedBox(height: 32),
-        ReorderableGrid(
-          photos: photos,
-          onUpdate: onUpdate,
-        ),
+        ReorderableGrid(photos: photos, onUpdate: onUpdate),
       ],
     );
   }
@@ -35,7 +36,11 @@ class ReorderableGrid extends StatelessWidget {
   final List<String> photos;
   final Function(List<String>) onUpdate;
 
-  const ReorderableGrid({super.key, required this.photos, required this.onUpdate});
+  const ReorderableGrid({
+    super.key,
+    required this.photos,
+    required this.onUpdate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +67,8 @@ class ReorderableGrid extends StatelessWidget {
           return _UploadPlaceholder(
             onTap: () {
               // Mock adding a photo
-              final newPhotos = List<String>.from(photos)..add('https://picsum.photos/800/800?random=$index');
+              final newPhotos = List<String>.from(photos)
+                ..add('https://picsum.photos/800/800?random=$index');
               onUpdate(newPhotos);
             },
           );
@@ -77,7 +83,11 @@ class _PhotoTile extends StatelessWidget {
   final bool isCover;
   final VoidCallback onRemove;
 
-  const _PhotoTile({required this.url, required this.isCover, required this.onRemove});
+  const _PhotoTile({
+    required this.url,
+    required this.isCover,
+    required this.onRemove,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +97,9 @@ class _PhotoTile extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
-            border: isCover ? Border.all(color: AppColors.primaryColor, width: 2) : null,
+            border: isCover
+                ? Border.all(color: AppColors.primaryColor, width: 2)
+                : null,
           ),
         ),
         if (isCover)
@@ -96,8 +108,18 @@ class _PhotoTile extends StatelessWidget {
             left: 8,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(color: AppColors.primaryColor, borderRadius: BorderRadius.circular(4)),
-              child: const Text('COVER', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'COVER',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         Positioned(
@@ -107,7 +129,10 @@ class _PhotoTile extends StatelessWidget {
             onTap: onRemove,
             child: Container(
               padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                shape: BoxShape.circle,
+              ),
               child: const Icon(Icons.close, size: 16, color: Colors.white),
             ),
           ),
@@ -130,14 +155,25 @@ class _UploadPlaceholder extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200, width: 1, style: BorderStyle.solid),
+          border: Border.all(
+            color: Colors.grey.shade200,
+            width: 1,
+            style: BorderStyle.solid,
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_a_photo_outlined, color: Colors.grey.shade400, size: 32),
+            Icon(
+              Icons.add_a_photo_outlined,
+              color: Colors.grey.shade400,
+              size: 32,
+            ),
             const SizedBox(height: 8),
-            Text('Add Photo', style: TextStyle(color: Colors.grey.shade500, fontSize: 12)),
+            Text(
+              'Add Photo',
+              style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+            ),
           ],
         ),
       ),

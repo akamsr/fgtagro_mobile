@@ -9,13 +9,15 @@ import 'package:fgtagro_mobile/modules/business/product/widgets/publication_step
 import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/stock_location_step.dart';
 import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/optional_details_step.dart';
 import 'package:fgtagro_mobile/modules/business/product/widgets/publication_steps/preview_step.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class ProductPublicationScreen extends StatefulWidget {
   const ProductPublicationScreen({super.key});
 
   @override
-  State<ProductPublicationScreen> createState() => _ProductPublicationScreenState();
+  State<ProductPublicationScreen> createState() =>
+      _ProductPublicationScreenState();
 }
 
 class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
@@ -77,7 +79,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message), backgroundColor: Colors.red));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   void _submitProduct() {
@@ -109,12 +113,14 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  context.router.pop();
+                  CustomNavigate.back();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text('View my products'),
               ),
@@ -132,13 +138,16 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
       appBar: AppBar(
         title: Text(
           S.of(context).newProduct,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.secondaryColor),
-          onPressed: () => context.router.pop(),
+          onPressed: () => CustomNavigate.back(),
         ),
         actions: [
           Center(
@@ -146,7 +155,11 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
               padding: const EdgeInsets.only(right: 16),
               child: Text(
                 'Step $_currentStep of $_totalSteps',
-                style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12),
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
@@ -157,7 +170,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
           LinearProgressIndicator(
             value: _currentStep / _totalSteps,
             backgroundColor: Colors.grey.shade100,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+            valueColor: const AlwaysStoppedAnimation<Color>(
+              AppColors.primaryColor,
+            ),
             minHeight: 4,
           ),
           Expanded(
@@ -174,23 +189,49 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
 
   Widget _buildStepContent() {
     switch (_currentStep) {
-      case 1: return PhotoStep(photos: _photos, onUpdate: (p) => setState(() => _photos.assignAll(p)));
-      case 2: return NameCategoryStep(nameController: _nameController, categoryPath: _categoryPath, onCategorySelect: (p) => setState(() => _categoryPath.assignAll(p)));
-      case 3: return DescriptionStep(controller: _descriptionController);
-      case 4: return PricingStockStep(priceController: _priceController, stockController: _stockController, unit: _unit, moqController: _moqController, onUnitChange: (u) => setState(() => _unit = u));
-      case 5: return StockLocationStep(option: _locationOption, storeQuantities: _storeQuantities, targetTotal: int.tryParse(_stockController.text) ?? 0, onOptionChange: (o) => setState(() => _locationOption = o));
-      case 6: return OptionalDetailsStep(details: _optionalDetails);
-      case 7: return PreviewStep(
-        photos: _photos,
-        name: _nameController.text,
-        category: _categoryPath.join(' > '),
-        price: _priceController.text,
-        unit: _unit,
-        stock: _stockController.text,
-        description: _descriptionController.text,
-        details: _optionalDetails,
-      );
-      default: return const SizedBox();
+      case 1:
+        return PhotoStep(
+          photos: _photos,
+          onUpdate: (p) => setState(() => _photos.assignAll(p)),
+        );
+      case 2:
+        return NameCategoryStep(
+          nameController: _nameController,
+          categoryPath: _categoryPath,
+          onCategorySelect: (p) => setState(() => _categoryPath.assignAll(p)),
+        );
+      case 3:
+        return DescriptionStep(controller: _descriptionController);
+      case 4:
+        return PricingStockStep(
+          priceController: _priceController,
+          stockController: _stockController,
+          unit: _unit,
+          moqController: _moqController,
+          onUnitChange: (u) => setState(() => _unit = u),
+        );
+      case 5:
+        return StockLocationStep(
+          option: _locationOption,
+          storeQuantities: _storeQuantities,
+          targetTotal: int.tryParse(_stockController.text) ?? 0,
+          onOptionChange: (o) => setState(() => _locationOption = o),
+        );
+      case 6:
+        return OptionalDetailsStep(details: _optionalDetails);
+      case 7:
+        return PreviewStep(
+          photos: _photos,
+          name: _nameController.text,
+          category: _categoryPath.join(' > '),
+          price: _priceController.text,
+          unit: _unit,
+          stock: _stockController.text,
+          description: _descriptionController.text,
+          details: _optionalDetails,
+        );
+      default:
+        return const SizedBox();
     }
   }
 
@@ -199,7 +240,13 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
       ),
       child: SafeArea(
         child: Row(
@@ -210,7 +257,9 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
                   onPressed: () => setState(() => _currentStep--),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: Text(S.of(context).back),
                 ),
@@ -223,10 +272,16 @@ class _ProductPublicationScreenState extends State<ProductPublicationScreen> {
                   backgroundColor: AppColors.primaryColor,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
-                child: Text(_currentStep == _totalSteps ? S.of(context).submitForReview : S.of(context).continueText),
+                child: Text(
+                  _currentStep == _totalSteps
+                      ? S.of(context).submitForReview
+                      : S.of(context).continueText,
+                ),
               ),
             ),
           ],

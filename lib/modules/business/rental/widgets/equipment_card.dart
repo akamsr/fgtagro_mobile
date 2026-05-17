@@ -10,7 +10,10 @@ class EquipmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(symbol: 'FCFA', decimalDigits: 0);
+    final currencyFormatter = NumberFormat.currency(
+      symbol: 'FCFA',
+      decimalDigits: 0,
+    );
     final photoUrl = equipment.photoSlots['front'] ?? '';
 
     return Container(
@@ -32,14 +35,17 @@ class EquipmentCard extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
                 child: photoUrl.isNotEmpty
                     ? Image.network(
                         photoUrl,
                         height: 180,
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+                        errorBuilder: (context, error, stackTrace) =>
+                            _buildPlaceholder(),
                       )
                     : _buildPlaceholder(),
               ),
@@ -57,7 +63,7 @@ class EquipmentCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -151,7 +157,10 @@ class EquipmentCard extends StatelessWidget {
       },
       itemBuilder: (context) => [
         const PopupMenuItem(value: 'edit', child: Text('Edit')),
-        const PopupMenuItem(value: 'availability', child: Text('Update availability')),
+        const PopupMenuItem(
+          value: 'availability',
+          child: Text('Update availability'),
+        ),
         const PopupMenuItem(value: 'archive', child: Text('Archive')),
       ],
     );

@@ -36,22 +36,22 @@ class OrderCubit extends Cubit<OrderState> {
 
   List<OrderModel> getFilteredOrders(OrderStatus? filterStatus) {
     var filtered = state.orders;
-    
+
     if (filterStatus != null) {
       filtered = filtered.where((o) => o.status == filterStatus).toList();
     }
-    
+
     if (state.searchQuery.isNotEmpty) {
       final q = state.searchQuery.toLowerCase();
       filtered = filtered.where((o) {
         return o.orderNumber.toLowerCase().contains(q) ||
-               (o.buyerCity?.toLowerCase().contains(q) ?? false);
+            (o.buyerCity?.toLowerCase().contains(q) ?? false);
       }).toList();
     }
-    
+
     // Sort by most recent first
     filtered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    
+
     return filtered;
   }
 }

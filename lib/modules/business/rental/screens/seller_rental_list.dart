@@ -9,6 +9,7 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class SellerRentalListScreen extends StatefulWidget {
@@ -83,7 +84,7 @@ class _SellerRentalListScreenState extends State<SellerRentalListScreen>
           floatingActionButton: _tabController.index == 0
               ? FloatingActionButton.extended(
                   onPressed: () =>
-                      context.router.push(const EquipmentPublicationRoute()),
+                      CustomNavigate.push(const EquipmentPublicationRoute()),
                   backgroundColor: AppColors.primaryColor,
                   icon: const Icon(Icons.add, color: Colors.white),
                   label: Text(

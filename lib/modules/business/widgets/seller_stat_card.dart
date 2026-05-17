@@ -30,7 +30,7 @@ class SellerStatCard extends StatelessWidget {
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
-          )
+          ),
         ],
       ),
       child: Column(

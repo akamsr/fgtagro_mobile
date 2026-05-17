@@ -39,7 +39,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.success) {
-          CustomNavigate.push(ResetPasswordOtpRoute(email: _emailController.text));
+          CustomNavigate.push(
+            ResetPasswordOtpRoute(email: _emailController.text),
+          );
         }
       },
       builder: (context, state) {
@@ -71,8 +73,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   label: S.of(context).email,
                   hintText: 'example@mail.com',
                   prefixIcon: Icons.mail_outline,
-                  validator: (val) =>
-                      val == null || val.isEmpty ? S.of(context).requiredField : null,
+                  validator: (val) => val == null || val.isEmpty
+                      ? S.of(context).requiredField
+                      : null,
                 ),
                 const SizedBox(height: 32),
 
@@ -89,4 +92,3 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 }
-

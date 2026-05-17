@@ -7,8 +7,8 @@ class BusinessCubit extends Cubit<BusinessState> {
   final SellerService sellerService;
 
   BusinessCubit({SellerService? sellerService})
-      : sellerService = sellerService ?? SellerService(),
-        super(BusinessState());
+    : sellerService = sellerService ?? SellerService(),
+      super(BusinessState());
 
   void emitLoading() {
     emit(state.copyWith(genLoading: true, genError: null, showError: false));

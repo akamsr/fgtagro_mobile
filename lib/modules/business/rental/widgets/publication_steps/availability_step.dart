@@ -20,7 +20,8 @@ class AvailabilityStep extends StatelessWidget {
       children: [
         const StepHeader(
           title: 'Availability',
-          subtitle: 'Set when your equipment is available for rent and define your booking rules.',
+          subtitle:
+              'Set when your equipment is available for rent and define your booking rules.',
         ),
         const FormLabel(label: 'Availability Calendar'),
         const Text(
@@ -33,25 +34,37 @@ class AvailabilityStep extends StatelessWidget {
         CustomDropdown<String>(
           label: 'Minimum Notice Period',
           value: data['noticePeriod'] ?? '24h',
-          items: ['Same day', '24h', '48h', '72h', '1 week']
-              .map((v) => DropdownMenuItem(value: v, child: Text(v)))
-              .toList(),
+          items: [
+            'Same day',
+            '24h',
+            '48h',
+            '72h',
+            '1 week',
+          ].map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(),
           onChanged: (v) => onUpdate('noticePeriod', v),
         ),
         CustomDropdown<String>(
           label: 'Minimum Rental Duration',
           value: data['minDuration'] ?? '1 day',
-          items: ['1 hour', 'half-day', '1 day', '3 days', '1 week']
-              .map((v) => DropdownMenuItem(value: v, child: Text(v)))
-              .toList(),
+          items: [
+            '1 hour',
+            'half-day',
+            '1 day',
+            '3 days',
+            '1 week',
+          ].map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(),
           onChanged: (v) => onUpdate('minDuration', v),
         ),
         CustomDropdown<String>(
           label: 'Maximum Rental Duration',
           value: data['maxDuration'] ?? 'No limit',
-          items: ['1 day', '3 days', '1 week', '1 month', 'No limit']
-              .map((v) => DropdownMenuItem(value: v, child: Text(v)))
-              .toList(),
+          items: [
+            '1 day',
+            '3 days',
+            '1 week',
+            '1 month',
+            'No limit',
+          ].map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(),
           onChanged: (v) => onUpdate('maxDuration', v),
         ),
       ],
@@ -71,9 +84,13 @@ class AvailabilityStep extends StatelessWidget {
         onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
           onUpdate('unavailableDates', args.value);
         },
-        initialSelectedDates: (data['unavailableDates'] as List<DateTime>? ?? []),
+        initialSelectedDates:
+            (data['unavailableDates'] as List<DateTime>? ?? []),
         headerStyle: const DateRangePickerHeaderStyle(
-          textStyle: TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         monthViewSettings: const DateRangePickerMonthViewSettings(
           firstDayOfWeek: 1,

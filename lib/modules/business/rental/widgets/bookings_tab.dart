@@ -23,19 +23,23 @@ class BookingsTab extends StatelessWidget {
         if (pending.isNotEmpty) ...[
           _buildHeader('New Requests', pending.length, Colors.orange),
           const SizedBox(height: 12),
-          ...pending.map((b) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: BookingCard(booking: b),
-          )),
+          ...pending.map(
+            (b) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: BookingCard(booking: b),
+            ),
+          ),
           const SizedBox(height: 24),
         ],
         if (active.isNotEmpty) ...[
           _buildHeader('Active Rentals', active.length, AppColors.primaryColor),
           const SizedBox(height: 12),
-          ...active.map((b) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: BookingCard(booking: b),
-          )),
+          ...active.map(
+            (b) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: BookingCard(booking: b),
+            ),
+          ),
         ],
       ],
     );

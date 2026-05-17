@@ -6,24 +6,24 @@ class ConditionsStep extends StatelessWidget {
   final Map<String, dynamic> data;
   final Function(String, dynamic) onUpdate;
 
-  const ConditionsStep({
-    super.key,
-    required this.data,
-    required this.onUpdate,
-  });
+  const ConditionsStep({super.key, required this.data, required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
     final experienceLevels = [
-      'None', 
-      'Basic agricultural knowledge', 
-      'Certified operator', 
-      'Professional licence required'
+      'None',
+      'Basic agricultural knowledge',
+      'Certified operator',
+      'Professional licence required',
     ];
-    
+
     final uses = [
-      'Ploughing', 'Sowing', 'Harvesting', 
-      'Irrigation', 'Transport', 'Other'
+      'Ploughing',
+      'Sowing',
+      'Harvesting',
+      'Irrigation',
+      'Transport',
+      'Other',
     ];
 
     return Column(
@@ -31,13 +31,16 @@ class ConditionsStep extends StatelessWidget {
       children: [
         const StepHeader(
           title: 'Conditions & Restrictions',
-          subtitle: 'Define the rules for using your equipment and specify who is allowed to operate it.',
+          subtitle:
+              'Define the rules for using your equipment and specify who is allowed to operate it.',
         ),
         CustomDropdown<String>(
           label: 'Experience Level Required',
           required: true,
           value: data['experienceLevel'] ?? 'None',
-          items: experienceLevels.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          items: experienceLevels
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
           onChanged: (v) => onUpdate('experienceLevel', v),
         ),
         const FormLabel(label: 'Permitted Uses', required: true),
@@ -46,7 +49,9 @@ class ConditionsStep extends StatelessWidget {
           spacing: 12,
           runSpacing: 8,
           children: uses.map((use) {
-            final List<String> currentUses = List<String>.from(data['permittedUses'] ?? []);
+            final List<String> currentUses = List<String>.from(
+              data['permittedUses'] ?? [],
+            );
             final bool isSelected = currentUses.contains(use);
             return FilterChip(
               label: Text(use),
@@ -62,13 +67,19 @@ class ConditionsStep extends StatelessWidget {
               selectedColor: AppColors.primaryTint.withOpacity(0.2),
               checkmarkColor: AppColors.primaryColor,
               labelStyle: TextStyle(
-                color: isSelected ? AppColors.primaryColor : Colors.grey.shade700,
+                color: isSelected
+                    ? AppColors.primaryColor
+                    : Colors.grey.shade700,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: isSelected ? AppColors.primaryColor : Colors.grey.shade300),
+                side: BorderSide(
+                  color: isSelected
+                      ? AppColors.primaryColor
+                      : Colors.grey.shade300,
+                ),
               ),
             );
           }).toList(),
@@ -78,13 +89,22 @@ class ConditionsStep extends StatelessWidget {
         TextField(
           maxLines: 4,
           onChanged: (v) => onUpdate('restrictions', v),
-          controller: TextEditingController(text: data['restrictions'])..selection = TextSelection.collapsed(offset: (data['restrictions'] ?? '').length),
+          controller: TextEditingController(text: data['restrictions'])
+            ..selection = TextSelection.collapsed(
+              offset: (data['restrictions'] ?? '').length,
+            ),
           decoration: InputDecoration(
             hintText: 'e.g. Not permitted on steep slopes above 30%',
             filled: true,
             fillColor: Colors.grey.shade50,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade200)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade200)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade200),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade200),
+            ),
           ),
         ),
         const SizedBox(height: 32),
@@ -97,10 +117,14 @@ class ConditionsStep extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: (data['tenantInsuranceRequired'] ?? false) ? Colors.blue.shade50 : Colors.white,
+        color: (data['tenantInsuranceRequired'] ?? false)
+            ? Colors.blue.shade50
+            : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: (data['tenantInsuranceRequired'] ?? false) ? Colors.blue : Colors.grey.shade200,
+          color: (data['tenantInsuranceRequired'] ?? false)
+              ? Colors.blue
+              : Colors.grey.shade200,
         ),
       ),
       child: Row(

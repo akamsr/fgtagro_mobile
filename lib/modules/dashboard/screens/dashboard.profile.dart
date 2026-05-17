@@ -7,16 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fgtagro_mobile/widgets/locale/locale_provider.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
+import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-@RoutePage()
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+class LegacyProfileScreen extends StatefulWidget {
+  const LegacyProfileScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<LegacyProfileScreen> createState() => _LegacyProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _LegacyProfileScreenState extends State<LegacyProfileScreen> {
   // Mock Data
   final bool isAuthenticated = true;
   final bool hasSellerProfile = false;
@@ -38,7 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ─── En-tête profil ───
               Container(
                 padding: const EdgeInsets.only(
                   left: 24,
@@ -92,7 +93,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 const SizedBox(height: 12),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () => CustomNavigate.push(
+                                    const PersonalInformationRoute(),
+                                  ),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 14,
@@ -161,7 +164,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16, top: 24),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () => CustomNavigate.push(
+                      hasSellerProfile
+                          ? const SellerDashboardRoute()
+                          : const SellerOnboardRoute(),
+                    ),
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -227,7 +234,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
 
-              // ─── Paramètres du compte ───
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24, top: 28),
                 child: Column(
@@ -262,25 +268,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           DashboardMenuItem(
                             icon: Icons.location_on_outlined,
                             label: S.of(context).addresses,
-                            onTap: () {},
+                            onTap: () => CustomNavigate.push(
+                              const MyAddressesRoute(),
+                            ),
                           ),
                           DashboardMenuItem(
                             icon: Icons.payment_outlined,
                             label: S.of(context).paymentMethod,
                             divider: true,
-                            onTap: () {},
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Payment Method feature is coming soon!',
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            },
                           ),
                           DashboardMenuItem(
                             icon: Icons.notifications_outlined,
                             label: S.of(context).notifications,
                             divider: true,
-                            onTap: () => context.router.push(const NotificationsRoute()),
+                            onTap: () =>
+                                CustomNavigate.push(const NotificationsRoute()),
                           ),
                           DashboardMenuItem(
                             icon: Icons.favorite_border,
                             label: S.of(context).favorites,
                             divider: true,
-                            onTap: () => context.router.push(const FavouritesRoute()),
+                            onTap: () =>
+                                CustomNavigate.push(const FavouritesRoute()),
                           ),
 
                           // Biometric toggle
@@ -358,14 +377,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: Icons.receipt_long_outlined,
                             label: S.of(context).myOrders,
                             divider: true,
-                            onTap: () {},
+                            onTap: () => CustomNavigate().changeIndex(3),
                           ),
 
                           DashboardMenuItem(
                             icon: Icons.language,
                             label: S.of(context).language,
                             divider: true,
-                            onTap: () => context.router.push(const LanguageSettingsRoute()),
+                            onTap: () => CustomNavigate.push(
+                              const LanguageSettingsRoute(),
+                            ),
                           ),
                         ],
                       ),
@@ -409,7 +430,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           DashboardMenuItem(
                             icon: Icons.help_outline,
                             label: S.of(context).helpCenter,
-                            onTap: () {},
+                            onTap: () => CustomNavigate.push(
+                              const ContactSupportRoute(),
+                            ),
                           ),
 
                           // Logout
@@ -417,7 +440,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: Icons.logout,
                             label: S.of(context).logout,
                             divider: true,
-                            onTap: () {},
+                            onTap: () => _showLogoutConfirmation(context),
                             iconBgColor: const Color.fromRGBO(239, 68, 68, 0.1),
                             iconColor: Colors.red,
                             textColor: Colors.red,
@@ -431,6 +454,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Log out?'),
+        content: const Text(
+          'You will need to log back in to access your orders, favourites, and rentals.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<AuthCubit>().logout();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Log out'),
+          ),
+        ],
       ),
     );
   }

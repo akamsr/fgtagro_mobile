@@ -12,6 +12,7 @@ import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class SellerDashboardScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
           floatingActionButton: isSeller
               ? FloatingActionButton.extended(
                   onPressed: () =>
-                      context.router.push(const ProductPublicationRoute()),
+                      CustomNavigate.push(const ProductPublicationRoute()),
                   backgroundColor: AppColors.primaryColor,
                   icon: const Icon(Icons.add, color: Colors.white),
                   label: Text(
@@ -315,7 +316,7 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                                   .preparationDeadline(S.of(context).today),
                               actionLabel: S.of(context).viewAll,
                               icon: Icons.inventory_2,
-                              onTap: () => context.router.push(
+                              onTap: () => CustomNavigate.push(
                                 const SellerOrderListRoute(),
                               ),
                             ),
@@ -325,7 +326,7 @@ class _SellerDashboardScreenState extends State<SellerDashboardScreen> {
                               actionLabel: S.of(context).viewAll,
                               icon: Icons.agriculture,
                               color: AppColors.primaryColor,
-                              onTap: () => context.router.push(
+                              onTap: () => CustomNavigate.push(
                                 const SellerRentalListRoute(),
                               ),
                             ),

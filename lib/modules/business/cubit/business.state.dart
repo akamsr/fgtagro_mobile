@@ -22,7 +22,7 @@ class BusinessState extends GlobalAppState {
   });
 
   bool get isSellerMode => appMode == AppMode.seller;
-  
+
   // Helper to check seller validation status
   String get sellerStatus => profile?.status.toUpperCase() ?? 'NONE';
   bool get isValidated => sellerStatus == 'VALIDATED';

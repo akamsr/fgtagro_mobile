@@ -44,7 +44,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   ),
                   const SizedBox(height: 20),
                   if (state.genLoading && state.orders.isEmpty)
-                    const Expanded(child: Center(child: CircularProgressIndicator()))
+                    const Expanded(
+                      child: Center(child: CircularProgressIndicator()),
+                    )
                   else if (state.orders.isEmpty)
                     const Expanded(
                       child: Center(
@@ -57,7 +59,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   else
                     Expanded(
                       child: RefreshIndicator(
-                        onRefresh: () => context.read<OrderCubit>().fetchOrders(),
+                        onRefresh: () =>
+                            context.read<OrderCubit>().fetchOrders(),
                         child: ListView.builder(
                           itemCount: state.orders.length,
                           itemBuilder: (context, index) {
@@ -99,7 +102,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
             children: [
               Text(
                 'Commande #${order.orderNumber}',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
               _buildStatusBadge(order.status),
             ],
@@ -135,7 +141,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 // TODO: Navigate to order detail
               },
               style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               child: const Text('Détails'),
             ),
@@ -184,7 +192,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
       ),
       child: Text(
         label,
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

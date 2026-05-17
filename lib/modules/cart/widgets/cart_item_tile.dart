@@ -53,10 +53,7 @@ class CartItemTile extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   '${item.finalPrice.toStringAsFixed(0)} FCFA / ${item.unit ?? "unité"}',
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                  ),
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 12),
                 // Controls
@@ -74,7 +71,11 @@ class CartItemTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.red,
+                        size: 20,
+                      ),
                       onPressed: () => _handleDelete(context, item),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -96,7 +97,9 @@ class CartItemTile extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Retirer cet article ?'),
-          content: Text('${item.productName} — ${lineTotal.toStringAsFixed(0)} FCFA sera retiré de votre panier.'),
+          content: Text(
+            '${item.productName} — ${lineTotal.toStringAsFixed(0)} FCFA sera retiré de votre panier.',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -131,7 +134,8 @@ class _QuantitySelector extends StatelessWidget {
       children: [
         _CircleButton(
           icon: Icons.remove,
-          onTap: () => context.read<CartCubit>().updateQuantity(item.id, item.qty - 1),
+          onTap: () =>
+              context.read<CartCubit>().updateQuantity(item.id, item.qty - 1),
         ),
         Container(
           width: 40,
@@ -143,7 +147,12 @@ class _QuantitySelector extends StatelessWidget {
         ),
         _CircleButton(
           icon: Icons.add,
-          onTap: isMax ? null : () => context.read<CartCubit>().updateQuantity(item.id, item.qty + 1),
+          onTap: isMax
+              ? null
+              : () => context.read<CartCubit>().updateQuantity(
+                  item.id,
+                  item.qty + 1,
+                ),
           disabled: isMax,
         ),
       ],
@@ -166,7 +175,9 @@ class _CircleButton extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: disabled ? Colors.grey.shade200 : Colors.grey.shade300),
+          border: Border.all(
+            color: disabled ? Colors.grey.shade200 : Colors.grey.shade300,
+          ),
           color: disabled ? Colors.grey.shade100 : Colors.transparent,
         ),
         child: Icon(

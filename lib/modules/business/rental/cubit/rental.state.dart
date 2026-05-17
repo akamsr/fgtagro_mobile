@@ -38,5 +38,11 @@ class RentalState extends GlobalAppState {
   }
 
   @override
-  List<Object?> get extraprops => [genLoading, genError, equipment, bookings, history];
+  List<Object?> get extraprops => [
+    genLoading,
+    genError,
+    equipment,
+    bookings,
+    history,
+  ];
 }

@@ -6,6 +6,7 @@ import 'package:fgtagro_mobile/modules/favourites/widgets/favourite_card.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class FavouritesScreen extends StatelessWidget {
@@ -30,7 +31,7 @@ class FavouritesScreen extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.secondaryColor),
-          onPressed: () => context.router.pop(),
+          onPressed: () => CustomNavigate.back(),
         ),
       ),
       body: BlocBuilder<FavouritesCubit, FavouritesState>(
@@ -87,7 +88,7 @@ class FavouritesScreen extends StatelessWidget {
                     SizedBox(
                       width: 200,
                       child: ElevatedButton(
-                        onPressed: () => context.router.pop(),
+                        onPressed: () => CustomNavigate.back(),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.secondaryColor,
                           foregroundColor: Colors.white,

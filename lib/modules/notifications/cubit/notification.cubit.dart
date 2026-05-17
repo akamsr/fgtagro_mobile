@@ -63,7 +63,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   void loadNotifications() {
     emit(state.copyWith(isLoading: true));
-    
+
     // Simulate API fetch with mock data
     final mockNotifications = [
       NotificationModel(
@@ -93,7 +93,9 @@ class NotificationCubit extends Cubit<NotificationState> {
   }
 
   void markAllAsRead() {
-    final updated = state.notifications.map((n) => n.copyWith(isRead: true)).toList();
+    final updated = state.notifications
+        .map((n) => n.copyWith(isRead: true))
+        .toList();
     emit(state.copyWith(notifications: updated));
   }
 }

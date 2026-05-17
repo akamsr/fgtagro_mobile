@@ -117,8 +117,50 @@ class UserModel extends HiveObject {
   @HiveField(22)
   DateTime? last_seen;
 
-  String get firstName => fullNames?.split(' ').first ?? '';
-  String get lastName => (fullNames?.split(' ').length ?? 0) > 1 ? fullNames!.split(' ').sublist(1).join(' ') : '';
+  @HiveField(23)
+  String? slug;
+  @HiveField(24)
+  String? passwordHash;
+  @HiveField(25)
+  String? firstNameField;
+  @HiveField(26)
+  String? lastNameField;
+  @HiveField(27)
+  String? avatarUrl;
+  @HiveField(28)
+  double? gpsLatitude;
+  @HiveField(29)
+  double? gpsLongitude;
+  @HiveField(30)
+  bool? emailVerified;
+  @HiveField(31)
+  bool? phoneVerified;
+  @HiveField(32)
+  String? pushToken;
+  @HiveField(33)
+  DateTime? lockedUntil;
+  @HiveField(34)
+  String? language;
+  @HiveField(35)
+  String? timezone;
+  @HiveField(36)
+  String? status;
+
+  String get firstName {
+    if (firstNameField != null && firstNameField!.isNotEmpty) {
+      return firstNameField!;
+    }
+    return fullNames?.split(' ').first ?? '';
+  }
+
+  String get lastName {
+    if (lastNameField != null && lastNameField!.isNotEmpty) {
+      return lastNameField!;
+    }
+    return (fullNames?.split(' ').length ?? 0) > 1 
+        ? fullNames!.split(' ').sublist(1).join(' ') 
+        : '';
+  }
 
   UserModel({
     this.uid = '',
@@ -144,41 +186,73 @@ class UserModel extends HiveObject {
     this.role,
     this.is_online = false,
     this.last_seen,
+    this.slug,
+    this.passwordHash,
+    this.firstNameField,
+    this.lastNameField,
+    this.avatarUrl,
+    this.gpsLatitude,
+    this.gpsLongitude,
+    this.emailVerified,
+    this.phoneVerified,
+    this.pushToken,
+    this.lockedUntil,
+    this.language,
+    this.timezone,
+    this.status,
   });
 
   static UserModel empty = UserModel(uid: '');
 
   factory UserModel.fromJson2(Map<String, dynamic> json) {
+    final String fName = json["first_name"] ?? json["firstName"] ?? '';
+    final String lName = json["last_name"] ?? json["lastName"] ?? '';
+    String fullName = json["fullNames"] ?? '';
+    if (fullName.isEmpty && (fName.isNotEmpty || lName.isNotEmpty)) {
+      fullName = '$fName $lName'.trim();
+    }
+
     return UserModel(
-      id: json["id"] as int,
-      expireIn:
-          int.tryParse(json["expireIn"].toString()) ??
-          json['expireIn'].toInt() ??
-          0,
-      uid: json["uid"] as String,
-      fullNames: json["fullNames"] as String,
+      id: json["id"] as int?,
+      expireIn: json["expireIn"] != null ? int.tryParse(json["expireIn"].toString()) ?? 0 : null,
+      uid: json["uid"]?.toString() ?? '',
+      fullNames: fullName,
       roles: List<dynamic>.from(json["Roles"] ?? []),
       role: UserRoleExtension.fromString(json['role'] ?? ''),
-      email: json["email"] as String,
+      email: json["email"] as String?,
       is_online: json["is_online"] ?? false,
       last_seen: DateTime.tryParse(json["last_seen"] ?? ""),
       password: json["password"] ?? '',
       regionCityAdress: json['regionCityAdress'] ?? '',
-      phoneNumber: json["phoneNumber"] as String,
-      photoUrl: json["photoUrl"] as String?,
+      phoneNumber: json["phoneNumber"] ?? json["phone"] ?? '',
+      photoUrl: json["photoUrl"] ?? json["avatar_url"],
       provider: json["provider"] ?? '',
       token: json["token"] as String?,
       createdAt: json["createdAt"] as String?,
-      deviceToken: json["deviceToken"] as String?,
+      deviceToken: json["deviceToken"] ?? json["push_token"] as String?,
       deviceId: json["deviceId"] ?? '',
       refreshToken: json["refreshToken"] ?? '',
       updatedAt: json["updatedAt"] as String?,
+      slug: json["slug"],
+      passwordHash: json["password_hash"],
+      firstNameField: fName,
+      lastNameField: lName,
+      avatarUrl: json["avatar_url"] ?? json["photoUrl"],
+      gpsLatitude: json["gps_latitude"] != null ? double.tryParse(json["gps_latitude"].toString()) : null,
+      gpsLongitude: json["gps_longitude"] != null ? double.tryParse(json["gps_longitude"].toString()) : null,
+      emailVerified: json["email_verified"] ?? false,
+      phoneVerified: json["phone_verified"] ?? false,
+      pushToken: json["push_token"] ?? json["deviceToken"],
+      lockedUntil: json["locked_until"] != null ? DateTime.tryParse(json["locked_until"].toString()) : null,
+      language: json["language"],
+      timezone: json["timezone"],
+      status: json["status"] ?? 'active',
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(id: $id, expireIn: $expireIn, uid: $uid, fullNames: $fullNames, interest: $interest, email: $email, phoneNumber: $phoneNumber, photoUrl: $photoUrl, provider: $provider, token: $token, regionCityAdress: $regionCityAdress, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserModel(id: $id, uid: $uid, fullNames: $fullNames, email: $email, phoneNumber: $phoneNumber, photoUrl: $photoUrl, provider: $provider, token: $token, regionCityAdress: $regionCityAdress, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   Map<String, dynamic> toMap() {
@@ -203,6 +277,20 @@ class UserModel extends HiveObject {
     result.addAll({'ambassadorId': ambassadorId});
     result.addAll({'deviceId': deviceId});
     result.addAll({'refreshToken': refreshToken});
+    result.addAll({'slug': slug});
+    result.addAll({'password_hash': passwordHash});
+    result.addAll({'first_name': firstNameField ?? firstName});
+    result.addAll({'last_name': lastNameField ?? lastName});
+    result.addAll({'avatar_url': avatarUrl ?? photoUrl});
+    result.addAll({'gps_latitude': gpsLatitude});
+    result.addAll({'gps_longitude': gpsLongitude});
+    result.addAll({'email_verified': emailVerified});
+    result.addAll({'phone_verified': phoneVerified});
+    result.addAll({'push_token': pushToken ?? deviceToken});
+    result.addAll({'locked_until': lockedUntil?.toIso8601String()});
+    result.addAll({'language': language});
+    result.addAll({'timezone': timezone});
+    result.addAll({'status': status});
 
     return result;
   }
@@ -238,33 +326,46 @@ class UserModel extends HiveObject {
       }
     }
 
-    final String firstName = map['first_name'] ?? '';
-    final String lastName = map['last_name'] ?? '';
+    final String fName = map['first_name'] ?? map['firstName'] ?? '';
+    final String lName = map['last_name'] ?? map['lastName'] ?? '';
     String fullName = map['fullNames'] ?? '';
-    if (fullName.isEmpty && (firstName.isNotEmpty || lastName.isNotEmpty)) {
-      fullName = '$firstName $lastName'.trim();
+    if (fullName.isEmpty && (fName.isNotEmpty || lName.isNotEmpty)) {
+      fullName = '$fName $lName'.trim();
     }
 
     return UserModel(
-      id: parsedId ?? 0,
+      id: parsedId,
       uid: parsedUid,
       fullNames: fullName,
-      roles: map['Roles'] ?? [],
+      roles: map['Roles'] ?? map['roles'] ?? [],
       email: map['email'] ?? '',
-      phoneNumber: map['phoneNumber'] ?? '',
-
-      photoUrl: map['photoUrl'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? map['phone'] ?? '',
+      photoUrl: map['photoUrl'] ?? map['avatar_url'] ?? '',
       role: UserRoleExtension.fromString(map['role'] ?? ''),
       provider: map['provider'] ?? '',
       token: map['token'] ?? '',
-      deviceToken: map["deviceToken"] ?? '',
+      deviceToken: map["deviceToken"] ?? map["push_token"] ?? '',
       regionCityAdress: map['regionCityAdress'] ?? '',
       password: map["password"] ?? '',
-      refreshToken: map["refreshToken"] ?? '',
+      refreshToken: map["refreshToken"] ?? map["refresh_token"] ?? '',
       agentId: map['agentId'],
       deviceId: map['deviceId'] ?? '',
-      createdAt: map['createdAt'] ?? DateTime.now().toString(),
-      updatedAt: map['updatedAt'] ?? DateTime.now().toString(),
+      createdAt: map['createdAt'] ?? map['created_at'] ?? DateTime.now().toString(),
+      updatedAt: map['updatedAt'] ?? map['updated_at'] ?? DateTime.now().toString(),
+      slug: map['slug'],
+      passwordHash: map['password_hash'],
+      firstNameField: fName,
+      lastNameField: lName,
+      avatarUrl: map['avatar_url'] ?? map['photoUrl'],
+      gpsLatitude: map['gps_latitude'] != null ? double.tryParse(map['gps_latitude'].toString()) : null,
+      gpsLongitude: map['gps_longitude'] != null ? double.tryParse(map['gps_longitude'].toString()) : null,
+      emailVerified: map['email_verified'] ?? false,
+      phoneVerified: map['phone_verified'] ?? false,
+      pushToken: map['push_token'] ?? map['deviceToken'],
+      lockedUntil: map['locked_until'] != null ? DateTime.tryParse(map['locked_until'].toString()) : null,
+      language: map['language'],
+      timezone: map['timezone'],
+      status: map['status'] ?? 'active',
     );
   }
 
@@ -279,26 +380,7 @@ class UserModel extends HiveObject {
       UserModel.fromMap(json.decode(source));
 
   factory UserModel.fromLocalMap(Map<String, dynamic> map) {
-    return UserModel(
-      id: map['id'] ?? 0,
-
-      uid: map['uid'] ?? '',
-      fullNames: map['fullNames'] ?? '',
-      roles: map['Roles'] ?? [],
-      email: map['email'] ?? '',
-      phoneNumber: map['phoneNumber'] ?? '',
-      photoUrl: map['photoUrl'] ?? '',
-      provider: map['provider'] ?? '',
-      role: UserRoleExtension.fromString(map['role'] ?? ''),
-      token: map['token'] ?? '',
-      deviceToken: map["deviceToken"] ?? '',
-      regionCityAdress: map['regionCityAdress'] ?? '',
-      refreshToken: map["refreshToken"] ?? '',
-      agentId: map['agentId'],
-      deviceId: map['deviceId'] ?? '',
-      createdAt: map['createdAt'] ?? DateTime.now().toString(),
-      updatedAt: map['updatedAt'] ?? DateTime.now().toString(),
-    );
+    return UserModel.fromMap(map);
   }
 
   UserModel copyWith({
@@ -318,7 +400,28 @@ class UserModel extends HiveObject {
     String? deviceToken,
     String? deviceId,
     String? refreshToken,
+    String? slug,
+    String? passwordHash,
+    String? firstName,
+    String? lastName,
+    String? avatarUrl,
+    double? gpsLatitude,
+    double? gpsLongitude,
+    bool? emailVerified,
+    bool? phoneVerified,
+    String? pushToken,
+    DateTime? lockedUntil,
+    String? language,
+    String? timezone,
+    String? status,
   }) {
+    String? fName = firstName;
+    String? lName = lastName;
+    if (fullNames != null && firstName == null && lastName == null) {
+      final parts = fullNames.trim().split(' ');
+      fName = parts.isNotEmpty ? parts.first : '';
+      lName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+    }
     return UserModel(
       id: id ?? this.id,
       expireIn: expireIn ?? this.expireIn,
@@ -336,6 +439,20 @@ class UserModel extends HiveObject {
       deviceToken: deviceToken ?? this.deviceToken,
       deviceId: deviceId ?? this.deviceId,
       refreshToken: refreshToken ?? this.refreshToken,
+      slug: slug ?? this.slug,
+      passwordHash: passwordHash ?? this.passwordHash,
+      firstNameField: fName ?? this.firstNameField,
+      lastNameField: lName ?? this.lastNameField,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      gpsLatitude: gpsLatitude ?? this.gpsLatitude,
+      gpsLongitude: gpsLongitude ?? this.gpsLongitude,
+      emailVerified: emailVerified ?? this.emailVerified,
+      phoneVerified: phoneVerified ?? this.phoneVerified,
+      pushToken: pushToken ?? this.pushToken,
+      lockedUntil: lockedUntil ?? this.lockedUntil,
+      language: language ?? this.language,
+      timezone: timezone ?? this.timezone,
+      status: status ?? this.status,
     );
   }
 }

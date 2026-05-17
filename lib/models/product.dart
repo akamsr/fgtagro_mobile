@@ -140,6 +140,31 @@ class ProductModel {
   @HiveField(16)
   final String createdAt;
 
+  @HiveField(17)
+  final String? sellerId;
+  @HiveField(18)
+  final String? categoryId;
+  @HiveField(19)
+  final String? storeId;
+  @HiveField(20)
+  final int stockReserved;
+  @HiveField(21)
+  final double? gpsLatitude;
+  @HiveField(22)
+  final double? gpsLongitude;
+  @HiveField(23)
+  final String? grade;
+  @HiveField(24)
+  final String? variety;
+  @HiveField(25)
+  final String? origin;
+  @HiveField(26)
+  final String? harvestingDate;
+  @HiveField(27)
+  final String? expirationDate;
+  @HiveField(28)
+  final List<Map<String, dynamic>>? customAttributes;
+
   ProductModel({
     required this.id,
     required this.name,
@@ -158,6 +183,18 @@ class ProductModel {
     required this.seller,
     this.publishedAt,
     required this.createdAt,
+    this.sellerId,
+    this.categoryId,
+    this.storeId,
+    this.stockReserved = 0,
+    this.gpsLatitude,
+    this.gpsLongitude,
+    this.grade,
+    this.variety,
+    this.origin,
+    this.harvestingDate,
+    this.expirationDate,
+    this.customAttributes,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -170,7 +207,7 @@ class ProductModel {
       unitPrice: double.tryParse(json['unit_price']?.toString() ?? '0') ?? 0.0,
       unitOfSale: json['unit_of_sale'] ?? '',
       stockQuantity: json['stock_quantity'] ?? 0,
-      status: json['status'] ?? '',
+      status: json['status'] ?? json['validation_status'] ?? '',
       isFeatured: json['is_featured'] ?? false,
       isOnSale: json['is_on_sale'] ?? false,
       photos: List<String>.from(json['photos'] ?? []),
@@ -179,6 +216,20 @@ class ProductModel {
       seller: ProductSellerModel.fromJson(json['seller'] ?? {}),
       publishedAt: json['published_at'],
       createdAt: json['created_at'] ?? '',
+      sellerId: json['seller_id']?.toString() ?? json['seller']?['id']?.toString(),
+      categoryId: json['category_id']?.toString() ?? json['category']?['id']?.toString(),
+      storeId: json['store_id']?.toString(),
+      stockReserved: json['stock_reserved'] ?? 0,
+      gpsLatitude: json['gps_latitude'] != null ? double.tryParse(json['gps_latitude'].toString()) : null,
+      gpsLongitude: json['gps_longitude'] != null ? double.tryParse(json['gps_longitude'].toString()) : null,
+      grade: json['grade'] ?? json['grades'],
+      variety: json['variety'],
+      origin: json['origin'],
+      harvestingDate: json['harvesting_date'] ?? json['harvesting_dates'],
+      expirationDate: json['expiration_date'] ?? json['expiration_dates'],
+      customAttributes: json['custom_attribute_payload_arrays'] != null
+          ? List<Map<String, dynamic>>.from(json['custom_attribute_payload_arrays'])
+          : null,
     );
   }
 
@@ -201,6 +252,18 @@ class ProductModel {
       'seller': seller.toJson(),
       'published_at': publishedAt,
       'created_at': createdAt,
+      'seller_id': sellerId,
+      'category_id': categoryId,
+      'store_id': storeId,
+      'stock_reserved': stockReserved,
+      'gps_latitude': gpsLatitude,
+      'gps_longitude': gpsLongitude,
+      'grade': grade,
+      'variety': variety,
+      'origin': origin,
+      'harvesting_date': harvestingDate,
+      'expiration_date': expirationDate,
+      'custom_attribute_payload_arrays': customAttributes,
     };
   }
 
@@ -222,6 +285,18 @@ class ProductModel {
     ProductSellerModel? seller,
     String? publishedAt,
     String? createdAt,
+    String? sellerId,
+    String? categoryId,
+    String? storeId,
+    int? stockReserved,
+    double? gpsLatitude,
+    double? gpsLongitude,
+    String? grade,
+    String? variety,
+    String? origin,
+    String? harvestingDate,
+    String? expirationDate,
+    List<Map<String, dynamic>>? customAttributes,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -241,6 +316,18 @@ class ProductModel {
       seller: seller ?? this.seller,
       publishedAt: publishedAt ?? this.publishedAt,
       createdAt: createdAt ?? this.createdAt,
+      sellerId: sellerId ?? this.sellerId,
+      categoryId: categoryId ?? this.categoryId,
+      storeId: storeId ?? this.storeId,
+      stockReserved: stockReserved ?? this.stockReserved,
+      gpsLatitude: gpsLatitude ?? this.gpsLatitude,
+      gpsLongitude: gpsLongitude ?? this.gpsLongitude,
+      grade: grade ?? this.grade,
+      variety: variety ?? this.variety,
+      origin: origin ?? this.origin,
+      harvestingDate: harvestingDate ?? this.harvestingDate,
+      expirationDate: expirationDate ?? this.expirationDate,
+      customAttributes: customAttributes ?? this.customAttributes,
     );
   }
 }

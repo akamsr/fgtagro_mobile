@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:hive_ce/hive.dart';
 
 part 'seller.g.dart';
@@ -40,6 +41,12 @@ class SellerProfileModel {
   final String? rejectionReason;
   @HiveField(17)
   final String createdAt;
+  @HiveField(18)
+  final String? userId;
+  @HiveField(19)
+  final List<String>? kycDocuments;
+  @HiveField(20)
+  final Map<String, dynamic>? payoutDestinations;
 
   SellerProfileModel({
     required this.id,
@@ -60,6 +67,9 @@ class SellerProfileModel {
     this.storefrontPhotoUrl,
     this.rejectionReason,
     required this.createdAt,
+    this.userId,
+    this.kycDocuments,
+    this.payoutDestinations,
   });
 
   factory SellerProfileModel.fromJson(Map<String, dynamic> json) {
@@ -82,6 +92,9 @@ class SellerProfileModel {
       storefrontPhotoUrl: json['storefront_photo_url'],
       rejectionReason: json['rejection_reason'],
       createdAt: json['created_at'] ?? '',
+      userId: json['user_id']?.toString(),
+      kycDocuments: json['kyc_documents'] != null ? List<String>.from(json['kyc_documents']) : null,
+      payoutDestinations: json['payout_destinations'] is Map ? Map<String, dynamic>.from(json['payout_destinations']) : null,
     );
   }
 
@@ -105,6 +118,9 @@ class SellerProfileModel {
       'storefront_photo_url': storefrontPhotoUrl,
       'rejection_reason': rejectionReason,
       'created_at': createdAt,
+      'user_id': userId,
+      'kyc_documents': kycDocuments,
+      'payout_destinations': payoutDestinations,
     };
   }
 
@@ -127,6 +143,9 @@ class SellerProfileModel {
     String? storefrontPhotoUrl,
     String? rejectionReason,
     String? createdAt,
+    String? userId,
+    List<String>? kycDocuments,
+    Map<String, dynamic>? payoutDestinations,
   }) {
     return SellerProfileModel(
       id: id ?? this.id,
@@ -147,6 +166,9 @@ class SellerProfileModel {
       storefrontPhotoUrl: storefrontPhotoUrl ?? this.storefrontPhotoUrl,
       rejectionReason: rejectionReason ?? this.rejectionReason,
       createdAt: createdAt ?? this.createdAt,
+      userId: userId ?? this.userId,
+      kycDocuments: kycDocuments ?? this.kycDocuments,
+      payoutDestinations: payoutDestinations ?? this.payoutDestinations,
     );
   }
 }
@@ -189,6 +211,22 @@ class StoreModel {
   final int productsCount;
   @HiveField(17)
   final String createdAt;
+  @HiveField(18)
+  final String? sellerId;
+  @HiveField(19)
+  final double? surfaceSqm;
+  @HiveField(20)
+  final double? storageCapacityTons;
+  @HiveField(21)
+  final double? storageCapacityPallets;
+  @HiveField(22)
+  final bool hasLivestockArea;
+  @HiveField(23)
+  final bool hasHeavyMachineryArea;
+  @HiveField(24)
+  final bool hasLoadingDock;
+  @HiveField(25)
+  final bool hasForklift;
 
   StoreModel({
     required this.id,
@@ -209,6 +247,14 @@ class StoreModel {
     required this.hasDryWarehouse,
     required this.productsCount,
     required this.createdAt,
+    this.sellerId,
+    this.surfaceSqm,
+    this.storageCapacityTons,
+    this.storageCapacityPallets,
+    this.hasLivestockArea = false,
+    this.hasHeavyMachineryArea = false,
+    this.hasLoadingDock = false,
+    this.hasForklift = false,
   });
 
   factory StoreModel.fromJson(Map<String, dynamic> json) {
@@ -231,6 +277,14 @@ class StoreModel {
       hasDryWarehouse: json['has_dry_warehouse'] ?? false,
       productsCount: json['_count']?['products'] ?? 0,
       createdAt: json['created_at'] ?? '',
+      sellerId: json['seller_id']?.toString(),
+      surfaceSqm: (json['surface_sqm'] ?? 0).toDouble(),
+      storageCapacityTons: (json['storage_capacity_tons'] ?? 0).toDouble(),
+      storageCapacityPallets: (json['storage_capacity_pallets'] ?? 0).toDouble(),
+      hasLivestockArea: json['has_livestock_area'] ?? false,
+      hasHeavyMachineryArea: json['has_heavy_machinery_area'] ?? false,
+      hasLoadingDock: json['has_loading_dock'] ?? false,
+      hasForklift: json['has_forklift'] ?? false,
     );
   }
 
@@ -254,6 +308,14 @@ class StoreModel {
       'has_dry_warehouse': hasDryWarehouse,
       '_count': {'products': productsCount},
       'created_at': createdAt,
+      'seller_id': sellerId,
+      'surface_sqm': surfaceSqm,
+      'storage_capacity_tons': storageCapacityTons,
+      'storage_capacity_pallets': storageCapacityPallets,
+      'has_livestock_area': hasLivestockArea,
+      'has_heavy_machinery_area': hasHeavyMachineryArea,
+      'has_loading_dock': hasLoadingDock,
+      'has_forklift': hasForklift,
     };
   }
 
@@ -276,6 +338,14 @@ class StoreModel {
     bool? hasDryWarehouse,
     int? productsCount,
     String? createdAt,
+    String? sellerId,
+    double? surfaceSqm,
+    double? storageCapacityTons,
+    double? storageCapacityPallets,
+    bool? hasLivestockArea,
+    bool? hasHeavyMachineryArea,
+    bool? hasLoadingDock,
+    bool? hasForklift,
   }) {
     return StoreModel(
       id: id ?? this.id,
@@ -296,6 +366,14 @@ class StoreModel {
       hasDryWarehouse: hasDryWarehouse ?? this.hasDryWarehouse,
       productsCount: productsCount ?? this.productsCount,
       createdAt: createdAt ?? this.createdAt,
+      sellerId: sellerId ?? this.sellerId,
+      surfaceSqm: surfaceSqm ?? this.surfaceSqm,
+      storageCapacityTons: storageCapacityTons ?? this.storageCapacityTons,
+      storageCapacityPallets: storageCapacityPallets ?? this.storageCapacityPallets,
+      hasLivestockArea: hasLivestockArea ?? this.hasLivestockArea,
+      hasHeavyMachineryArea: hasHeavyMachineryArea ?? this.hasHeavyMachineryArea,
+      hasLoadingDock: hasLoadingDock ?? this.hasLoadingDock,
+      hasForklift: hasForklift ?? this.hasForklift,
     );
   }
 }

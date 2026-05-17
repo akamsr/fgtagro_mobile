@@ -6,6 +6,7 @@ import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class CartScreen extends StatefulWidget {
@@ -40,7 +41,7 @@ class _CartScreenState extends State<CartScreen> {
         centerTitle: false,
         actions: [
           TextButton(
-            onPressed: () => context.router.pop(),
+            onPressed: () => CustomNavigate.back(),
             child: const Text(
               'Continuer',
               style: TextStyle(
@@ -517,7 +518,7 @@ class _CartFooter extends StatelessWidget {
               width: double.infinity,
               height: 54,
               child: ElevatedButton(
-                onPressed: () => context.router.push(const CheckoutRoute()),
+                onPressed: () => CustomNavigate.push(const CheckoutRoute()),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.secondaryColor,
                   shape: RoundedRectangleBorder(
@@ -607,7 +608,7 @@ class _EmptyCartState extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           ElevatedButton(
-            onPressed: () => context.router.pop(),
+            onPressed: () => CustomNavigate.back(),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               shape: RoundedRectangleBorder(

@@ -1,5 +1,6 @@
 import 'package:fgtagro_mobile/generated/l10n.dart';
 import 'package:fgtagro_mobile/models/user.dart';
+import 'package:fgtagro_mobile/models/seller.dart';
 import 'package:fgtagro_mobile/modules/auth/cubit/auth.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.state.dart';
@@ -14,33 +15,42 @@ class SellerProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context),
-          const SizedBox(height: 24),
-          _buildAccountSection(context),
-          const SizedBox(height: 24),
-          _buildDocumentsSection(context),
-          const SizedBox(height: 24),
-          _buildBankAndPayoutSection(context),
-          const SizedBox(height: 24),
-          _buildNotificationPreferences(context),
-          const SizedBox(height: 24),
-          _buildSupportAndLegal(context),
-          const SizedBox(height: 32),
-          _buildSwitchModeButton(context),
-          const SizedBox(height: 16),
-          _buildLogoutButton(context),
-          const SizedBox(height: 40),
-        ],
-      ),
+    return BlocBuilder<BusinessCubit, BusinessState>(
+      builder: (context, businessState) {
+        final profile = businessState.profile;
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(context, profile),
+              const SizedBox(height: 24),
+              _buildAccountSection(context, profile),
+              const SizedBox(height: 24),
+              _buildDocumentsSection(context, profile),
+              const SizedBox(height: 24),
+              _buildBankAndPayoutSection(context, profile),
+              const SizedBox(height: 24),
+              _buildNotificationPreferences(context),
+              const SizedBox(height: 24),
+              _buildSupportAndLegal(context),
+              const SizedBox(height: 32),
+              _buildSwitchModeButton(context),
+              const SizedBox(height: 16),
+              _buildLogoutButton(context),
+              const SizedBox(height: 40),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, SellerProfileModel? profile) {
+    final trustLevel = profile?.trustLevel ?? 'bronze';
+    final trustLevelTitle = '${trustLevel[0].toUpperCase()}${trustLevel.substring(1).toLowerCase()}';
+
     return Column(
       children: [
         Center(
@@ -49,16 +59,21 @@ class SellerProfileView extends StatelessWidget {
               CircleAvatar(
                 radius: 50,
                 backgroundColor: AppColors.primaryColor.withOpacity(0.1),
-                child: Text(
-                  user?.fullNames?.isNotEmpty == true
-                      ? user!.fullNames!.substring(0, 1).toUpperCase()
-                      : 'B',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
-                  ),
-                ),
+                backgroundImage: (user?.avatarUrl?.isNotEmpty == true || user?.photoUrl?.isNotEmpty == true)
+                    ? NetworkImage(user?.avatarUrl ?? user?.photoUrl ?? '')
+                    : null,
+                child: (user?.avatarUrl?.isNotEmpty == true || user?.photoUrl?.isNotEmpty == true)
+                    ? null
+                    : Text(
+                        user?.fullNames?.isNotEmpty == true
+                            ? user!.fullNames!.substring(0, 1).toUpperCase()
+                            : 'B',
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
               ),
               Positioned(
                 right: 0,
@@ -81,7 +96,9 @@ class SellerProfileView extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          user?.fullNames ?? 'GIA Store',
+          profile?.businessName.isNotEmpty == true
+              ? profile!.businessName
+              : (user?.fullNames ?? 'Seller'),
           style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -94,9 +111,12 @@ class SellerProfileView extends StatelessWidget {
           children: [
             const Icon(Icons.star, color: Colors.amber, size: 18),
             const SizedBox(width: 4),
-            const Text('4.8', style: TextStyle(fontWeight: FontWeight.bold)),
             Text(
-              ' (124 reviews)',
+              '${profile?.averageRating ?? 0.0}',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              ' (${profile?.totalReviews ?? 0} reviews)',
               style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
             ),
           ],
@@ -125,17 +145,17 @@ class SellerProfileView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.workspace_premium,
                         color: Colors.grey,
                         size: 24,
-                      ), // Silver color
-                      SizedBox(width: 8),
+                      ),
+                      const SizedBox(width: 8),
                       Text(
-                        'Silver Level',
-                        style: TextStyle(
+                        '$trustLevelTitle Level',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -144,23 +164,31 @@ class SellerProfileView extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    'Level 2',
+                    'Level ${profile?.trustLevel == 'gold' ? '3' : profile?.trustLevel == 'silver' ? '2' : '1'}',
                     style: TextStyle(color: Colors.grey.shade300, fontSize: 12),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
               LinearProgressIndicator(
-                value: 0.6,
+                value: profile?.trustLevel == 'gold'
+                    ? 1.0
+                    : profile?.trustLevel == 'silver'
+                        ? 0.6
+                        : 0.2,
                 backgroundColor: Colors.white24,
                 valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
                 borderRadius: BorderRadius.circular(4),
                 minHeight: 6,
               ),
               const SizedBox(height: 8),
-              const Text(
-                '23 more sales to reach Gold',
-                style: TextStyle(color: Colors.white70, fontSize: 12),
+              Text(
+                profile?.trustLevel == 'gold'
+                    ? 'Congratulations! You reached the highest tier.'
+                    : profile?.trustLevel == 'silver'
+                        ? '15 more sales to reach Gold'
+                        : 'Reach Silver level to unlock more features',
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
             ],
           ),
@@ -190,8 +218,8 @@ class SellerProfileView extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '80%',
-                    style: TextStyle(
+                    profile != null ? '100%' : '50%',
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primaryColor,
                     ),
@@ -200,7 +228,7 @@ class SellerProfileView extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               LinearProgressIndicator(
-                value: 0.8,
+                value: profile != null ? 1.0 : 0.5,
                 backgroundColor: Colors.grey.shade100,
                 valueColor: const AlwaysStoppedAnimation<Color>(
                   AppColors.primaryColor,
@@ -209,9 +237,11 @@ class SellerProfileView extends StatelessWidget {
                 minHeight: 6,
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Add your certifications to reach 100%',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+              Text(
+                profile != null
+                    ? 'Your profile is fully configured ✓'
+                    : 'Complete your business profile to verify your account',
+                style: const TextStyle(color: Colors.grey, fontSize: 12),
               ),
             ],
           ),
@@ -220,64 +250,75 @@ class SellerProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountSection(BuildContext context) {
+  Widget _buildAccountSection(BuildContext context, SellerProfileModel? profile) {
     return _SectionCard(
       title: 'Account Information',
       icon: Icons.person_outline,
       children: [
         _buildInfoRow(
           'Full Name',
-          user?.fullNames ?? 'John Doe',
+          user?.fullNames ?? '',
           isEditable: false,
         ),
         const Divider(height: 1),
         _buildInfoRow(
           'Phone',
-          user?.phoneNumber ?? '+237 600000000',
+          user?.phoneNumber ?? '',
           isEditable: false,
           hint: 'Contact support to change',
         ),
         const Divider(height: 1),
         _buildInfoRow(
           'Email',
-          user?.email ?? 'john@example.com',
+          user?.email ?? '',
           isEditable: true,
         ),
         const Divider(height: 1),
-        _buildInfoRow('Business Name', 'FGT Agro Farm', isEditable: true),
+        _buildInfoRow(
+          'Business Name',
+          profile?.businessName ?? 'Not registered',
+          isEditable: true,
+        ),
         const Divider(height: 1),
         _buildInfoRow(
           'Activity Types',
-          'Farming, Processing',
+          profile?.sellerType ?? 'Individual',
           isEditable: true,
         ),
         const Divider(height: 1),
         _buildInfoRow(
           'Business Address',
-          'Bafoussam, West Region',
+          user?.regionCityAdress ?? 'Not provided',
           isEditable: true,
         ),
       ],
     );
   }
 
-  Widget _buildDocumentsSection(BuildContext context) {
+  Widget _buildDocumentsSection(BuildContext context, SellerProfileModel? profile) {
     return _SectionCard(
       title: 'Verification Documents',
       icon: Icons.assignment_outlined,
       children: [
-        _buildDocRow('ID Card (Front)', 'Verified', Colors.green),
+        _buildDocRow(
+          'RCCM Certificate',
+          profile?.rccmNumber != null ? 'Verified (${profile!.rccmNumber})' : 'Not provided',
+          profile?.rccmNumber != null ? Colors.green : Colors.grey,
+          action: profile?.rccmNumber != null ? 'Replace' : 'Upload',
+        ),
         const Divider(height: 1),
-        _buildDocRow('ID Card (Back)', 'Verified', Colors.green),
-        const Divider(height: 1),
-        _buildDocRow('Selfie', 'Pending', Colors.orange),
-        const Divider(height: 1),
-        _buildDocRow('RCCM', 'Not provided', Colors.grey, action: 'Upload'),
+        _buildDocRow(
+          'Tax ID Certificate',
+          profile?.taxId != null ? 'Verified (${profile!.taxId})' : 'Not provided',
+          profile?.taxId != null ? Colors.green : Colors.grey,
+          action: profile?.taxId != null ? 'Replace' : 'Upload',
+        ),
       ],
     );
   }
 
-  Widget _buildBankAndPayoutSection(BuildContext context) {
+  Widget _buildBankAndPayoutSection(BuildContext context, SellerProfileModel? profile) {
+    final hasMomo = profile?.mobileMoneyPhone != null;
     return _SectionCard(
       title: 'Bank & Payout Settings',
       icon: Icons.account_balance_wallet_outlined,
@@ -292,11 +333,11 @@ class SellerProfileView extends StatelessWidget {
             ),
             child: const Icon(Icons.phone_android, color: Colors.orange),
           ),
-          title: const Text(
-            'Orange Money',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          title: Text(
+            profile?.mobileMoneyProvider ?? 'Mobile Money',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: const Text('+237 690 000 000'),
+          subtitle: Text(profile?.mobileMoneyPhone ?? 'Not configured'),
           trailing: OutlinedButton(
             onPressed: () {
               // Open edit payout details form
@@ -307,12 +348,31 @@ class SellerProfileView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              'Edit',
-              style: TextStyle(color: AppColors.primaryColor, fontSize: 12),
+            child: Text(
+              hasMomo ? 'Edit' : 'Configure',
+              style: const TextStyle(color: AppColors.primaryColor, fontSize: 12),
             ),
           ),
         ),
+        if (profile?.bankName != null) ...[
+          const Divider(),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.account_balance, color: Colors.blue),
+            ),
+            title: const Text(
+              'Bank Account',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(profile!.bankName!),
+          ),
+        ],
         Container(
           margin: const EdgeInsets.symmetric(vertical: 12),
           padding: const EdgeInsets.all(12),
@@ -338,32 +398,13 @@ class SellerProfileView extends StatelessWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: const Text(
-            'Payout History',
+            'Payout Frequency',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
+          subtitle: Text('Frequency: ${profile?.payoutFrequency ?? "Weekly"}'),
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            // Open payout history screen
-          },
-        ),
-        const Divider(),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text(
-            'Pending Payouts',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: const Text('3 orders in escrow'),
-          trailing: const Text(
-            '124,500 FCFA',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
-              fontSize: 16,
-            ),
-          ),
-          onTap: () {
-            // Open pending payouts screen
+            // Open payout settings
           },
         ),
       ],

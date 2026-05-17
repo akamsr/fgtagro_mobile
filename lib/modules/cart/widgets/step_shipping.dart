@@ -29,10 +29,15 @@ class _StepShippingState extends State<StepShipping>
   @override
   void initState() {
     super.initState();
-    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+    _anim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
-    _slide = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.08),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
     _anim.forward();
   }
 
@@ -54,11 +59,17 @@ class _StepShippingState extends State<StepShipping>
             const SizedBox(height: 8),
             const Text(
               'Mode d\'expédition',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryColor,
+              ),
             ),
             const SizedBox(height: 4),
-            const Text('Comment souhaitez-vous recevoir votre commande ?',
-                style: TextStyle(color: Colors.grey, fontSize: 13)),
+            const Text(
+              'Comment souhaitez-vous recevoir votre commande ?',
+              style: TextStyle(color: Colors.grey, fontSize: 13),
+            ),
             const SizedBox(height: 24),
 
             _MethodCard(
@@ -129,7 +140,13 @@ class _MethodCard extends StatelessWidget {
           width: selected ? 2 : 1,
         ),
         boxShadow: selected
-            ? [BoxShadow(color: AppColors.primaryColor.withOpacity(0.1), blurRadius: 12, offset: const Offset(0, 4))]
+            ? [
+                BoxShadow(
+                  color: AppColors.primaryColor.withOpacity(0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ]
             : [],
       ),
       child: InkWell(
@@ -142,30 +159,58 @@ class _MethodCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: selected ? AppColors.primaryColor : Colors.grey.shade100,
+                  color: selected
+                      ? AppColors.primaryColor
+                      : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: selected ? Colors.white : Colors.grey, size: 22),
+                child: Icon(
+                  icon,
+                  color: selected ? Colors.white : Colors.grey,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: selected ? AppColors.secondaryColor : AppColors.textPrimary)),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: selected
+                            ? AppColors.secondaryColor
+                            : AppColors.textPrimary,
+                      ),
+                    ),
                     const SizedBox(height: 2),
-                    Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
-                  color: (badgeColor ?? AppColors.primaryColor).withOpacity(0.12),
+                  color: (badgeColor ?? AppColors.primaryColor).withOpacity(
+                    0.12,
+                  ),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(badge,
-                    style: TextStyle(color: badgeColor ?? AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
+                child: Text(
+                  badge,
+                  style: TextStyle(
+                    color: badgeColor ?? AppColors.primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
               ),
             ],
           ),
@@ -190,15 +235,29 @@ class _DeliveryBreakdown extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Détail de livraison', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.secondaryColor)),
+          const Text(
+            'Détail de livraison',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: AppColors.secondaryColor,
+            ),
+          ),
           const SizedBox(height: 12),
           _Row(label: 'Frais de livraison estimés', value: '~2 500 FCFA'),
           const SizedBox(height: 6),
           _Row(label: 'Délai estimé', value: '24–72h'),
           const SizedBox(height: 6),
-          _Row(label: 'Total produits', value: '${grandTotal.toStringAsFixed(0)} FCFA'),
+          _Row(
+            label: 'Total produits',
+            value: '${grandTotal.toStringAsFixed(0)} FCFA',
+          ),
           const Divider(height: 20),
-          _Row(label: 'Total à payer', value: '${(grandTotal + 2500).toStringAsFixed(0)} FCFA', bold: true),
+          _Row(
+            label: 'Total à payer',
+            value: '${(grandTotal + 2500).toStringAsFixed(0)} FCFA',
+            bold: true,
+          ),
         ],
       ),
     );
@@ -216,8 +275,22 @@ class _Row extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
-        Text(value, style: TextStyle(fontWeight: bold ? FontWeight.w900 : FontWeight.bold, fontSize: 13, color: bold ? AppColors.primaryColor : AppColors.textPrimary)),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 13,
+            fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontWeight: bold ? FontWeight.w900 : FontWeight.bold,
+            fontSize: 13,
+            color: bold ? AppColors.primaryColor : AppColors.textPrimary,
+          ),
+        ),
       ],
     );
   }
@@ -241,11 +314,27 @@ class _StoreInfo extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('FGT AGRO – Boutique Principale', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.successFg)),
+                Text(
+                  'FGT AGRO – Boutique Principale',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.successFg,
+                  ),
+                ),
                 SizedBox(height: 2),
-                Text('Bastos, Yaoundé • Lun–Sam 8h–18h', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(
+                  'Bastos, Yaoundé • Lun–Sam 8h–18h',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
                 SizedBox(height: 2),
-                Text('Retrait gratuit · Prêt dans 48h', style: TextStyle(color: AppColors.successFg, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text(
+                  'Retrait gratuit · Prêt dans 48h',
+                  style: TextStyle(
+                    color: AppColors.successFg,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),

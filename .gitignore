@@ -60,3 +60,4 @@ pubspec.lock
 
 # Android Keystore (contains private keys!)
 android/key.properties
+todos.md

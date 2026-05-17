@@ -64,6 +64,25 @@ class OrderModel {
   @HiveField(20)
   final String paymentStatus;
 
+  @HiveField(21)
+  final String? slug;
+  @HiveField(22)
+  final String? buyerId;
+  @HiveField(23)
+  final double subtotalAmount;
+  @HiveField(24)
+  final double deliveryFee;
+  @HiveField(25)
+  final double discountAmount;
+  @HiveField(26)
+  final double taxAmount;
+  @HiveField(27)
+  final String? fulfillmentType;
+  @HiveField(28)
+  final DateTime? pickupDeadline;
+  @HiveField(29)
+  final String? driverId;
+
   OrderModel({
     required this.id,
     required this.orderNumber,
@@ -86,37 +105,55 @@ class OrderModel {
     this.payoutAmount,
     this.payoutDate,
     this.paymentStatus = 'PAID',
+    this.slug,
+    this.buyerId,
+    this.subtotalAmount = 0.0,
+    this.deliveryFee = 0.0,
+    this.discountAmount = 0.0,
+    this.taxAmount = 0.0,
+    this.fulfillmentType,
+    this.pickupDeadline,
+    this.driverId,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
       id: json['id']?.toString() ?? '',
-      orderNumber: json['orderNumber'] ?? '',
+      orderNumber: json['order_number'] ?? json['orderNumber'] ?? '',
       status: _parseOrderStatus(json['status']),
-      totalAmount: (json['totalAmount'] ?? 0).toDouble(),
-      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      totalAmount: (json['total_amount'] ?? json['totalAmount'] ?? 0).toDouble(),
+      createdAt: DateTime.tryParse(json['created_at'] ?? json['createdAt'] ?? '') ?? DateTime.now(),
       items: (json['items'] as List?)
               ?.map((e) => CartItem.fromMap(e as Map<String, dynamic>))
               .toList() ??
           [],
-      shippingAddress: json['shippingAddress'],
-      paymentMethod: json['paymentMethod'],
-      customerName: json['customerName'],
-      deliveryMethod: json['deliveryMethod'] ?? 'HOME_DELIVERY',
-      buyerCity: json['buyerCity'],
-      buyerNeighborhood: json['buyerNeighborhood'],
-      driverName: json['driverName'],
-      driverPhone: json['driverPhone'],
-      storeName: json['storeName'],
-      storeAddress: json['storeAddress'],
+      shippingAddress: json['shippingAddress'] ?? json['delivery_details']?['address'],
+      paymentMethod: json['paymentMethod'] ?? json['payment_method_details']?['method'],
+      customerName: json['customerName'] ?? json['buyer']?['fullNames'],
+      deliveryMethod: json['deliveryMethod'] ?? json['fulfillment_type'] ?? 'HOME_DELIVERY',
+      buyerCity: json['buyerCity'] ?? json['delivery_details']?['city'],
+      buyerNeighborhood: json['buyerNeighborhood'] ?? json['delivery_details']?['neighborhood'],
+      driverName: json['driverName'] ?? json['driver']?['fullNames'],
+      driverPhone: json['driverPhone'] ?? json['driver']?['phoneNumber'],
+      storeName: json['storeName'] ?? json['store']?['name'],
+      storeAddress: json['storeAddress'] ?? json['store']?['address'],
       timeline: (json['timeline'] as Map?)?.map(
             (k, v) => MapEntry(_parseOrderStatus(k), DateTime.parse(v)),
           ) ??
           {},
-      cancellationReason: json['cancellationReason'],
+      cancellationReason: json['cancellationReason'] ?? json['cancelled_at']?.toString(),
       payoutAmount: (json['payoutAmount'] as num?)?.toDouble(),
       payoutDate: json['payoutDate'] != null ? DateTime.parse(json['payoutDate']) : null,
       paymentStatus: json['paymentStatus'] ?? 'PAID',
+      slug: json['slug'],
+      buyerId: json['buyer_id']?.toString(),
+      subtotalAmount: (json['subtotal_amount'] ?? 0).toDouble(),
+      deliveryFee: (json['delivery_fee'] ?? 0).toDouble(),
+      discountAmount: (json['discount_amount'] ?? 0).toDouble(),
+      taxAmount: (json['tax_amount'] ?? 0).toDouble(),
+      fulfillmentType: json['fulfillment_type'] ?? json['deliveryMethod'],
+      pickupDeadline: json['pickup_deadline'] != null ? DateTime.tryParse(json['pickup_deadline']) : null,
+      driverId: json['driver_id']?.toString(),
     );
   }
 
@@ -124,9 +161,12 @@ class OrderModel {
     return {
       'id': id,
       'orderNumber': orderNumber,
+      'order_number': orderNumber,
       'status': status.name,
       'totalAmount': totalAmount,
+      'total_amount': totalAmount,
       'createdAt': createdAt.toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
       'items': items.map((e) => e.toJson()).toList(),
       'shippingAddress': shippingAddress,
       'paymentMethod': paymentMethod,
@@ -143,6 +183,15 @@ class OrderModel {
       'payoutAmount': payoutAmount,
       'payoutDate': payoutDate?.toIso8601String(),
       'paymentStatus': paymentStatus,
+      'slug': slug,
+      'buyer_id': buyerId,
+      'subtotal_amount': subtotalAmount,
+      'delivery_fee': deliveryFee,
+      'discount_amount': discountAmount,
+      'tax_amount': taxAmount,
+      'fulfillment_type': fulfillmentType,
+      'pickup_deadline': pickupDeadline?.toIso8601String(),
+      'driver_id': driverId,
     };
   }
 
@@ -187,6 +236,15 @@ class OrderModel {
     double? payoutAmount,
     DateTime? payoutDate,
     String? paymentStatus,
+    String? slug,
+    String? buyerId,
+    double? subtotalAmount,
+    double? deliveryFee,
+    double? discountAmount,
+    double? taxAmount,
+    String? fulfillmentType,
+    DateTime? pickupDeadline,
+    String? driverId,
   }) {
     return OrderModel(
       id: id ?? this.id,
@@ -210,6 +268,15 @@ class OrderModel {
       payoutAmount: payoutAmount ?? this.payoutAmount,
       payoutDate: payoutDate ?? this.payoutDate,
       paymentStatus: paymentStatus ?? this.paymentStatus,
+      slug: slug ?? this.slug,
+      buyerId: buyerId ?? this.buyerId,
+      subtotalAmount: subtotalAmount ?? this.subtotalAmount,
+      deliveryFee: deliveryFee ?? this.deliveryFee,
+      discountAmount: discountAmount ?? this.discountAmount,
+      taxAmount: taxAmount ?? this.taxAmount,
+      fulfillmentType: fulfillmentType ?? this.fulfillmentType,
+      pickupDeadline: pickupDeadline ?? this.pickupDeadline,
+      driverId: driverId ?? this.driverId,
     );
   }
 }

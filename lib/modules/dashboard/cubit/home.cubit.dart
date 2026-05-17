@@ -61,12 +61,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void emitError(dynamic e, StackTrace s) {
-    emit(
-      state.copyWith(
-        genLoading: false,
-        genError: ErrorMapper.map(e, s),
-      ),
-    );
+    emit(state.copyWith(genLoading: false, genError: ErrorMapper.map(e, s)));
   }
 
   Future<bool> getPermission() async {
@@ -111,9 +106,7 @@ class HomeCubit extends Cubit<HomeState> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-        'Location permissions are permanently denied.',
-      );
+      return Future.error('Location permissions are permanently denied.');
     }
   }
 }

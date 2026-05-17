@@ -17,14 +17,19 @@ class ChatInputBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: Color.fromRGBO(36, 44, 88, 0.08))),
+        border: Border(
+          top: BorderSide(color: Color.fromRGBO(36, 44, 88, 0.08)),
+        ),
       ),
       child: Row(
         children: [
           Container(
             width: 44,
             height: 44,
-            decoration: BoxDecoration(color: Colors.grey.shade100, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              shape: BoxShape.circle,
+            ),
             child: IconButton(
               icon: const Icon(Icons.add, color: AppColors.secondaryColor),
               onPressed: () {},
@@ -37,7 +42,9 @@ class ChatInputBar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(22),
-                border: Border.all(color: const Color.fromRGBO(36, 44, 88, 0.08)),
+                border: Border.all(
+                  color: const Color.fromRGBO(36, 44, 88, 0.08),
+                ),
               ),
               child: TextField(
                 controller: controller,
@@ -58,7 +65,11 @@ class ChatInputBar extends StatelessWidget {
               color: AppColors.secondaryColor,
               shape: BoxShape.circle,
               boxShadow: [
-                BoxShadow(color: AppColors.secondaryColor.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 2)),
+                BoxShadow(
+                  color: AppColors.secondaryColor.withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
               ],
             ),
             child: IconButton(

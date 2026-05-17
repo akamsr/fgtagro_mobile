@@ -35,13 +35,16 @@ class SellerProfileModelAdapter extends TypeAdapter<SellerProfileModel> {
       storefrontPhotoUrl: fields[15] as String?,
       rejectionReason: fields[16] as String?,
       createdAt: fields[17] as String,
+      userId: fields[18] as String?,
+      kycDocuments: (fields[19] as List?)?.cast<String>(),
+      payoutDestinations: (fields[20] as Map?)?.cast<String, dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, SellerProfileModel obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(21)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -77,7 +80,13 @@ class SellerProfileModelAdapter extends TypeAdapter<SellerProfileModel> {
       ..writeByte(16)
       ..write(obj.rejectionReason)
       ..writeByte(17)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(18)
+      ..write(obj.userId)
+      ..writeByte(19)
+      ..write(obj.kycDocuments)
+      ..writeByte(20)
+      ..write(obj.payoutDestinations);
   }
 
   @override
@@ -120,13 +129,21 @@ class StoreModelAdapter extends TypeAdapter<StoreModel> {
       hasDryWarehouse: fields[15] as bool,
       productsCount: (fields[16] as num).toInt(),
       createdAt: fields[17] as String,
+      sellerId: fields[18] as String?,
+      surfaceSqm: (fields[19] as num?)?.toDouble(),
+      storageCapacityTons: (fields[20] as num?)?.toDouble(),
+      storageCapacityPallets: (fields[21] as num?)?.toDouble(),
+      hasLivestockArea: fields[22] == null ? false : fields[22] as bool,
+      hasHeavyMachineryArea: fields[23] == null ? false : fields[23] as bool,
+      hasLoadingDock: fields[24] == null ? false : fields[24] as bool,
+      hasForklift: fields[25] == null ? false : fields[25] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, StoreModel obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(26)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -162,7 +179,23 @@ class StoreModelAdapter extends TypeAdapter<StoreModel> {
       ..writeByte(16)
       ..write(obj.productsCount)
       ..writeByte(17)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(18)
+      ..write(obj.sellerId)
+      ..writeByte(19)
+      ..write(obj.surfaceSqm)
+      ..writeByte(20)
+      ..write(obj.storageCapacityTons)
+      ..writeByte(21)
+      ..write(obj.storageCapacityPallets)
+      ..writeByte(22)
+      ..write(obj.hasLivestockArea)
+      ..writeByte(23)
+      ..write(obj.hasHeavyMachineryArea)
+      ..writeByte(24)
+      ..write(obj.hasLoadingDock)
+      ..writeByte(25)
+      ..write(obj.hasForklift);
   }
 
   @override

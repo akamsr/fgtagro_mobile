@@ -23,26 +23,16 @@ class ProductHeroAction extends StatelessWidget {
       child: Container(
         width: 38,
         height: 38,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         alignment: Alignment.center,
         child: icon is String
             ? SvgPicture.asset(
                 icon as String,
                 width: 20,
                 height: 20,
-                colorFilter: ColorFilter.mode(
-                  iconColor,
-                  BlendMode.srcIn,
-                ),
+                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
               )
-            : Icon(
-                icon as IconData,
-                size: 20,
-                color: iconColor,
-              ),
+            : Icon(icon as IconData, size: 20, color: iconColor),
       ),
     );
   }

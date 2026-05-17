@@ -3,6 +3,7 @@ import 'package:fgtagro_mobile/models/product.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 class ProductGridItem extends StatelessWidget {
   final ProductModel product;
@@ -12,7 +13,7 @@ class ProductGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.router.push(ProductDetailRoute(id: product.id)),
+      onTap: () => CustomNavigate.push(ProductDetailRoute(id: product.id)),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -31,14 +32,25 @@ class ProductGridItem extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
                   image: product.photos.isNotEmpty
-                      ? DecorationImage(image: NetworkImage(product.photos[0]), fit: BoxFit.cover)
+                      ? DecorationImage(
+                          image: NetworkImage(product.photos[0]),
+                          fit: BoxFit.cover,
+                        )
                       : null,
                   color: Colors.grey.shade100,
                 ),
                 child: product.photos.isEmpty
-                    ? const Center(child: Icon(Icons.inventory_2, color: Colors.grey, size: 40))
+                    ? const Center(
+                        child: Icon(
+                          Icons.inventory_2,
+                          color: Colors.grey,
+                          size: 40,
+                        ),
+                      )
                     : null,
               ),
             ),
@@ -51,12 +63,20 @@ class ProductGridItem extends StatelessWidget {
                     product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.secondaryColor),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: AppColors.secondaryColor,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     '${product.unitPrice} FCFA',
-                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14, color: AppColors.primaryColor),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                      color: AppColors.primaryColor,
+                    ),
                   ),
                 ],
               ),

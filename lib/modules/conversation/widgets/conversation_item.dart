@@ -3,6 +3,7 @@ import 'package:fgtagro_mobile/models/conversation.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 class ConversationItem extends StatelessWidget {
   final ConversationModel item;
@@ -13,7 +14,7 @@ class ConversationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.router.push(ConversationDetailRoute(id: item.id));
+        CustomNavigate.push(ConversationDetailRoute(id: item.id));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -82,7 +83,10 @@ class ConversationItem extends StatelessWidget {
                       ),
                       Text(
                         item.lastMessageTime ?? '',
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -115,7 +119,11 @@ class ConversationItem extends StatelessWidget {
                           alignment: Alignment.center,
                           child: Text(
                             item.unreadCount.toString(),
-                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Colors.white),
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                     ],

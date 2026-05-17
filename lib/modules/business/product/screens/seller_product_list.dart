@@ -8,13 +8,15 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class SellerProductListScreen extends StatefulWidget {
   const SellerProductListScreen({super.key});
 
   @override
-  State<SellerProductListScreen> createState() => _SellerProductListScreenState();
+  State<SellerProductListScreen> createState() =>
+      _SellerProductListScreenState();
 }
 
 class _SellerProductListScreenState extends State<SellerProductListScreen> {
@@ -28,7 +30,7 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
     'DRAFT',
     'OUT_OF_STOCK',
     'SUSPENDED',
-    'ARCHIVED'
+    'ARCHIVED',
   ];
 
   @override
@@ -44,7 +46,10 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
       appBar: AppBar(
         title: Text(
           S.of(context).myProducts,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -52,11 +57,18 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: TextButton.icon(
-              onPressed: () => context.router.push(const ProductPublicationRoute()),
-              icon: const Icon(Icons.add_circle_outline, color: AppColors.primaryColor),
+              onPressed: () =>
+                  CustomNavigate.push(const ProductPublicationRoute()),
+              icon: const Icon(
+                Icons.add_circle_outline,
+                color: AppColors.primaryColor,
+              ),
               label: Text(
                 S.of(context).newProduct,
-                style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primaryColor),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
+                ),
               ),
             ),
           ),
@@ -73,8 +85,12 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
                 }
 
                 final filteredProducts = state.products.where((p) {
-                  final matchesSearch = p.name.toLowerCase().contains(_searchController.text.toLowerCase());
-                  final matchesFilter = selectedFilter == 'ALL' || p.status.toUpperCase() == selectedFilter;
+                  final matchesSearch = p.name.toLowerCase().contains(
+                    _searchController.text.toLowerCase(),
+                  );
+                  final matchesFilter =
+                      selectedFilter == 'ALL' ||
+                      p.status.toUpperCase() == selectedFilter;
                   return matchesSearch && matchesFilter;
                 }).toList();
 
@@ -85,8 +101,10 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
                 return ListView.separated(
                   padding: const EdgeInsets.all(16),
                   itemCount: filteredProducts.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) => _SellerProductCard(product: filteredProducts[index]),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemBuilder: (context, index) =>
+                      _SellerProductCard(product: filteredProducts[index]),
                 );
               },
             ),
@@ -112,7 +130,10 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
                 filled: true,
                 fillColor: Colors.grey.shade50,
                 contentPadding: EdgeInsets.zero,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
               ),
               onChanged: (v) => setState(() {}),
             ),
@@ -131,7 +152,9 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
                       filter.replaceAll('_', ' '),
                       style: TextStyle(
                         fontSize: 11,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                         color: isSelected ? Colors.white : Colors.grey.shade600,
                       ),
                     ),
@@ -143,7 +166,9 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
                     backgroundColor: Colors.grey.shade100,
                     side: BorderSide.none,
                     showCheckmark: false,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 );
               }).toList(),
@@ -159,7 +184,11 @@ class _SellerProductListScreenState extends State<SellerProductListScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey.shade300),
+          Icon(
+            Icons.inventory_2_outlined,
+            size: 64,
+            color: Colors.grey.shade300,
+          ),
           const SizedBox(height: 16),
           Text(
             S.of(context).noProductsFound,
@@ -186,12 +215,17 @@ class _SellerProductCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
         children: [
-          if (product.status.toUpperCase() == 'REJECTED' || product.status.toUpperCase() == 'CHANGES_REQUIRED')
+          if (product.status.toUpperCase() == 'REJECTED' ||
+              product.status.toUpperCase() == 'CHANGES_REQUIRED')
             _buildAdminFeedback(context),
           Row(
             children: [
@@ -220,11 +254,19 @@ class _SellerProductCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 16),
+              const Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.red,
+                size: 16,
+              ),
               const SizedBox(width: 8),
               Text(
                 S.of(context).adminFeedback,
-                style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             ],
           ),
@@ -246,10 +288,15 @@ class _SellerProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         color: Colors.grey.shade100,
         image: product.photos.isNotEmpty
-            ? DecorationImage(image: NetworkImage(product.photos[0]), fit: BoxFit.cover)
+            ? DecorationImage(
+                image: NetworkImage(product.photos[0]),
+                fit: BoxFit.cover,
+              )
             : null,
       ),
-      child: product.photos.isEmpty ? const Icon(Icons.image, color: Colors.grey) : null,
+      child: product.photos.isEmpty
+          ? const Icon(Icons.image, color: Colors.grey)
+          : null,
     );
   }
 
@@ -272,7 +319,11 @@ class _SellerProductCard extends StatelessWidget {
           children: [
             Text(
               '${formatter.format(product.unitPrice)} / ${product.unitOfSale}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.primaryColor),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: AppColors.primaryColor,
+              ),
             ),
             const SizedBox(width: 8),
             _StatusBadge(status: product.status.toUpperCase()),
@@ -281,7 +332,11 @@ class _SellerProductCard extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           'Stock: ${product.stockQuantity}',
-          style: TextStyle(fontSize: 11, color: Colors.grey.shade700, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: 11,
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );
@@ -306,51 +361,96 @@ class _SellerProductCard extends StatelessWidget {
       case 'PUBLISHED':
         actions.addAll([
           _menuItem(context, Icons.edit_outlined, S.of(context).edit),
-          _menuItem(context, Icons.inventory_2_outlined, S.of(context).updateStock, onTap: () => _showStockUpdate(context)),
+          _menuItem(
+            context,
+            Icons.inventory_2_outlined,
+            S.of(context).updateStock,
+            onTap: () => _showStockUpdate(context),
+          ),
           _menuItem(context, Icons.archive_outlined, S.of(context).archive),
         ]);
         break;
       case 'DRAFT':
         actions.addAll([
           _menuItem(context, Icons.edit_outlined, S.of(context).edit),
-          _menuItem(context, Icons.send_outlined, S.of(context).submitForReview),
-          _menuItem(context, Icons.delete_outline, S.of(context).delete, color: Colors.red),
+          _menuItem(
+            context,
+            Icons.send_outlined,
+            S.of(context).submitForReview,
+          ),
+          _menuItem(
+            context,
+            Icons.delete_outline,
+            S.of(context).delete,
+            color: Colors.red,
+          ),
         ]);
         break;
       case 'EN_VALIDATION':
         actions.addAll([
           _menuItem(context, Icons.visibility_outlined, S.of(context).view),
-          _menuItem(context, Icons.undo_outlined, S.of(context).withdrawSubmission),
+          _menuItem(
+            context,
+            Icons.undo_outlined,
+            S.of(context).withdrawSubmission,
+          ),
         ]);
         break;
       case 'OUT_OF_STOCK':
         actions.addAll([
-          _menuItem(context, Icons.inventory_2_outlined, S.of(context).updateStock, onTap: () => _showStockUpdate(context)),
+          _menuItem(
+            context,
+            Icons.inventory_2_outlined,
+            S.of(context).updateStock,
+            onTap: () => _showStockUpdate(context),
+          ),
         ]);
         break;
       case 'SUSPENDED':
         actions.addAll([
-          _menuItem(context, Icons.info_outline, S.of(context).viewSuspensionReason),
-          _menuItem(context, Icons.support_agent_outlined, S.of(context).contactSupport),
+          _menuItem(
+            context,
+            Icons.info_outline,
+            S.of(context).viewSuspensionReason,
+          ),
+          _menuItem(
+            context,
+            Icons.support_agent_outlined,
+            S.of(context).contactSupport,
+          ),
         ]);
         break;
       case 'ARCHIVED':
         actions.addAll([
           _menuItem(context, Icons.publish_outlined, S.of(context).republish),
-          _menuItem(context, Icons.delete_forever_outlined, S.of(context).deletePermanently, color: Colors.red),
+          _menuItem(
+            context,
+            Icons.delete_forever_outlined,
+            S.of(context).deletePermanently,
+            color: Colors.red,
+          ),
         ]);
         break;
     }
 
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 8),
-            Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2))),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
             const SizedBox(height: 8),
             ...actions,
             const SizedBox(height: 12),
@@ -360,10 +460,22 @@ class _SellerProductCard extends StatelessWidget {
     );
   }
 
-  Widget _menuItem(BuildContext context, IconData icon, String label, {VoidCallback? onTap, Color? color}) {
+  Widget _menuItem(
+    BuildContext context,
+    IconData icon,
+    String label, {
+    VoidCallback? onTap,
+    Color? color,
+  }) {
     return ListTile(
       leading: Icon(icon, color: color ?? AppColors.secondaryColor, size: 22),
-      title: Text(label, style: TextStyle(color: color ?? AppColors.secondaryColor, fontWeight: FontWeight.w500)),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: color ?? AppColors.secondaryColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       onTap: () {
         Navigator.pop(context);
         onTap?.call();
@@ -386,7 +498,8 @@ class _StockUpdateBottomSheet extends StatefulWidget {
   const _StockUpdateBottomSheet({required this.product});
 
   @override
-  State<_StockUpdateBottomSheet> createState() => _StockUpdateBottomSheetState();
+  State<_StockUpdateBottomSheet> createState() =>
+      _StockUpdateBottomSheetState();
 }
 
 class _StockUpdateBottomSheetState extends State<_StockUpdateBottomSheet> {
@@ -395,7 +508,9 @@ class _StockUpdateBottomSheetState extends State<_StockUpdateBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _mainController = TextEditingController(text: widget.product.stockQuantity.toString());
+    _mainController = TextEditingController(
+      text: widget.product.stockQuantity.toString(),
+    );
   }
 
   @override
@@ -403,8 +518,16 @@ class _StockUpdateBottomSheetState extends State<_StockUpdateBottomSheet> {
     final bool isGIAManaged = false; // Placeholder for logic
 
     return Container(
-      padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(context).viewInsets.bottom + 32),
-      decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        24,
+        24,
+        MediaQuery.of(context).viewInsets.bottom + 32,
+      ),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -412,12 +535,27 @@ class _StockUpdateBottomSheetState extends State<_StockUpdateBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(S.of(context).updateStock, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
+              Text(
+                S.of(context).updateStock,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+              ),
             ],
           ),
           const SizedBox(height: 16),
-          Text(widget.product.name, style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w500)),
+          Text(
+            widget.product.name,
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           const SizedBox(height: 24),
           if (!isGIAManaged) ...[
             TextField(
@@ -427,7 +565,9 @@ class _StockUpdateBottomSheetState extends State<_StockUpdateBottomSheet> {
               decoration: InputDecoration(
                 labelText: S.of(context).newStockQuantity,
                 suffixText: widget.product.unitOfSale,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
                 fillColor: Colors.grey.shade50,
               ),
@@ -441,16 +581,23 @@ class _StockUpdateBottomSheetState extends State<_StockUpdateBottomSheet> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(S.of(context).stockUpdatedSuccessfully)));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(S.of(context).stockUpdatedSuccessfully)),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 54),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               elevation: 0,
             ),
-            child: Text(S.of(context).update, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            child: Text(
+              S.of(context).update,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           ),
         ],
       ),
@@ -463,12 +610,18 @@ class _StockUpdateBottomSheetState extends State<_StockUpdateBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(storeName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+          Text(
+            storeName,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+          ),
           const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
-                child: Text('Current: $currentStock', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                child: Text(
+                  'Current: $currentStock',
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -478,8 +631,13 @@ class _StockUpdateBottomSheetState extends State<_StockUpdateBottomSheet> {
                   decoration: InputDecoration(
                     hintText: 'New qty',
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ),
@@ -500,15 +658,30 @@ class _StatusBadge extends StatelessWidget {
     Color color;
     final String s = status.toUpperCase();
     switch (s) {
-      case 'PUBLISHED': color = Colors.green; break;
-      case 'EN_VALIDATION': color = Colors.orange; break;
-      case 'DRAFT': color = Colors.grey; break;
-      case 'OUT_OF_STOCK': color = Colors.red; break;
-      case 'SUSPENDED': color = Colors.red.shade900; break;
-      case 'ARCHIVED': color = Colors.grey.shade400; break;
+      case 'PUBLISHED':
+        color = Colors.green;
+        break;
+      case 'EN_VALIDATION':
+        color = Colors.orange;
+        break;
+      case 'DRAFT':
+        color = Colors.grey;
+        break;
+      case 'OUT_OF_STOCK':
+        color = Colors.red;
+        break;
+      case 'SUSPENDED':
+        color = Colors.red.shade900;
+        break;
+      case 'ARCHIVED':
+        color = Colors.grey.shade400;
+        break;
       case 'CHANGES_REQUIRED':
-      case 'REJECTED': color = Colors.red; break;
-      default: color = Colors.grey;
+      case 'REJECTED':
+        color = Colors.red;
+        break;
+      default:
+        color = Colors.grey;
     }
 
     String label = s.replaceAll('_', ' ');
@@ -516,10 +689,17 @@ class _StatusBadge extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
       child: Text(
         label,
-        style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: color,
+          fontSize: 9,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

@@ -47,12 +47,12 @@ class ProductState extends GlobalAppState {
 
   @override
   List<Object?> get extraprops => [
-        genLoading,
-        genError,
-        showError,
-        categories,
-        products,
-        featuredProducts,
-        selectedProduct,
-      ];
+    genLoading,
+    genError,
+    showError,
+    categories,
+    products,
+    featuredProducts,
+    selectedProduct,
+  ];
 }

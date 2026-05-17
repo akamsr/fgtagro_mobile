@@ -13,7 +13,11 @@ class OptionalDetailsStep extends StatelessWidget {
       children: [
         const Text(
           'Optional Specs',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         const SizedBox(height: 8),
         const Text(
@@ -27,17 +31,30 @@ class OptionalDetailsStep extends StatelessWidget {
         _buildField('NPK Ratio (for Fertilizers)', 'e.g. 15-15-15'),
         _buildField('Breed (for Livestock)', 'e.g. Holstein'),
         const SizedBox(height: 24),
-        const Text('Certifications (PDF)', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text(
+          'Certifications (PDF)',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(color: Colors.grey.shade50, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.grey.shade200, style: BorderStyle.solid)),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.grey.shade200,
+              style: BorderStyle.solid,
+            ),
+          ),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.upload_file, color: Colors.grey),
               const SizedBox(width: 12),
-              Text('Upload certificate (Organic, Fair Trade...)', style: TextStyle(color: Colors.grey, fontSize: 13)),
+              Text(
+                'Upload certificate (Organic, Fair Trade...)',
+                style: TextStyle(color: Colors.grey, fontSize: 13),
+              ),
             ],
           ),
         ),
@@ -55,12 +72,31 @@ class OptionalDetailsStep extends StatelessWidget {
             children: [
               Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(width: 8),
-              Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(4)), child: const Text('OPTIONAL', style: TextStyle(fontSize: 8, color: Colors.grey, fontWeight: FontWeight.bold))),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Text(
+                  'OPTIONAL',
+                  style: TextStyle(
+                    fontSize: 8,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           TextField(
-            decoration: InputDecoration(hintText: hint, border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+            decoration: InputDecoration(
+              hintText: hint,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ],
       ),

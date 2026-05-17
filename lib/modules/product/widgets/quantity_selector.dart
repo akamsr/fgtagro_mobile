@@ -58,7 +58,7 @@ class QuantitySelector extends StatelessWidget {
                 _buildBtn(Icons.add, onIncrement),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

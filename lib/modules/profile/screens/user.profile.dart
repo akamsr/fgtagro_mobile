@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fgtagro_mobile/modules/profile/screens/seller_profile_view.dart';
 import 'package:fgtagro_mobile/modules/profile/screens/buyer_profile_view.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class ProfileScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class ProfileScreen extends StatelessWidget {
         return BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state.user == null) {
-              context.router.replaceAll([const LoginRoute()]);
+              CustomNavigate.replaceAll([const LoginRoute()]);
             }
           },
           builder: (context, state) {

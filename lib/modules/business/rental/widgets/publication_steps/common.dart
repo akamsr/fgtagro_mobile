@@ -158,7 +158,10 @@ class CustomTextField extends StatelessWidget {
             suffixText: suffixText,
             filled: true,
             fillColor: Colors.grey.shade50,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: Colors.grey.shade200),
@@ -169,7 +172,10 @@ class CustomTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.primaryColor,
+                width: 1.5,
+              ),
             ),
           ),
         ),

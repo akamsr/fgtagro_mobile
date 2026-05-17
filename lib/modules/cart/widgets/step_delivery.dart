@@ -32,15 +32,26 @@ class _StepDeliveryState extends State<StepDelivery>
   late Animation<double> _fade;
   late Animation<Offset> _slide;
 
-  static const _cities = ['Yaoundé', 'Douala', 'Bafoussam', 'Bamenda', 'Garoua'];
+  static const _cities = [
+    'Yaoundé',
+    'Douala',
+    'Bafoussam',
+    'Bamenda',
+    'Garoua',
+  ];
 
   @override
   void initState() {
     super.initState();
-    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+    _anim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
-    _slide = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.08),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
     _anim.forward();
   }
 
@@ -62,16 +73,31 @@ class _StepDeliveryState extends State<StepDelivery>
             const SizedBox(height: 8),
             const Text(
               'Adresse de livraison',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryColor,
+              ),
             ),
             const SizedBox(height: 4),
-            const Text('Où souhaitez-vous recevoir votre commande ?',
-                style: TextStyle(color: Colors.grey, fontSize: 13)),
+            const Text(
+              'Où souhaitez-vous recevoir votre commande ?',
+              style: TextStyle(color: Colors.grey, fontSize: 13),
+            ),
             const SizedBox(height: 24),
 
-            _Field(label: 'Destinataire', controller: widget.nameController, icon: Icons.person_outline),
+            _Field(
+              label: 'Destinataire',
+              controller: widget.nameController,
+              icon: Icons.person_outline,
+            ),
             const SizedBox(height: 14),
-            _Field(label: 'Téléphone', controller: widget.phoneController, icon: Icons.phone_outlined, type: TextInputType.phone),
+            _Field(
+              label: 'Téléphone',
+              controller: widget.phoneController,
+              icon: Icons.phone_outlined,
+              type: TextInputType.phone,
+            ),
             const SizedBox(height: 14),
 
             // City dropdown
@@ -85,7 +111,10 @@ class _StepDeliveryState extends State<StepDelivery>
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: widget.selectedCity,
-                  hint: const Text('Ville', style: TextStyle(color: Colors.grey)),
+                  hint: const Text(
+                    'Ville',
+                    style: TextStyle(color: Colors.grey),
+                  ),
                   isExpanded: true,
                   icon: const Icon(Icons.keyboard_arrow_down),
                   items: _cities
@@ -97,9 +126,17 @@ class _StepDeliveryState extends State<StepDelivery>
             ),
             const SizedBox(height: 14),
 
-            _Field(label: 'Quartier', controller: widget.quarterController, icon: Icons.location_city_outlined),
+            _Field(
+              label: 'Quartier',
+              controller: widget.quarterController,
+              icon: Icons.location_city_outlined,
+            ),
             const SizedBox(height: 14),
-            _Field(label: 'Adresse complète', controller: widget.addressController, icon: Icons.home_outlined),
+            _Field(
+              label: 'Adresse complète',
+              controller: widget.addressController,
+              icon: Icons.home_outlined,
+            ),
             const SizedBox(height: 14),
 
             // Optional note
@@ -112,14 +149,17 @@ class _StepDeliveryState extends State<StepDelivery>
                 filled: true,
                 fillColor: const Color(0xFFF8F7F5),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade200)),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                ),
                 enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.borderDefault)),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.borderDefault),
+                ),
                 focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.primaryColor)),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.primaryColor),
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -155,14 +195,20 @@ class _Field extends StatelessWidget {
         filled: true,
         fillColor: const Color(0xFFF8F7F5),
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade200)),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.borderDefault)),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.borderDefault),
+        ),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5)),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: AppColors.primaryColor,
+            width: 1.5,
+          ),
+        ),
       ),
     );
   }

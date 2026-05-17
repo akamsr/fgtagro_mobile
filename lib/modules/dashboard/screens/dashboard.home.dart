@@ -16,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:fgtagro_mobile/modules/notifications/cubit/notification.cubit.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 const catStyles = {
   'engrais': {'bg': Color(0xFFFFF8E7), 'icon': Icons.eco},
@@ -87,7 +88,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                             icon: 'assets/icons/notification.svg',
                             count: count,
                             onTap: () =>
-                                context.router.push(const NotificationsRoute()),
+                                CustomNavigate.push(const NotificationsRoute()),
                           );
                         },
                       ),
@@ -100,7 +101,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                             icon: 'assets/icons/favourite.svg',
                             count: favState.items.length,
                             onTap: () =>
-                                context.router.push(const FavouritesRoute()),
+                                CustomNavigate.push(const FavouritesRoute()),
                           );
                         },
                       ),
@@ -114,7 +115,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                           return _HeaderIcon(
                             icon: 'assets/icons/cart.svg',
                             count: count,
-                            onTap: () => context.router.push(const CartRoute()),
+                            onTap: () => CustomNavigate.push(const CartRoute()),
                           );
                         },
                       ),

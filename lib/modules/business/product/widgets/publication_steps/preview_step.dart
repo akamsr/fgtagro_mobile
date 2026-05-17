@@ -30,12 +30,19 @@ class PreviewStep extends StatelessWidget {
       children: [
         const Text(
           'Final Preview',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         const SizedBox(height: 8),
-        const Text('Review your product as it will appear to buyers.', style: TextStyle(color: Colors.grey)),
+        const Text(
+          'Review your product as it will appear to buyers.',
+          style: TextStyle(color: Colors.grey),
+        ),
         const SizedBox(height: 32),
-        
+
         // Mock Photo Carousel
         Container(
           height: 250,
@@ -43,37 +50,74 @@ class PreviewStep extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.grey.shade100,
             borderRadius: BorderRadius.circular(16),
-            image: photos.isNotEmpty ? DecorationImage(image: NetworkImage(photos[0]), fit: BoxFit.cover) : null,
+            image: photos.isNotEmpty
+                ? DecorationImage(
+                    image: NetworkImage(photos[0]),
+                    fit: BoxFit.cover,
+                  )
+                : null,
           ),
-          child: photos.isEmpty ? const Icon(Icons.image, size: 64, color: Colors.grey) : null,
+          child: photos.isEmpty
+              ? const Icon(Icons.image, size: 64, color: Colors.grey)
+              : null,
         ),
-        
+
         const SizedBox(height: 24),
-        Text(category, style: const TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 12)),
+        Text(
+          category,
+          style: const TextStyle(
+            color: AppColors.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
         const SizedBox(height: 8),
-        Text(name.isEmpty ? 'Product Name' : name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: AppColors.secondaryColor)),
+        Text(
+          name.isEmpty ? 'Product Name' : name,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
+            color: AppColors.secondaryColor,
+          ),
+        ),
         const SizedBox(height: 12),
-        Text('$price FCFA / $unit', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primaryColor)),
+        Text(
+          '$price FCFA / $unit',
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryColor,
+          ),
+        ),
         const SizedBox(height: 8),
-        Text('Available Stock: $stock $unit', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-        
+        Text(
+          'Available Stock: $stock $unit',
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+
         const Divider(height: 48),
-        
-        const Text('Description', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+
+        const Text(
+          'Description',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
         const SizedBox(height: 12),
         Text(
           description.isEmpty ? 'No description provided.' : description,
           style: const TextStyle(height: 1.6, color: Colors.black87),
         ),
-        
+
         const Divider(height: 48),
-        
-        const Text('Specifications', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+
+        const Text(
+          'Specifications',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
         const SizedBox(height: 12),
         _buildSpecRow('Variety', 'Grade A'),
         _buildSpecRow('Origin', 'Bafoussam, West Cameroon'),
         _buildSpecRow('Harvest', 'May 2024'),
-        
+
         const SizedBox(height: 40),
       ],
     );
@@ -84,8 +128,15 @@ class PreviewStep extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: const TextStyle(color: Colors.grey))),
-          Expanded(child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold))),
+          Expanded(
+            child: Text(label, style: const TextStyle(color: Colors.grey)),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );

@@ -1,6 +1,6 @@
 {
-    "name": "fgtagro_mobile",
-    "short_name": "fgtagro_mobile",
+    "name": "FGT Agro",
+    "short_name": "FGT Agro",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

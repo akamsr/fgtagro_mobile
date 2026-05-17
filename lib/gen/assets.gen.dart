@@ -69,6 +69,17 @@ class $AssetsIconsGen {
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
+
+  /// File path: assets/images/app_store_icon-1024x1024.png
+  AssetGenImage get appStoreIcon1024x1024 =>
+      const AssetGenImage('assets/images/app_store_icon-1024x1024.png');
+
+  /// File path: assets/images/play_store_icon.png
+  AssetGenImage get playStoreIcon =>
+      const AssetGenImage('assets/images/play_store_icon.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [appStoreIcon1024x1024, playStoreIcon];
 }
 
 class $AssetsOnboardingGen {

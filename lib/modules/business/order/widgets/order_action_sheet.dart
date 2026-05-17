@@ -29,17 +29,27 @@ class OrderActionSheet extends StatelessWidget {
                 children: [
                   Text(
                     S.of(context).orderNumber(order.orderNumber),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    S.of(context).received(DateFormat('MMM dd, HH:mm').format(order.createdAt)),
+                    S
+                        .of(context)
+                        .received(
+                          DateFormat('MMM dd, HH:mm').format(order.createdAt),
+                        ),
                     style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.primaryTint.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -56,23 +66,45 @@ class OrderActionSheet extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 32),
-          Text(S.of(context).customerDetails, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            S.of(context).customerDetails,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
-          _buildDetailRow(Icons.person_outline, order.customerName ?? '${S.of(context).userLabel} #${order.id.substring(0, 5)}'),
-          _buildDetailRow(Icons.location_on_outlined, order.shippingAddress ?? S.of(context).noAddressProvided),
+          _buildDetailRow(
+            Icons.person_outline,
+            order.customerName ??
+                '${S.of(context).userLabel} #${order.id.substring(0, 5)}',
+          ),
+          _buildDetailRow(
+            Icons.location_on_outlined,
+            order.shippingAddress ?? S.of(context).noAddressProvided,
+          ),
           const SizedBox(height: 32),
-          Text(S.of(context).orderItems, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            S.of(context).orderItems,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
-          ...order.items.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  children: [
-                    Text('${item.qty}x ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Expanded(child: Text(item.productName ?? S.of(context).product)),
-                    Text('${(item.finalPrice * item.qty).toStringAsFixed(0)} FCFA'),
-                  ],
-                ),
-              )),
+          ...order.items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  Text(
+                    '${item.qty}x ',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(item.productName ?? S.of(context).product),
+                  ),
+                  Text(
+                    '${(item.finalPrice * item.qty).toStringAsFixed(0)} FCFA',
+                  ),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 32),
           const Divider(),
           const SizedBox(height: 24),
@@ -85,7 +117,9 @@ class OrderActionSheet extends StatelessWidget {
                   label: Text(S.of(context).contact),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
@@ -99,7 +133,9 @@ class OrderActionSheet extends StatelessWidget {
                     backgroundColor: AppColors.primaryColor,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 0,
                   ),
                 ),
@@ -113,7 +149,9 @@ class OrderActionSheet extends StatelessWidget {
               onPressed: () {},
               icon: const Icon(Icons.print_outlined, size: 18),
               label: Text(S.of(context).downloadShippingLabel),
-              style: TextButton.styleFrom(foregroundColor: Colors.grey.shade600),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey.shade600,
+              ),
             ),
           ),
           const SizedBox(height: 20),

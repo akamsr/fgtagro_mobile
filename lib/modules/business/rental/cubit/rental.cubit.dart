@@ -9,10 +9,10 @@ class RentalCubit extends Cubit<RentalState> {
 
   void fetchAllData() async {
     emit(state.copyWith(genLoading: true));
-    
+
     // Simulate API call
     await Future.delayed(const Duration(seconds: 1));
-    
+
     final mockEquipment = [
       EquipmentModel(
         id: '1',
@@ -25,9 +25,7 @@ class RentalCubit extends Cubit<RentalState> {
         fuelPolicy: 'Full-to-full',
         status: 'PUBLISHED',
         isAvailable: true,
-        photoSlots: {
-          'front': 'https://example.com/tractor_front.jpg',
-        },
+        photoSlots: {'front': 'https://example.com/tractor_front.jpg'},
       ),
     ];
 
@@ -75,19 +73,21 @@ class RentalCubit extends Cubit<RentalState> {
       ),
     ];
 
-    emit(state.copyWith(
-      genLoading: false,
-      equipment: mockEquipment,
-      bookings: mockBookings,
-      history: mockHistory,
-    ));
+    emit(
+      state.copyWith(
+        genLoading: false,
+        equipment: mockEquipment,
+        bookings: mockBookings,
+        history: mockHistory,
+      ),
+    );
   }
 
   void updateEquipmentStatus(String id, String newStatus) {
     final updatedList = state.equipment.map((e) {
       if (e.id == id) {
         // In a real app, this would be an API call
-        // return e.copyWith(status: newStatus); 
+        // return e.copyWith(status: newStatus);
         // For now, we'll just emit a new list with the updated item
         return EquipmentModel.fromJson({...e.toJson(), 'status': newStatus});
       }

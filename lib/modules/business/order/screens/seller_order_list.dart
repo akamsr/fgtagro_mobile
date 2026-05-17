@@ -8,6 +8,7 @@ import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class SellerOrderListScreen extends StatefulWidget {
@@ -343,7 +344,7 @@ class _OrderCard extends StatelessWidget {
   }
 
   void _navigateToDetails(BuildContext context) {
-    context.pushRoute(SellerOrderDetailRoute(order: order));
+    CustomNavigate.push(SellerOrderDetailRoute(order: order));
   }
 }
 

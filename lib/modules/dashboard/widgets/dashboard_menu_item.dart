@@ -29,7 +29,10 @@ class DashboardMenuItem extends StatelessWidget {
         decoration: BoxDecoration(
           border: divider
               ? const Border(
-                  top: BorderSide(color: Color.fromRGBO(197, 198, 208, 0.5), width: 0.5),
+                  top: BorderSide(
+                    color: Color.fromRGBO(197, 198, 208, 0.5),
+                    width: 0.5,
+                  ),
                 )
               : null,
         ),
@@ -44,7 +47,11 @@ class DashboardMenuItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               alignment: Alignment.center,
-              child: Icon(icon, size: 20, color: iconColor ?? AppColors.primaryColor),
+              child: Icon(
+                icon,
+                size: 20,
+                color: iconColor ?? AppColors.primaryColor,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(

@@ -4,6 +4,7 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class NotificationsScreen extends StatelessWidget {
@@ -26,7 +27,7 @@ class NotificationsScreen extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.secondaryColor),
-          onPressed: () => context.router.pop(),
+          onPressed: () => CustomNavigate.back(),
         ),
         actions: [
           IconButton(

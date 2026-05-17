@@ -9,6 +9,7 @@ import 'package:fgtagro_mobile/models/message.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class ConversationDetailScreen extends StatefulWidget {
@@ -46,7 +47,10 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
 
   void _sendMessage() {
     if (_msgController.text.trim().isNotEmpty) {
-      context.read<ConversationCubit>().sendMessage(widget.id, _msgController.text.trim());
+      context.read<ConversationCubit>().sendMessage(
+        widget.id,
+        _msgController.text.trim(),
+      );
       _msgController.clear();
       _scrollToBottom();
     }
@@ -63,7 +67,9 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
       builder: (context, state) {
         final conversation = state.conversations.firstWhere(
           (c) => c.id == widget.id,
-          orElse: () => state.conversations.isNotEmpty ? state.conversations.first : (null as dynamic),
+          orElse: () => state.conversations.isNotEmpty
+              ? state.conversations.first
+              : (null as dynamic),
         );
 
         return Scaffold(
@@ -87,7 +93,7 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
                         Icons.arrow_back,
                         color: AppColors.secondaryColor,
                       ),
-                      onPressed: () => context.router.pop(),
+                      onPressed: () => CustomNavigate.back(),
                     ),
                     Expanded(
                       child: Row(
@@ -97,12 +103,25 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
                             children: [
                               CircleAvatar(
                                 radius: 20,
-                                backgroundImage: conversation?.avatar != null ? NetworkImage(conversation!.avatar!) : null,
-                                backgroundColor: const Color.fromRGBO(36, 44, 88, 0.1),
-                                child: conversation?.avatar == null ? Text(
-                                  conversation?.name?[0] ?? '?',
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.secondaryColor),
-                                ) : null,
+                                backgroundImage: conversation?.avatar != null
+                                    ? NetworkImage(conversation!.avatar!)
+                                    : null,
+                                backgroundColor: const Color.fromRGBO(
+                                  36,
+                                  44,
+                                  88,
+                                  0.1,
+                                ),
+                                child: conversation?.avatar == null
+                                    ? Text(
+                                        conversation?.name?[0] ?? '?',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.secondaryColor,
+                                        ),
+                                      )
+                                    : null,
                               ),
                               if (conversation?.isOnline == true)
                                 Positioned(
@@ -114,7 +133,10 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
                                     decoration: BoxDecoration(
                                       color: Colors.green,
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: Colors.white, width: 2),
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 2,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -150,7 +172,10 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.call_outlined, color: AppColors.secondaryColor),
+                      icon: const Icon(
+                        Icons.call_outlined,
+                        color: AppColors.secondaryColor,
+                      ),
                       onPressed: () {},
                     ),
                   ],
@@ -166,7 +191,10 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
                       ? const Center(child: CircularProgressIndicator())
                       : ListView.builder(
                           controller: _scrollController,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
                           itemCount: state.messages.length,
                           itemBuilder: (context, index) {
                             final item = state.messages[index];
@@ -177,10 +205,7 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
                           },
                         ),
                 ),
-                ChatInputBar(
-                  controller: _msgController,
-                  onSend: _sendMessage,
-                ),
+                ChatInputBar(controller: _msgController, onSend: _sendMessage),
               ],
             ),
           ),

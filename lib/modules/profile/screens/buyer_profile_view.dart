@@ -6,8 +6,13 @@ import 'package:fgtagro_mobile/modules/business/cubit/business.cubit.dart';
 import 'package:fgtagro_mobile/modules/business/cubit/business.state.dart';
 import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fgtagro_mobile/modules/dashboard/cubit/order.cubit.dart';
+import 'package:fgtagro_mobile/modules/dashboard/cubit/order.state.dart';
+import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.cubit.dart';
+import 'package:fgtagro_mobile/modules/favourites/cubit/favourites.state.dart';
 
 class BuyerProfileView extends StatelessWidget {
   final UserModel? user;
@@ -19,7 +24,6 @@ class BuyerProfileView extends StatelessWidget {
     // Note: Wrapping in RefreshIndicator for pull-to-refresh
     return RefreshIndicator(
       onRefresh: () async {
-        // Fetch profile data here
         await Future.delayed(const Duration(seconds: 1));
       },
       child: SingleChildScrollView(
@@ -34,7 +38,7 @@ class BuyerProfileView extends StatelessWidget {
             _buildQuickStats(context),
             const SizedBox(height: 32),
             _buildMenuGroups(context),
-            const SizedBox(height: 100), // padding at bottom
+            const SizedBox(height: 100),
           ],
         ),
       ),
@@ -42,12 +46,25 @@ class BuyerProfileView extends StatelessWidget {
   }
 
   bool _isProfileIncomplete() {
-    return user?.fullNames?.isEmpty ?? true; // Add real logic here
+    return (user?.fullNames?.isEmpty ?? true) ||
+        (user?.email?.isEmpty ?? true) ||
+        (user?.phoneNumber?.isEmpty ?? true) ||
+        (user?.regionCityAdress.isEmpty ?? true);
+  }
+
+  double _calculateCompletionValue() {
+    if (user == null) return 0.0;
+    int fieldsCount = 0;
+    if (user!.fullNames?.isNotEmpty == true) fieldsCount++;
+    if (user!.email?.isNotEmpty == true) fieldsCount++;
+    if (user!.phoneNumber?.isNotEmpty == true) fieldsCount++;
+    if (user!.regionCityAdress.isNotEmpty == true) fieldsCount++;
+    return fieldsCount / 4.0;
   }
 
   Widget _buildHeader(BuildContext context) {
-    final bool phoneVerified = true; // Mock status
-    final bool emailVerified = false; // Mock status
+    final bool phoneVerified = user?.phoneNumber?.isNotEmpty == true;
+    final bool emailVerified = user?.email?.isNotEmpty == true;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -63,16 +80,21 @@ class BuyerProfileView extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 40,
                   backgroundColor: AppColors.primaryColor.withOpacity(0.1),
-                  child: Text(
-                    user?.fullNames?.isNotEmpty == true
-                        ? user!.fullNames!.substring(0, 1).toUpperCase()
-                        : 'U',
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
+                  backgroundImage: (user?.avatarUrl?.isNotEmpty == true || user?.photoUrl?.isNotEmpty == true)
+                      ? NetworkImage(user?.avatarUrl ?? user?.photoUrl ?? '')
+                      : null,
+                  child: (user?.avatarUrl?.isNotEmpty == true || user?.photoUrl?.isNotEmpty == true)
+                      ? null
+                      : Text(
+                          user?.fullNames?.isNotEmpty == true
+                              ? user!.fullNames!.substring(0, 1).toUpperCase()
+                              : 'U',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -85,7 +107,9 @@ class BuyerProfileView extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            user?.fullNames ?? S.of(context).userLabel,
+                            user?.fullNames?.isNotEmpty == true
+                                ? user!.fullNames!
+                                : S.of(context).userLabel,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -102,7 +126,7 @@ class BuyerProfileView extends StatelessWidget {
                             color: AppColors.primaryColor,
                           ),
                           onPressed: () {
-                            context.router.push(
+                            CustomNavigate.push(
                               const PersonalInformationRoute(),
                             );
                           },
@@ -113,7 +137,9 @@ class BuyerProfileView extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      user?.phoneNumber ?? 'No phone number',
+                      user?.phoneNumber?.isNotEmpty == true
+                          ? user!.phoneNumber!
+                          : 'No phone number',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,
@@ -121,7 +147,9 @@ class BuyerProfileView extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      user?.email ?? 'No email address',
+                      user?.email?.isNotEmpty == true
+                          ? user!.email!
+                          : 'No email address',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.grey.shade600,
@@ -142,7 +170,7 @@ class BuyerProfileView extends StatelessWidget {
                           verifiedText: 'Email verified',
                           unverifiedText: 'Email not verified',
                           onVerify: () {
-                            context.router.push(VerifyEmailRoute());
+                            CustomNavigate.push(VerifyEmailRoute());
                           },
                         ),
                       ],
@@ -219,6 +247,9 @@ class BuyerProfileView extends StatelessWidget {
   }
 
   Widget _buildCompletionBanner(BuildContext context) {
+    final completionVal = _calculateCompletionValue();
+    final completionPct = '${(completionVal * 100).toInt()}%';
+
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 24, 20, 0),
       padding: const EdgeInsets.all(16),
@@ -254,7 +285,7 @@ class BuyerProfileView extends StatelessWidget {
             children: [
               Expanded(
                 child: LinearProgressIndicator(
-                  value: 0.6,
+                  value: completionVal,
                   backgroundColor: Colors.grey.shade200,
                   valueColor: const AlwaysStoppedAnimation<Color>(
                     AppColors.primaryColor,
@@ -264,9 +295,9 @@ class BuyerProfileView extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
-                '60%',
-                style: TextStyle(
+              Text(
+                completionPct,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                   color: AppColors.primaryColor,
@@ -279,7 +310,7 @@ class BuyerProfileView extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                context.router.push(const PersonalInformationRoute());
+                CustomNavigate.push(const PersonalInformationRoute());
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,
@@ -306,24 +337,32 @@ class BuyerProfileView extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _buildStatChip(
-              context,
-              Icons.shopping_bag_outlined,
-              'Orders',
-              '12',
-              () {
-                AutoTabsRouter.of(context).setActiveIndex(3);
+            child: BlocBuilder<OrderCubit, OrderState>(
+              builder: (context, state) {
+                return _buildStatChip(
+                  context,
+                  Icons.shopping_bag_outlined,
+                  'Orders',
+                  state.orders.length.toString(),
+                  () {
+                    CustomNavigate().changeIndex(3);
+                  },
+                );
               },
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: _buildStatChip(
-              context,
-              Icons.favorite_border,
-              'Favourites',
-              '14',
-              () => context.router.push(const FavouritesRoute()),
+            child: BlocBuilder<FavouritesCubit, FavouritesState>(
+              builder: (context, state) {
+                return _buildStatChip(
+                  context,
+                  Icons.favorite_border,
+                  'Favourites',
+                  state.items.length.toString(),
+                  () => CustomNavigate.push(const FavouritesRoute()),
+                );
+              },
             ),
           ),
           const SizedBox(width: 12),
@@ -332,9 +371,9 @@ class BuyerProfileView extends StatelessWidget {
               context,
               Icons.location_on_outlined,
               'Addresses',
-              '2',
+              user?.regionCityAdress.isNotEmpty == true ? '1' : '0',
               () {
-                context.router.push(const MyAddressesRoute());
+                CustomNavigate.push(const MyAddressesRoute());
               },
             ),
           ),
@@ -395,24 +434,36 @@ class BuyerProfileView extends StatelessWidget {
               icon: Icons.person_outline,
               title: 'Personal Information',
               onTap: () =>
-                  context.router.push(const PersonalInformationRoute()),
+                  CustomNavigate.push(const PersonalInformationRoute()),
             ),
             _buildMenuItem(
               icon: Icons.location_on_outlined,
               title: 'My Addresses',
-              onTap: () => context.router.push(const MyAddressesRoute()),
+              onTap: () => CustomNavigate.push(const MyAddressesRoute()),
             ),
-            _buildMenuItem(
-              icon: Icons.favorite_border,
-              title: 'My Favourites',
-              badgeText: '14',
-              onTap: () => context.router.push(const FavouritesRoute()),
+            BlocBuilder<FavouritesCubit, FavouritesState>(
+              builder: (context, state) {
+                return _buildMenuItem(
+                  icon: Icons.favorite_border,
+                  title: 'My Favourites',
+                  badgeText: state.items.length > 0
+                      ? state.items.length.toString()
+                      : null,
+                  onTap: () => CustomNavigate.push(const FavouritesRoute()),
+                );
+              },
             ),
-            _buildMenuItem(
-              icon: Icons.shopping_bag_outlined,
-              title: 'My Orders',
-              badgeText: '2 Active',
-              onTap: () => AutoTabsRouter.of(context).setActiveIndex(3),
+            BlocBuilder<OrderCubit, OrderState>(
+              builder: (context, state) {
+                return _buildMenuItem(
+                  icon: Icons.shopping_bag_outlined,
+                  title: 'My Orders',
+                  badgeText: state.orders.length > 0
+                      ? '${state.orders.length} Active'
+                      : null,
+                  onTap: () => CustomNavigate().changeIndex(3),
+                );
+              },
             ),
           ],
         ),
@@ -424,13 +475,13 @@ class BuyerProfileView extends StatelessWidget {
               icon: Icons.notifications_outlined,
               title: 'Notification Preferences',
               onTap: () =>
-                  context.router.push(const NotificationPreferencesRoute()),
+                  CustomNavigate.push(const NotificationPreferencesRoute()),
             ),
             _buildMenuItem(
               icon: Icons.language,
               title: 'Language',
               trailingText: 'English',
-              onTap: () => context.router.push(const LanguageSettingsRoute()),
+              onTap: () => CustomNavigate.push(const LanguageSettingsRoute()),
             ),
           ],
         ),
@@ -455,7 +506,7 @@ class BuyerProfileView extends StatelessWidget {
                     icon: Icons.storefront,
                     title: 'Become a Seller',
                     onTap: () =>
-                        context.router.push(const SellerOnboardRoute()),
+                        CustomNavigate.push(const SellerOnboardRoute()),
                   ),
               ],
             );
@@ -468,7 +519,7 @@ class BuyerProfileView extends StatelessWidget {
             _buildMenuItem(
               icon: Icons.chat_bubble_outline,
               title: 'Contact Support',
-              onTap: () => context.router.push(const ContactSupportRoute()),
+              onTap: () => CustomNavigate.push(const ContactSupportRoute()),
             ),
             _buildMenuItem(
               icon: Icons.description_outlined,

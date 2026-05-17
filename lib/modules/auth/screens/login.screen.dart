@@ -37,14 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       if (state.loginMode == 'phone') {
         context.read<AuthCubit>().loginWithPhone(
-              _phoneController.text,
-              _passwordController.text,
-            );
+          _phoneController.text,
+          _passwordController.text,
+        );
       } else {
         context.read<AuthCubit>().loginWithEmail(
-              _emailController.text,
-              _passwordController.text,
-            );
+          _emailController.text,
+          _passwordController.text,
+        );
       }
     }
   }
@@ -57,9 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
           CustomNavigate.replace(const HomeDashBoardRoute());
         }
         if (state.biometricError != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.biometricError!)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.biometricError!)));
           context.read<AuthCubit>().clearBiometricError();
         }
       },
@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ? S.of(context).requiredField
                       : null,
                 ),
-                
+
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -186,4 +186,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

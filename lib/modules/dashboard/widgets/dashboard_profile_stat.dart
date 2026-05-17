@@ -25,7 +25,7 @@ class DashboardProfileStat extends StatelessWidget {
             color: Colors.black.withOpacity(0.04),
             blurRadius: 4,
             offset: const Offset(0, 1),
-          )
+          ),
         ],
       ),
       child: Column(
@@ -35,7 +35,9 @@ class DashboardProfileStat extends StatelessWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w900,
-              color: isPrimary ? AppColors.primaryColor : AppColors.secondaryColor,
+              color: isPrimary
+                  ? AppColors.primaryColor
+                  : AppColors.secondaryColor,
               height: 1.1,
             ),
           ),

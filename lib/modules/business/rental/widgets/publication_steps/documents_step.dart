@@ -6,11 +6,7 @@ class DocumentsStep extends StatelessWidget {
   final Map<String, dynamic> data;
   final Function(String, dynamic) onUpdate;
 
-  const DocumentsStep({
-    super.key,
-    required this.data,
-    required this.onUpdate,
-  });
+  const DocumentsStep({super.key, required this.data, required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +15,8 @@ class DocumentsStep extends StatelessWidget {
       children: [
         const StepHeader(
           title: 'Equipment Documents',
-          subtitle: 'Upload the necessary legal documents to verify your equipment. PDF or JPG formats are accepted.',
+          subtitle:
+              'Upload the necessary legal documents to verify your equipment. PDF or JPG formats are accepted.',
         ),
         _buildDocSlot(
           title: 'Registration Certificate',
@@ -62,7 +59,9 @@ class DocumentsStep extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isUploaded ? AppColors.primaryTint.withOpacity(0.05) : Colors.white,
+        color: isUploaded
+            ? AppColors.primaryTint.withOpacity(0.05)
+            : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isUploaded ? AppColors.primaryColor : Colors.grey.shade200,
@@ -92,7 +91,10 @@ class DocumentsStep extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
                     if (required)
                       const Text(' *', style: TextStyle(color: Colors.red)),
@@ -102,7 +104,9 @@ class DocumentsStep extends StatelessWidget {
                   isUploaded ? 'Uploaded on 12 May 2024' : description,
                   style: TextStyle(
                     fontSize: 12,
-                    color: isUploaded ? Colors.green.shade700 : Colors.grey.shade600,
+                    color: isUploaded
+                        ? Colors.green.shade700
+                        : Colors.grey.shade600,
                   ),
                 ),
               ],
@@ -110,9 +114,15 @@ class DocumentsStep extends StatelessWidget {
           ),
           if (isUploaded)
             IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+              icon: const Icon(
+                Icons.delete_outline,
+                color: Colors.redAccent,
+                size: 20,
+              ),
               onPressed: () {
-                final currentDocs = Map<String, dynamic>.from(data['documents'] ?? {});
+                final currentDocs = Map<String, dynamic>.from(
+                  data['documents'] ?? {},
+                );
                 currentDocs.remove(key);
                 onUpdate('documents', currentDocs);
               },
@@ -121,7 +131,9 @@ class DocumentsStep extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // Simulate upload
-                final currentDocs = Map<String, dynamic>.from(data['documents'] ?? {});
+                final currentDocs = Map<String, dynamic>.from(
+                  data['documents'] ?? {},
+                );
                 currentDocs[key] = {
                   'name': '$title.pdf',
                   'url': 'https://example.com/$key.pdf',

@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fgtagro_mobile/generated/l10n.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class SellerOnboardScreen extends StatefulWidget {
@@ -48,7 +49,7 @@ class _SellerOnboardScreenState extends State<SellerOnboardScreen> {
                     ),
                     onPressed: () {
                       if (step == 1) {
-                        context.router.pop();
+                        CustomNavigate.back();
                       } else {
                         setState(() => step = 1);
                       }

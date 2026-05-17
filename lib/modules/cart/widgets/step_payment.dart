@@ -33,10 +33,15 @@ class _StepPaymentState extends State<StepPayment>
   @override
   void initState() {
     super.initState();
-    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+    _anim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
-    _slide = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.08),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
     _anim.forward();
   }
 
@@ -57,11 +62,19 @@ class _StepPaymentState extends State<StepPayment>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
-            const Text('Mode de paiement',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.secondaryColor)),
+            const Text(
+              'Mode de paiement',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryColor,
+              ),
+            ),
             const SizedBox(height: 4),
-            const Text('Choisissez comment vous souhaitez payer.',
-                style: TextStyle(color: Colors.grey, fontSize: 13)),
+            const Text(
+              'Choisissez comment vous souhaitez payer.',
+              style: TextStyle(color: Colors.grey, fontSize: 13),
+            ),
             const SizedBox(height: 24),
 
             _PaymentTile(
@@ -145,9 +158,18 @@ class _StepPaymentState extends State<StepPayment>
             hintText: hint,
             filled: true,
             fillColor: Colors.white,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: AppColors.borderDefault)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: AppColors.borderDefault)),
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.primaryColor)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: AppColors.borderDefault),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: AppColors.borderDefault),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.primaryColor),
+            ),
           ),
         ),
         const SizedBox(height: 8),
@@ -169,9 +191,21 @@ class _StepPaymentState extends State<StepPayment>
         const SizedBox(height: 8),
         Row(
           children: [
-            Expanded(child: _cardInput('Expiration (MM/AA)', Icons.calendar_today, TextInputType.number)),
+            Expanded(
+              child: _cardInput(
+                'Expiration (MM/AA)',
+                Icons.calendar_today,
+                TextInputType.number,
+              ),
+            ),
             const SizedBox(width: 8),
-            Expanded(child: _cardInput('CVV', Icons.lock_outline, TextInputType.number)),
+            Expanded(
+              child: _cardInput(
+                'CVV',
+                Icons.lock_outline,
+                TextInputType.number,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -182,8 +216,10 @@ class _StepPaymentState extends State<StepPayment>
             Icon(Icons.lock, size: 14, color: Colors.grey),
             SizedBox(width: 4),
             Expanded(
-              child: Text('Sécurisé par Flutterwave. Vos données ne sont jamais stockées par FGT AGRO.',
-                  style: TextStyle(color: Colors.grey, fontSize: 11)),
+              child: Text(
+                'Sécurisé par Flutterwave. Vos données ne sont jamais stockées par FGT AGRO.',
+                style: TextStyle(color: Colors.grey, fontSize: 11),
+              ),
             ),
           ],
         ),
@@ -199,9 +235,18 @@ class _StepPaymentState extends State<StepPayment>
         labelText: label,
         filled: true,
         fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: AppColors.borderDefault)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: AppColors.borderDefault)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.primaryColor)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: AppColors.borderDefault),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: AppColors.borderDefault),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.primaryColor),
+        ),
       ),
     );
   }
@@ -209,18 +254,35 @@ class _StepPaymentState extends State<StepPayment>
   Widget _bankTransferInfo() {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: AppColors.infoBg, borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+        color: AppColors.infoBg,
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          Text('Détails de virement', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.infoFg)),
+          Text(
+            'Détails de virement',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.infoFg,
+            ),
+          ),
           SizedBox(height: 8),
-          Text('Banque: Société Générale Cameroun', style: TextStyle(fontSize: 13)),
+          Text(
+            'Banque: Société Générale Cameroun',
+            style: TextStyle(fontSize: 13),
+          ),
           Text('Compte: FGT AGRO SARL', style: TextStyle(fontSize: 13)),
-          Text('Référence: REF-FGT-CMD-XXXXXX', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+          Text(
+            'Référence: REF-FGT-CMD-XXXXXX',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+          ),
           SizedBox(height: 6),
-          Text('Votre commande sera confirmée sous 24h après réception du virement.',
-              style: TextStyle(color: Colors.grey, fontSize: 12)),
+          Text(
+            'Votre commande sera confirmée sous 24h après réception du virement.',
+            style: TextStyle(color: Colors.grey, fontSize: 12),
+          ),
         ],
       ),
     );
@@ -229,15 +291,25 @@ class _StepPaymentState extends State<StepPayment>
   Widget _cashInfo() {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: AppColors.successBg, borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+        color: AppColors.successBg,
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Payez ${widget.grandTotal.toStringAsFixed(0)} FCFA en boutique lors du retrait.',
-              style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.successFg)),
+          Text(
+            'Payez ${widget.grandTotal.toStringAsFixed(0)} FCFA en boutique lors du retrait.',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.successFg,
+            ),
+          ),
           const SizedBox(height: 4),
-          const Text('Votre commande sera réservée 48h. Un QR code vous sera fourni.',
-              style: TextStyle(color: Colors.grey, fontSize: 12)),
+          const Text(
+            'Votre commande sera réservée 48h. Un QR code vous sera fourni.',
+            style: TextStyle(color: Colors.grey, fontSize: 12),
+          ),
         ],
       ),
     );
@@ -253,11 +325,16 @@ class _StepPaymentState extends State<StepPayment>
             value: _saveDetails,
             onChanged: (v) => setState(() => _saveDetails = v ?? false),
             activeColor: AppColors.primaryColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
           ),
         ),
         const SizedBox(width: 8),
-        const Text('Sauvegarder pour les prochains achats', style: TextStyle(fontSize: 12)),
+        const Text(
+          'Sauvegarder pour les prochains achats',
+          style: TextStyle(fontSize: 12),
+        ),
       ],
     );
   }
@@ -306,7 +383,10 @@ class _PaymentTile extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: Icon(icon, color: color, size: 20),
                   ),
                   const SizedBox(width: 14),
@@ -314,8 +394,20 @@ class _PaymentTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                        Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        Text(
+                          subtitle,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -325,10 +417,15 @@ class _PaymentTile extends StatelessWidget {
                     height: 22,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: selected ? color : Colors.grey.shade300, width: 2),
+                      border: Border.all(
+                        color: selected ? color : Colors.grey.shade300,
+                        width: 2,
+                      ),
                       color: selected ? color : Colors.transparent,
                     ),
-                    child: selected ? const Icon(Icons.check, size: 12, color: Colors.white) : null,
+                    child: selected
+                        ? const Icon(Icons.check, size: 12, color: Colors.white)
+                        : null,
                   ),
                 ],
               ),

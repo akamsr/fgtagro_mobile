@@ -8,6 +8,7 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 class FavouriteCard extends StatelessWidget {
   final ProductModel product;
@@ -30,7 +31,7 @@ class FavouriteCard extends StatelessWidget {
         ],
       ),
       child: InkWell(
-        onTap: () => context.router.push(ProductDetailRoute(id: product.id)),
+        onTap: () => CustomNavigate.push(ProductDetailRoute(id: product.id)),
         borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(8),

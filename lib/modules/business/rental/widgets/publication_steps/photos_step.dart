@@ -6,11 +6,7 @@ class PhotosStep extends StatelessWidget {
   final Map<String, dynamic> data;
   final Function(String, dynamic) onUpdate;
 
-  const PhotosStep({
-    super.key,
-    required this.data,
-    required this.onUpdate,
-  });
+  const PhotosStep({super.key, required this.data, required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +22,8 @@ class PhotosStep extends StatelessWidget {
       children: [
         const StepHeader(
           title: 'Equipment Photos',
-          subtitle: 'Please provide high-quality photos from the angles specified below. This helps building trust with potential tenants.',
+          subtitle:
+              'Please provide high-quality photos from the angles specified below. This helps building trust with potential tenants.',
         ),
         const FormLabel(label: 'Mandatory Photos (4)', required: true),
         const SizedBox(height: 12),
@@ -49,7 +46,9 @@ class PhotosStep extends StatelessWidget {
               onTap: () {
                 // Simulate photo upload
                 final mockUrl = 'https://example.com/photo_${slot['key']}.jpg';
-                final currentSlots = Map<String, String>.from(data['photoSlots'] ?? {});
+                final currentSlots = Map<String, String>.from(
+                  data['photoSlots'] ?? {},
+                );
                 currentSlots[slot['key']!] = mockUrl;
                 onUpdate('photoSlots', currentSlots);
               },
@@ -63,7 +62,11 @@ class PhotosStep extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           'Photos must be min 800x800px, max 5MB (JPG/PNG).',
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade500, fontStyle: FontStyle.italic),
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey.shade500,
+            fontStyle: FontStyle.italic,
+          ),
         ),
       ],
     );
@@ -75,15 +78,22 @@ class PhotosStep extends StatelessWidget {
       spacing: 12,
       runSpacing: 12,
       children: [
-        ...photos.map((p) => _PhotoSlot(
-          url: p,
-          onTap: () {}, // Delete or replace logic
-          isSmall: true,
-        )),
+        ...photos.map(
+          (p) => _PhotoSlot(
+            url: p,
+            onTap: () {}, // Delete or replace logic
+            isSmall: true,
+          ),
+        ),
         if (photos.length < 6)
-          _AddPhotoSlot(onTap: () {
-            onUpdate('additionalPhotos', [...photos, 'https://example.com/extra_${photos.length}.jpg']);
-          }),
+          _AddPhotoSlot(
+            onTap: () {
+              onUpdate('additionalPhotos', [
+                ...photos,
+                'https://example.com/extra_${photos.length}.jpg',
+              ]);
+            },
+          ),
       ],
     );
   }
@@ -125,7 +135,11 @@ class _PhotoSlot extends StatelessWidget {
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.add_a_photo_outlined, color: Colors.grey.shade400, size: isSmall ? 20 : 28),
+                  Icon(
+                    Icons.add_a_photo_outlined,
+                    color: Colors.grey.shade400,
+                    size: isSmall ? 20 : 28,
+                  ),
                   if (label != null) ...[
                     const SizedBox(height: 8),
                     Padding(
@@ -133,7 +147,11 @@ class _PhotoSlot extends StatelessWidget {
                       child: Text(
                         label!,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 11, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ],
@@ -144,8 +162,15 @@ class _PhotoSlot extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.all(4),
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                  child: const Icon(Icons.edit, size: 12, color: AppColors.primaryColor),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.edit,
+                    size: 12,
+                    color: AppColors.primaryColor,
+                  ),
                 ),
               ),
       ),
@@ -168,13 +193,24 @@ class _AddPhotoSlot extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.grey.shade100,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200, style: BorderStyle.none),
+          border: Border.all(
+            color: Colors.grey.shade200,
+            style: BorderStyle.none,
+          ),
         ),
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: Colors.grey.shade200)),
-            child: const Icon(Icons.add, color: AppColors.primaryColor, size: 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: const Icon(
+              Icons.add,
+              color: AppColors.primaryColor,
+              size: 20,
+            ),
           ),
         ),
       ),

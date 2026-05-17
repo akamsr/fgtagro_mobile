@@ -55,9 +55,9 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   void _submit(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthCubit>().verifyEmail(
-            widget.email ?? '',
-            _tokenController.text,
-          );
+        widget.email ?? '',
+        _tokenController.text,
+      );
     }
   }
 
@@ -112,9 +112,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                     ? () => _resend(context)
                     : null,
                 child: Text(
-                  _countdown > 0
-                      ? 'Resend in $_countdown s'
-                      : 'Resend Code',
+                  _countdown > 0 ? 'Resend in $_countdown s' : 'Resend Code',
                   style: TextStyle(
                     color: _countdown > 0
                         ? AppColors.textSecondary
@@ -176,5 +174,3 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     );
   }
 }
-
-

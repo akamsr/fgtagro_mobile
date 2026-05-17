@@ -17,7 +17,10 @@ class HistoryTab extends StatelessWidget {
           children: [
             Icon(Icons.history, size: 64, color: Colors.grey),
             SizedBox(height: 16),
-            Text('No rental history found.', style: TextStyle(color: Colors.grey)),
+            Text(
+              'No rental history found.',
+              style: TextStyle(color: Colors.grey),
+            ),
           ],
         ),
       );
@@ -28,10 +31,12 @@ class HistoryTab extends StatelessWidget {
       children: [
         _buildHeader('Past Rentals', history.length, Colors.grey),
         const SizedBox(height: 12),
-        ...history.map((b) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: BookingCard(booking: b),
-            )),
+        ...history.map(
+          (b) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: BookingCard(booking: b),
+          ),
+        ),
       ],
     );
   }

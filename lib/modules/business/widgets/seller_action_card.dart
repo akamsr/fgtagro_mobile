@@ -32,7 +32,7 @@ class SellerActionCard extends StatelessWidget {
               color: Colors.black.withOpacity(0.04),
               blurRadius: 6,
               offset: const Offset(0, 2),
-            )
+            ),
           ],
         ),
         child: Column(
@@ -41,7 +41,10 @@ class SellerActionCard extends StatelessWidget {
             Container(
               width: 48,
               height: 48,
-              decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(14)),
+              decoration: BoxDecoration(
+                color: bg,
+                borderRadius: BorderRadius.circular(14),
+              ),
               child: Icon(icon, size: 24, color: iconColor),
             ),
             const SizedBox(height: 10),

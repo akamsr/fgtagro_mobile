@@ -10,7 +10,10 @@ class BookingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(symbol: 'FCFA', decimalDigits: 0);
+    final currencyFormatter = NumberFormat.currency(
+      symbol: 'FCFA',
+      decimalDigits: 0,
+    );
     final dateFormatter = DateFormat('dd MMM yyyy');
 
     return Container(
@@ -57,7 +60,10 @@ class BookingCard extends StatelessWidget {
                     ),
                     Text(
                       'Requested ${DateFormat('HH:mm').format(booking.createdAt)}',
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
                     ),
                   ],
                 ),
@@ -75,7 +81,11 @@ class BookingCard extends StatelessWidget {
                   width: 60,
                   height: 60,
                   color: Colors.grey.shade100,
-                  child: const Icon(Icons.agriculture, color: Colors.grey, size: 24),
+                  child: const Icon(
+                    Icons.agriculture,
+                    color: Colors.grey,
+                    size: 24,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -93,7 +103,10 @@ class BookingCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       '${dateFormatter.format(booking.startDate)} - ${dateFormatter.format(booking.endDate)}',
-                      style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade700,
+                      ),
                     ),
                   ],
                 ),
@@ -127,7 +140,9 @@ class BookingCard extends StatelessWidget {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.red,
                       side: const BorderSide(color: Colors.red),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: const Text('Reject'),
                   ),
@@ -140,7 +155,9 @@ class BookingCard extends StatelessWidget {
                       backgroundColor: AppColors.primaryColor,
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: const Text('Accept Request'),
                   ),
@@ -158,7 +175,9 @@ class BookingCard extends StatelessWidget {
                 backgroundColor: AppColors.secondaryColor,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 45),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
           ],

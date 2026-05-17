@@ -22,13 +22,21 @@ class CategoryModelAdapter extends TypeAdapter<CategoryModel> {
       slug: fields[2] as String,
       description: fields[3] as String?,
       icon: fields[4] as String?,
+      parentId: fields[5] as String?,
+      commissionRate: fields[6] == null ? 0.0 : (fields[6] as num).toDouble(),
+      vatRate: fields[7] == null ? 0.0 : (fields[7] as num).toDouble(),
+      isReturnable: fields[8] == null ? true : fields[8] as bool,
+      maxReturnDays: fields[9] == null ? 30 : (fields[9] as num).toInt(),
+      requiresPhysicalInspection: fields[10] == null
+          ? false
+          : fields[10] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, CategoryModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +46,19 @@ class CategoryModelAdapter extends TypeAdapter<CategoryModel> {
       ..writeByte(3)
       ..write(obj.description)
       ..writeByte(4)
-      ..write(obj.icon);
+      ..write(obj.icon)
+      ..writeByte(5)
+      ..write(obj.parentId)
+      ..writeByte(6)
+      ..write(obj.commissionRate)
+      ..writeByte(7)
+      ..write(obj.vatRate)
+      ..writeByte(8)
+      ..write(obj.isReturnable)
+      ..writeByte(9)
+      ..write(obj.maxReturnDays)
+      ..writeByte(10)
+      ..write(obj.requiresPhysicalInspection);
   }
 
   @override

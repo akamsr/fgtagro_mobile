@@ -6,6 +6,7 @@ import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class CartScreen extends StatefulWidget {
@@ -27,7 +28,13 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFFBF8FD),
       appBar: AppBar(
-        title: const Text('Mon Panier', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor)),
+        title: const Text(
+          'Mon Panier',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
@@ -45,18 +52,36 @@ class _CartScreenState extends State<CartScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey.shade300),
+                  Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 64,
+                    color: Colors.grey.shade300,
+                  ),
                   const SizedBox(height: 16),
-                  const Text('Votre panier est vide', style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  const Text(
+                    'Votre panier est vide',
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () => context.router.pop(),
+                    onPressed: () => CustomNavigate.back(),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
                     ),
-                    child: const Text('Continuer mes achats', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      'Continuer mes achats',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -80,7 +105,11 @@ class _CartScreenState extends State<CartScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5)),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5),
+                    ),
                   ],
                 ),
                 child: SafeArea(
@@ -90,8 +119,22 @@ class _CartScreenState extends State<CartScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Total', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.secondaryColor)),
-                          Text('${cart.grandTotal.toStringAsFixed(0)} FCFA', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.primaryColor)),
+                          const Text(
+                            'Total',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.secondaryColor,
+                            ),
+                          ),
+                          Text(
+                            '${cart.grandTotal.toStringAsFixed(0)} FCFA',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
@@ -99,12 +142,22 @@ class _CartScreenState extends State<CartScreen> {
                         width: double.infinity,
                         height: 54,
                         child: ElevatedButton(
-                          onPressed: () => context.router.push(const CheckoutRoute()),
+                          onPressed: () =>
+                              CustomNavigate.push(const CheckoutRoute()),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.secondaryColor,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
-                          child: const Text('COMMANDER', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, letterSpacing: 1)),
+                          child: const Text(
+                            'COMMANDER',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1,
+                            ),
+                          ),
                         ),
                       ),
                     ],

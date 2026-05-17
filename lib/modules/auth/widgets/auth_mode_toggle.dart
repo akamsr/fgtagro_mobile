@@ -19,10 +19,16 @@ class AuthModeToggle extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () => onModeChanged('phone'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: currentMode == 'phone' ? AppColors.secondaryColor : Colors.grey[200],
-              foregroundColor: currentMode == 'phone' ? Colors.white : Colors.black,
+              backgroundColor: currentMode == 'phone'
+                  ? AppColors.secondaryColor
+                  : Colors.grey[200],
+              foregroundColor: currentMode == 'phone'
+                  ? Colors.white
+                  : Colors.black,
               elevation: 0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: const Text('Téléphone'),
           ),
@@ -32,10 +38,16 @@ class AuthModeToggle extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () => onModeChanged('email'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: currentMode == 'email' ? AppColors.secondaryColor : Colors.grey[200],
-              foregroundColor: currentMode == 'email' ? Colors.white : Colors.black,
+              backgroundColor: currentMode == 'email'
+                  ? AppColors.secondaryColor
+                  : Colors.grey[200],
+              foregroundColor: currentMode == 'email'
+                  ? Colors.white
+                  : Colors.black,
               elevation: 0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: const Text('Email'),
           ),

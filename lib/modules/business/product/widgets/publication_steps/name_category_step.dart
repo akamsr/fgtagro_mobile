@@ -20,10 +20,17 @@ class NameCategoryStep extends StatelessWidget {
       children: [
         const Text(
           'Identity',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         const SizedBox(height: 32),
-        const Text('Product Name', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text(
+          'Product Name',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 8),
         TextField(
           controller: nameController,
@@ -37,7 +44,10 @@ class NameCategoryStep extends StatelessWidget {
         const SizedBox(height: 4),
         Align(
           alignment: Alignment.centerRight,
-          child: Text('${nameController.text.length}/100', style: const TextStyle(fontSize: 10, color: Colors.grey)),
+          child: Text(
+            '${nameController.text.length}/100',
+            style: const TextStyle(fontSize: 10, color: Colors.grey),
+          ),
         ),
         const SizedBox(height: 24),
         const Text('Category', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -47,7 +57,11 @@ class NameCategoryStep extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
               categoryPath.join(' > '),
-              style: const TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 13),
+              style: const TextStyle(
+                color: AppColors.primaryColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
             ),
           ),
         _CategoryTreeSelector(onSelect: onCategorySelect),
@@ -98,9 +112,20 @@ class _CategoryTreeSelectorState extends State<_CategoryTreeSelector> {
           return Column(
             children: [
               ListTile(
-                title: Text(cat, style: TextStyle(fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal)),
-                trailing: Icon(isExpanded ? Icons.expand_less : Icons.expand_more, size: 20),
-                onTap: () => setState(() => _expandedLevel1 = isExpanded ? null : cat),
+                title: Text(
+                  cat,
+                  style: TextStyle(
+                    fontWeight: isExpanded
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                ),
+                trailing: Icon(
+                  isExpanded ? Icons.expand_less : Icons.expand_more,
+                  size: 20,
+                ),
+                onTap: () =>
+                    setState(() => _expandedLevel1 = isExpanded ? null : cat),
               ),
               if (isExpanded)
                 Padding(
@@ -118,11 +143,15 @@ class _CategoryTreeSelectorState extends State<_CategoryTreeSelector> {
   Widget _buildSubCategories(String parent, dynamic value) {
     if (value is List) {
       return Column(
-        children: value.map((sub) => ListTile(
-          title: Text(sub),
-          onTap: () => widget.onSelect([parent, sub]),
-          dense: true,
-        )).toList(),
+        children: value
+            .map(
+              (sub) => ListTile(
+                title: Text(sub),
+                onTap: () => widget.onSelect([parent, sub]),
+                dense: true,
+              ),
+            )
+            .toList(),
       );
     } else if (value is Map) {
       return Column(
@@ -132,19 +161,27 @@ class _CategoryTreeSelectorState extends State<_CategoryTreeSelector> {
             children: [
               ListTile(
                 title: Text(sub),
-                trailing: Icon(isExpanded ? Icons.expand_less : Icons.expand_more, size: 18),
-                onTap: () => setState(() => _expandedLevel2 = isExpanded ? null : sub),
+                trailing: Icon(
+                  isExpanded ? Icons.expand_less : Icons.expand_more,
+                  size: 18,
+                ),
+                onTap: () =>
+                    setState(() => _expandedLevel2 = isExpanded ? null : sub),
                 dense: true,
               ),
               if (isExpanded)
                 Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: Column(
-                    children: (value[sub] as List).map((leaf) => ListTile(
-                      title: Text(leaf),
-                      onTap: () => widget.onSelect([parent, sub, leaf]),
-                      dense: true,
-                    )).toList(),
+                    children: (value[sub] as List)
+                        .map(
+                          (leaf) => ListTile(
+                            title: Text(leaf),
+                            onTap: () => widget.onSelect([parent, sub, leaf]),
+                            dense: true,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
             ],

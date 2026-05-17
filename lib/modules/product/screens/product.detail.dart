@@ -14,6 +14,7 @@ import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class ProductDetailScreen extends StatefulWidget {
@@ -114,7 +115,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       padding: const EdgeInsets.all(8.0),
                       child: ProductHeroAction(
                         icon: Icons.arrow_back,
-                        onTap: () => context.router.pop(),
+                        onTap: () => CustomNavigate.back(),
                       ),
                     ),
                     centerTitle: true,
@@ -714,7 +715,7 @@ class _HorizontalProductList extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () => context.router.push(
+              onPressed: () => CustomNavigate.push(
                 ProductListRoute(title: title, categoryId: categoryId),
               ),
               child: const Text('See All'),
@@ -726,7 +727,9 @@ class _HorizontalProductList extends StatelessWidget {
           builder: (context, state) {
             var products = state.products;
             if (categoryId != null) {
-              products = products.where((p) => p.category.id == categoryId).toList();
+              products = products
+                  .where((p) => p.category.id == categoryId)
+                  .toList();
             }
             products = products.take(5).toList();
 

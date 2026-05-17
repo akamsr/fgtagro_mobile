@@ -24,7 +24,11 @@ class DashboardDropdownItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Icon(icon, size: 17, color: active ? AppColors.primaryColor : AppColors.secondaryColor),
+            Icon(
+              icon,
+              size: 17,
+              color: active ? AppColors.primaryColor : AppColors.secondaryColor,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -32,11 +36,14 @@ class DashboardDropdownItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-                  color: active ? AppColors.primaryColor : AppColors.secondaryColor,
+                  color: active
+                      ? AppColors.primaryColor
+                      : AppColors.secondaryColor,
                 ),
               ),
             ),
-            if (active) const Icon(Icons.check, size: 14, color: AppColors.primaryColor),
+            if (active)
+              const Icon(Icons.check, size: 14, color: AppColors.primaryColor),
           ],
         ),
       ),

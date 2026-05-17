@@ -65,9 +65,14 @@ class _StepDot extends StatelessWidget {
           height: 32,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isDone || isActive ? AppColors.primaryColor : Colors.grey.shade200,
+            color: isDone || isActive
+                ? AppColors.primaryColor
+                : Colors.grey.shade200,
             border: isActive
-                ? Border.all(color: AppColors.primaryColor.withOpacity(0.3), width: 4)
+                ? Border.all(
+                    color: AppColors.primaryColor.withOpacity(0.3),
+                    width: 4,
+                  )
                 : null,
           ),
           child: Center(

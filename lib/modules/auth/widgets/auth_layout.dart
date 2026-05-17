@@ -18,7 +18,7 @@ class AuthLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     return Scaffold(
       backgroundColor: AppColors.bgCanvas,
       body: SafeArea(
@@ -56,7 +56,11 @@ class AuthLayout extends StatelessWidget {
                                 'assets/icons/logo.jpg',
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.agriculture, size: 50, color: AppColors.primaryColor),
+                                    const Icon(
+                                      Icons.agriculture,
+                                      size: 50,
+                                      color: AppColors.primaryColor,
+                                    ),
                               ),
                             ),
                           ),

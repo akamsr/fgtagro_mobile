@@ -15,7 +15,9 @@ class ProductPreview extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color.fromRGBO(36, 44, 88, 0.07)),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2, offset: Offset(0, 1))],
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 2, offset: Offset(0, 1)),
+        ],
       ),
       child: Row(
         children: [
@@ -35,13 +37,41 @@ class ProductPreview extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(color: const Color.fromRGBO(0, 76, 16, 0.15), borderRadius: BorderRadius.circular(4)),
-                  child: const Text('RÉFÉRENCE PRODUIT', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: Colors.green, letterSpacing: 1)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color.fromRGBO(0, 76, 16, 0.15),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text(
+                    'RÉFÉRENCE PRODUIT',
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.green,
+                      letterSpacing: 1,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 2),
-                Text(item.productName ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.secondaryColor)),
-                Text(item.productPrice ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.primaryColor)),
+                Text(
+                  item.productName ?? '',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.secondaryColor,
+                  ),
+                ),
+                Text(
+                  item.productPrice ?? '',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
               ],
             ),
           ),

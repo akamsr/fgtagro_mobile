@@ -54,7 +54,6 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _navigateToNext() async {
-    // Wait for 5 seconds total (including animation time)
     await Future.delayed(const Duration(seconds: 5));
 
     final storage = locator<StorageServices>();
@@ -134,16 +133,10 @@ class _WindowsLoaderState extends State<WindowsLoader>
           height: 50,
           child: Stack(
             children: List.generate(6, (index) {
-              // Calculate a continuous progress for each dot
               final double offset = index * 0.12;
               final double progress = (_controller.value - offset) % 1.0;
-
-              // Use a curve that provides variable speed (faster at top, slower at bottom)
-              // to mimic the Windows "chase" effect while staying continuous.
               final double rotation =
                   Curves.easeInOutSine.transform(progress) * 2 * 3.14159;
-
-              // Add a slight opacity fade at the end of the cycle for smoother transitions
               final double opacity = progress < 0.1
                   ? progress * 10
                   : (progress > 0.9 ? (1.0 - progress) * 10 : 1.0);

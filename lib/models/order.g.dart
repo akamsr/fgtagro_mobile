@@ -40,13 +40,22 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
       payoutAmount: (fields[18] as num?)?.toDouble(),
       payoutDate: fields[19] as DateTime?,
       paymentStatus: fields[20] == null ? 'PAID' : fields[20] as String,
+      slug: fields[21] as String?,
+      buyerId: fields[22] as String?,
+      subtotalAmount: fields[23] == null ? 0.0 : (fields[23] as num).toDouble(),
+      deliveryFee: fields[24] == null ? 0.0 : (fields[24] as num).toDouble(),
+      discountAmount: fields[25] == null ? 0.0 : (fields[25] as num).toDouble(),
+      taxAmount: fields[26] == null ? 0.0 : (fields[26] as num).toDouble(),
+      fulfillmentType: fields[27] as String?,
+      pickupDeadline: fields[28] as DateTime?,
+      driverId: fields[29] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, OrderModel obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(30)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -88,7 +97,25 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
       ..writeByte(19)
       ..write(obj.payoutDate)
       ..writeByte(20)
-      ..write(obj.paymentStatus);
+      ..write(obj.paymentStatus)
+      ..writeByte(21)
+      ..write(obj.slug)
+      ..writeByte(22)
+      ..write(obj.buyerId)
+      ..writeByte(23)
+      ..write(obj.subtotalAmount)
+      ..writeByte(24)
+      ..write(obj.deliveryFee)
+      ..writeByte(25)
+      ..write(obj.discountAmount)
+      ..writeByte(26)
+      ..write(obj.taxAmount)
+      ..writeByte(27)
+      ..write(obj.fulfillmentType)
+      ..writeByte(28)
+      ..write(obj.pickupDeadline)
+      ..writeByte(29)
+      ..write(obj.driverId);
   }
 
   @override

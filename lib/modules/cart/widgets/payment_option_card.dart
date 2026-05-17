@@ -25,24 +25,44 @@ class PaymentOptionCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primaryColor.withOpacity(0.05) : Colors.white,
+          color: selected
+              ? AppColors.primaryColor.withOpacity(0.05)
+              : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: selected ? AppColors.primaryColor : Colors.grey.shade200, width: 2),
+          border: Border.all(
+            color: selected ? AppColors.primaryColor : Colors.grey.shade200,
+            width: 2,
+          ),
         ),
         child: Row(
           children: [
-            Icon(icon, color: selected ? AppColors.primaryColor : AppColors.secondaryColor),
+            Icon(
+              icon,
+              color: selected
+                  ? AppColors.primaryColor
+                  : AppColors.secondaryColor,
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
                 ],
               ),
             ),
-            if (selected) const Icon(Icons.check_circle, color: AppColors.primaryColor),
+            if (selected)
+              const Icon(Icons.check_circle, color: AppColors.primaryColor),
           ],
         ),
       ),

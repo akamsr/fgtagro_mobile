@@ -69,10 +69,7 @@ class ProductMiniCard extends StatelessWidget {
                 ),
                 Text(
                   '${product.unitPrice} FCFA',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey.shade500,
-                  ),
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
                 ),
               ],
             ),

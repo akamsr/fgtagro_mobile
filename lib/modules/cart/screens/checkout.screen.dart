@@ -9,6 +9,7 @@ import 'package:fgtagro_mobile/modules/cart/widgets/step_shipping.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class CheckoutScreen extends StatefulWidget {
@@ -111,7 +112,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
         curve: Curves.easeInOutCubic,
       );
     } else {
-      context.router.pop();
+      CustomNavigate.back();
     }
   }
 

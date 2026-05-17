@@ -9,16 +9,28 @@ import 'package:fgtagro_mobile/models/cart.dart';
 import 'package:fgtagro_mobile/models/cartitems.dart';
 import 'package:fgtagro_mobile/models/category.dart';
 import 'package:fgtagro_mobile/models/conversation.dart';
+import 'package:fgtagro_mobile/models/delivery.dart';
+import 'package:fgtagro_mobile/models/delivery_zone.dart';
+import 'package:fgtagro_mobile/models/device_biometric.dart';
 import 'package:fgtagro_mobile/models/device_info.dart';
+import 'package:fgtagro_mobile/models/dispute.dart';
 import 'package:fgtagro_mobile/models/equipment.dart';
 import 'package:fgtagro_mobile/models/message.dart';
 import 'package:fgtagro_mobile/models/order.dart';
+import 'package:fgtagro_mobile/models/payment.dart';
+import 'package:fgtagro_mobile/models/payout_request.dart';
 import 'package:fgtagro_mobile/models/product.dart';
+import 'package:fgtagro_mobile/models/rbac.dart';
+import 'package:fgtagro_mobile/models/review.dart';
 import 'package:fgtagro_mobile/models/seller.dart';
+import 'package:fgtagro_mobile/models/session.dart';
+import 'package:fgtagro_mobile/models/support.dart';
 import 'package:fgtagro_mobile/models/user.dart';
+import 'package:fgtagro_mobile/models/wallet.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(AccessTokenModelAdapter());
     registerAdapter(BookingModelAdapter());
     registerAdapter(CacheRecordAdapter());
     registerAdapter(CartAdapter());
@@ -27,6 +39,10 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(CategoryModelAdapter());
     registerAdapter(ConversationModelAdapter());
     registerAdapter(CustomDevInfoAdapter());
+    registerAdapter(DeliveryModelAdapter());
+    registerAdapter(DeliveryZoneModelAdapter());
+    registerAdapter(DeviceBiometricModelAdapter());
+    registerAdapter(DisputeModelAdapter());
     registerAdapter(EquipmentDocumentAdapter());
     registerAdapter(EquipmentModelAdapter());
     registerAdapter(MessageModelAdapter());
@@ -34,18 +50,31 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(MessageTypeAdapter());
     registerAdapter(OrderModelAdapter());
     registerAdapter(OrderStatusAdapter());
+    registerAdapter(PaymentModelAdapter());
+    registerAdapter(PayoutRequestModelAdapter());
+    registerAdapter(PermissionModelAdapter());
     registerAdapter(ProductCategoryModelAdapter());
     registerAdapter(ProductModelAdapter());
     registerAdapter(ProductSellerModelAdapter());
+    registerAdapter(RefreshTokenModelAdapter());
+    registerAdapter(ReviewModelAdapter());
+    registerAdapter(RoleModelAdapter());
+    registerAdapter(RolePermissionModelAdapter());
     registerAdapter(SellerProfileModelAdapter());
     registerAdapter(StoreModelAdapter());
+    registerAdapter(SupportConversationModelAdapter());
+    registerAdapter(SupportMessageModelAdapter());
     registerAdapter(UserModelAdapter());
     registerAdapter(UserRoleAdapter());
+    registerAdapter(UserRoleModelAdapter());
+    registerAdapter(WalletModelAdapter());
+    registerAdapter(WalletTransactionModelAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(AccessTokenModelAdapter());
     registerAdapter(BookingModelAdapter());
     registerAdapter(CacheRecordAdapter());
     registerAdapter(CartAdapter());
@@ -54,6 +83,10 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
     registerAdapter(CategoryModelAdapter());
     registerAdapter(ConversationModelAdapter());
     registerAdapter(CustomDevInfoAdapter());
+    registerAdapter(DeliveryModelAdapter());
+    registerAdapter(DeliveryZoneModelAdapter());
+    registerAdapter(DeviceBiometricModelAdapter());
+    registerAdapter(DisputeModelAdapter());
     registerAdapter(EquipmentDocumentAdapter());
     registerAdapter(EquipmentModelAdapter());
     registerAdapter(MessageModelAdapter());
@@ -61,12 +94,24 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
     registerAdapter(MessageTypeAdapter());
     registerAdapter(OrderModelAdapter());
     registerAdapter(OrderStatusAdapter());
+    registerAdapter(PaymentModelAdapter());
+    registerAdapter(PayoutRequestModelAdapter());
+    registerAdapter(PermissionModelAdapter());
     registerAdapter(ProductCategoryModelAdapter());
     registerAdapter(ProductModelAdapter());
     registerAdapter(ProductSellerModelAdapter());
+    registerAdapter(RefreshTokenModelAdapter());
+    registerAdapter(ReviewModelAdapter());
+    registerAdapter(RoleModelAdapter());
+    registerAdapter(RolePermissionModelAdapter());
     registerAdapter(SellerProfileModelAdapter());
     registerAdapter(StoreModelAdapter());
+    registerAdapter(SupportConversationModelAdapter());
+    registerAdapter(SupportMessageModelAdapter());
     registerAdapter(UserModelAdapter());
     registerAdapter(UserRoleAdapter());
+    registerAdapter(UserRoleModelAdapter());
+    registerAdapter(WalletModelAdapter());
+    registerAdapter(WalletTransactionModelAdapter());
   }
 }

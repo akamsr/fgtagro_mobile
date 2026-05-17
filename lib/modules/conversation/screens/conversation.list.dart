@@ -32,10 +32,18 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
               children: [
                 // Header
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    border: Border(bottom: BorderSide(color: Color.fromRGBO(36, 44, 88, 0.08), width: 1)),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Color.fromRGBO(36, 44, 88, 0.08),
+                        width: 1,
+                      ),
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,7 +67,11 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                             color: Colors.grey.shade100,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.create_outlined, size: 22, color: AppColors.secondaryColor),
+                          child: const Icon(
+                            Icons.create_outlined,
+                            size: 22,
+                            color: AppColors.secondaryColor,
+                          ),
                         ),
                       ),
                     ],
@@ -71,7 +83,9 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
                   child: state.genLoading && state.conversations.isEmpty
                       ? const Center(child: CircularProgressIndicator())
                       : RefreshIndicator(
-                          onRefresh: () => context.read<ConversationCubit>().fetchConversations(),
+                          onRefresh: () => context
+                              .read<ConversationCubit>()
+                              .fetchConversations(),
                           child: ListView.separated(
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             itemCount: state.conversations.length,

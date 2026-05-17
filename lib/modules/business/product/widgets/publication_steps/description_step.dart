@@ -26,7 +26,10 @@ class _DescriptionStepState extends State<DescriptionStep> {
     final urlRegex = RegExp(r'\b(?:http|https|www)\b');
 
     setState(() {
-      _hasRestrictedInfo = phoneRegex.hasMatch(text) || emailRegex.hasMatch(text) || urlRegex.hasMatch(text);
+      _hasRestrictedInfo =
+          phoneRegex.hasMatch(text) ||
+          emailRegex.hasMatch(text) ||
+          urlRegex.hasMatch(text);
     });
   }
 
@@ -40,7 +43,11 @@ class _DescriptionStepState extends State<DescriptionStep> {
       children: [
         const Text(
           'Detailed Description',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         const SizedBox(height: 32),
         TextField(
@@ -49,12 +56,15 @@ class _DescriptionStepState extends State<DescriptionStep> {
           maxLength: 2000,
           onChanged: (_) => setState(() {}),
           decoration: InputDecoration(
-            hintText: 'Describe your product in detail — variety, quality, origin, how it was produced, recommended use, storage conditions...',
+            hintText:
+                'Describe your product in detail — variety, quality, origin, how it was produced, recommended use, storage conditions...',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             counterText: '',
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: _hasRestrictedInfo ? Colors.red : AppColors.primaryColor),
+              borderSide: BorderSide(
+                color: _hasRestrictedInfo ? Colors.red : AppColors.primaryColor,
+              ),
             ),
           ),
         ),
@@ -63,17 +73,31 @@ class _DescriptionStepState extends State<DescriptionStep> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              isTooShort ? 'Minimum 500 characters required' : 'Maximum 2000 characters',
-              style: TextStyle(fontSize: 11, color: isTooShort ? Colors.red : Colors.grey),
+              isTooShort
+                  ? 'Minimum 500 characters required'
+                  : 'Maximum 2000 characters',
+              style: TextStyle(
+                fontSize: 11,
+                color: isTooShort ? Colors.red : Colors.grey,
+              ),
             ),
-            Text('$length / 2000', style: TextStyle(fontSize: 11, color: isTooShort ? Colors.red : Colors.grey)),
+            Text(
+              '$length / 2000',
+              style: TextStyle(
+                fontSize: 11,
+                color: isTooShort ? Colors.red : Colors.grey,
+              ),
+            ),
           ],
         ),
         if (_hasRestrictedInfo)
           Container(
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: Colors.red.shade50, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(
+              color: Colors.red.shade50,
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: const Row(
               children: [
                 Icon(Icons.warning_amber_rounded, color: Colors.red, size: 18),
@@ -81,7 +105,11 @@ class _DescriptionStepState extends State<DescriptionStep> {
                 Expanded(
                   child: Text(
                     'Direct contact information (phone, email, URLs) is not allowed in descriptions.',
-                    style: TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

@@ -6,6 +6,9 @@ import 'package:fgtagro_mobile/utils/error/app_error.dart';
 import 'package:fgtagro_mobile/utils/error/global_app_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:fgtagro_mobile/utils/storage/local.storage.dart';
+import 'package:fgtagro_mobile/utils/storage/locator.storage.dart';
+
 part 'auth.state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -13,7 +16,43 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit({ApiService? apiService})
     : apiService = apiService ?? ApiService(),
-      super(AuthState());
+      super(AuthState(user: _getRestoredUser()));
+
+  static UserModel? _getRestoredUser() {
+    try {
+      final String? userStr =
+          locator<StorageServices>().readData('loggedUser') as String?;
+      if (userStr != null && userStr.isNotEmpty) {
+        return UserModel.fromJsonString(userStr);
+      }
+    } catch (e) {
+      // ignore
+    }
+    return null;
+  }
+
+  Future<bool> updateUser(UserModel updatedUser) async {
+    emitLoading();
+    try {
+      final result = await apiService.updateUser(updatedUser);
+      if (result == 'Success') {
+        emit(state.copyWith(genLoading: false, user: updatedUser));
+        return true;
+      } else {
+        emit(
+          state.copyWith(
+            genLoading: false,
+            genError: AppFailure(message: result, type: FailureType.auth),
+            showError: true,
+          ),
+        );
+        return false;
+      }
+    } catch (e, s) {
+      emitError(e, s);
+      return false;
+    }
+  }
 
   void setLoginMode(String mode) {
     emit(state.copyWith(loginMode: mode));
@@ -55,24 +94,28 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> loginWithEmail(String email, String password) async {
     emitLoading();
     try {
-      final user = await apiService.login({'email': email, 'password': password});
+      final user = await apiService.login({
+        'email': email,
+        'password': password,
+      });
       emit(state.copyWith(genLoading: false, user: user));
     } catch (e, s) {
       emitError(e, s);
     }
   }
-
 
   Future<void> loginWithPhone(String phone, String password) async {
     emitLoading();
     try {
-      final user = await apiService.login({'phone': phone, 'password': password});
+      final user = await apiService.login({
+        'phone': phone,
+        'password': password,
+      });
       emit(state.copyWith(genLoading: false, user: user));
     } catch (e, s) {
       emitError(e, s);
     }
   }
-
 
   Future<void> loginWithBiometrics() async {
     emitLoading();
@@ -114,7 +157,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-
   Future<void> forgotPassword(String email) async {
     emitLoading();
     try {
@@ -153,7 +195,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-
   Future<void> resendVerificationEmail(String email) async {
     emitLoading();
     try {
@@ -164,8 +205,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-
   Future<void> logout() async {
+    apiService.logout();
     emit(AuthState());
   }
 

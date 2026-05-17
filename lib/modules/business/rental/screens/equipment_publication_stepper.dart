@@ -8,16 +8,19 @@ import 'package:fgtagro_mobile/modules/business/rental/widgets/publication_steps
 import 'package:fgtagro_mobile/modules/business/rental/widgets/publication_steps/pricing_step.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class EquipmentPublicationScreen extends StatefulWidget {
   const EquipmentPublicationScreen({super.key});
 
   @override
-  State<EquipmentPublicationScreen> createState() => _EquipmentPublicationScreenState();
+  State<EquipmentPublicationScreen> createState() =>
+      _EquipmentPublicationScreenState();
 }
 
-class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen> {
+class _EquipmentPublicationScreenState
+    extends State<EquipmentPublicationScreen> {
   int _currentStep = 1;
   final int _totalSteps = 7;
   final Map<String, dynamic> _formData = {
@@ -50,7 +53,7 @@ class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen>
 
   void _submitForm() {
     // Implement submission logic
-    context.router.pop();
+    CustomNavigate.back();
   }
 
   @override
@@ -60,13 +63,16 @@ class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen>
       appBar: AppBar(
         title: const Text(
           'List Equipment',
-          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.secondaryColor),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.secondaryColor,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.secondaryColor),
-          onPressed: () => context.router.pop(),
+          onPressed: () => CustomNavigate.back(),
         ),
         actions: [
           Center(
@@ -74,10 +80,14 @@ class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen>
               padding: const EdgeInsets.only(right: 16),
               child: Text(
                 'Step $_currentStep of $_totalSteps',
-                style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12),
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -85,7 +95,9 @@ class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen>
           LinearProgressIndicator(
             value: _currentStep / _totalSteps,
             backgroundColor: Colors.grey.shade100,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+            valueColor: const AlwaysStoppedAnimation<Color>(
+              AppColors.primaryColor,
+            ),
             minHeight: 4,
           ),
           Expanded(
@@ -131,7 +143,7 @@ class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen>
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, -5),
-          )
+          ),
         ],
       ),
       child: Row(
@@ -142,7 +154,9 @@ class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen>
                 onPressed: _prevStep,
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text('Back'),
               ),
@@ -155,7 +169,9 @@ class _EquipmentPublicationScreenState extends State<EquipmentPublicationScreen>
                 backgroundColor: AppColors.primaryColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 elevation: 0,
               ),
               child: Text(_currentStep == _totalSteps ? 'Submit' : 'Continue'),

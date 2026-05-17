@@ -44,13 +44,27 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       role: fields[20] as UserRole?,
       is_online: fields[21] == null ? false : fields[21] as bool,
       last_seen: fields[22] as DateTime?,
+      slug: fields[23] as String?,
+      passwordHash: fields[24] as String?,
+      firstNameField: fields[25] as String?,
+      lastNameField: fields[26] as String?,
+      avatarUrl: fields[27] as String?,
+      gpsLatitude: (fields[28] as num?)?.toDouble(),
+      gpsLongitude: (fields[29] as num?)?.toDouble(),
+      emailVerified: fields[30] as bool?,
+      phoneVerified: fields[31] as bool?,
+      pushToken: fields[32] as String?,
+      lockedUntil: fields[33] as DateTime?,
+      language: fields[34] as String?,
+      timezone: fields[35] as String?,
+      status: fields[36] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(37)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -96,7 +110,35 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeByte(21)
       ..write(obj.is_online)
       ..writeByte(22)
-      ..write(obj.last_seen);
+      ..write(obj.last_seen)
+      ..writeByte(23)
+      ..write(obj.slug)
+      ..writeByte(24)
+      ..write(obj.passwordHash)
+      ..writeByte(25)
+      ..write(obj.firstNameField)
+      ..writeByte(26)
+      ..write(obj.lastNameField)
+      ..writeByte(27)
+      ..write(obj.avatarUrl)
+      ..writeByte(28)
+      ..write(obj.gpsLatitude)
+      ..writeByte(29)
+      ..write(obj.gpsLongitude)
+      ..writeByte(30)
+      ..write(obj.emailVerified)
+      ..writeByte(31)
+      ..write(obj.phoneVerified)
+      ..writeByte(32)
+      ..write(obj.pushToken)
+      ..writeByte(33)
+      ..write(obj.lockedUntil)
+      ..writeByte(34)
+      ..write(obj.language)
+      ..writeByte(35)
+      ..write(obj.timezone)
+      ..writeByte(36)
+      ..write(obj.status);
   }
 
   @override

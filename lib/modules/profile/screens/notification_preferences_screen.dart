@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fgtagro_mobile/utils/functions/navigate.dart';
 
 @RoutePage()
 class NotificationPreferencesScreen extends StatefulWidget {
@@ -87,7 +88,7 @@ class _NotificationPreferencesScreenState
           backgroundColor: Colors.green,
         ),
       );
-      context.router.pop();
+      CustomNavigate.back();
     }
   }
 

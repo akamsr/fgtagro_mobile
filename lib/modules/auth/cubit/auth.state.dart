@@ -56,15 +56,15 @@ class AuthState extends GlobalAppState {
 
   @override
   List<Object?> get extraprops => [
-        genLoading,
-        genError,
-        showError,
-        loginMode,
-        isBiometricEnabled,
-        biometricType,
-        biometricError,
-        formSubmitted,
-        success,
-        user,
-      ];
+    genLoading,
+    genError,
+    showError,
+    loginMode,
+    isBiometricEnabled,
+    biometricType,
+    biometricError,
+    formSubmitted,
+    success,
+    user,
+  ];
 }

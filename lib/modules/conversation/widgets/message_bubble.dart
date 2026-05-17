@@ -15,13 +15,17 @@ class MessageBubble extends StatelessWidget {
       child: SizedBox(
         width: 280,
         child: Column(
-          crossAxisAlignment: isBuyer ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: isBuyer
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: isBuyer ? AppColors.secondaryColor : Colors.white,
-                border: isBuyer ? null : Border.all(color: const Color.fromRGBO(36, 44, 88, 0.07)),
+                border: isBuyer
+                    ? null
+                    : Border.all(color: const Color.fromRGBO(36, 44, 88, 0.07)),
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(20),
                   topRight: const Radius.circular(20),
@@ -37,12 +41,21 @@ class MessageBubble extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.network(item.image!, width: 220, height: 220, fit: BoxFit.cover),
+                        child: Image.network(
+                          item.image!,
+                          width: 220,
+                          height: 220,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   Text(
                     item.content ?? '',
-                    style: TextStyle(fontSize: 14, height: 1.4, color: isBuyer ? Colors.white : Colors.black),
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.4,
+                      color: isBuyer ? Colors.white : Colors.black,
+                    ),
                   ),
                 ],
               ),
@@ -51,10 +64,17 @@ class MessageBubble extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(item.time ?? '', style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                Text(
+                  item.time ?? '',
+                  style: const TextStyle(fontSize: 10, color: Colors.grey),
+                ),
                 if (isBuyer && (item.isRead == true)) ...[
                   const SizedBox(width: 4),
-                  const Icon(Icons.done_all, size: 14, color: AppColors.primaryColor),
+                  const Icon(
+                    Icons.done_all,
+                    size: 14,
+                    color: AppColors.primaryColor,
+                  ),
                 ],
               ],
             ),
