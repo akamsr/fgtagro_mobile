@@ -36,8 +36,8 @@ class DirectionsService {
     directions.TravelMode mode = directions.TravelMode.driving,
   }) async {
     final response = await _directions.directionsWithLocation(
-      directions.Location(origin.latitude, origin.longitude),
-      directions.Location(destination.latitude, destination.longitude),
+      directions.Location(lat: origin.latitude, lng: origin.longitude),
+      directions.Location(lat: destination.latitude, lng: destination.longitude),
       travelMode: mode,
     );
 
@@ -61,13 +61,12 @@ class DirectionsService {
     required LatLng destination,
     bool optimizeWaypoints = true,
   }) async {
-    final wp = waypoints.map((w) => directions.Waypoint.fromLocation(directions.Location(w.latitude, w.longitude))).toList();
+    final wp = waypoints.map((w) => directions.Waypoint.fromLocation(directions.Location(lat: w.latitude, lng: w.longitude))).toList();
     
     final response = await _directions.directionsWithLocation(
-      directions.Location(origin.latitude, origin.longitude),
-      directions.Location(destination.latitude, destination.longitude),
+      directions.Location(lat: origin.latitude, lng: origin.longitude),
+      directions.Location(lat: destination.latitude, lng: destination.longitude),
       waypoints: wp,
-      optimizeWaypoints: optimizeWaypoints,
     );
 
     if (response.isOkay && response.routes.isNotEmpty) {

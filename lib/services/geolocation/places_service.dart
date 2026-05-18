@@ -1,14 +1,14 @@
-import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
+import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart' as places;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PlacesService {
-  late FlutterGooglePlacesSdk _places;
+  late places.FlutterGooglePlacesSdk _places;
 
   PlacesService(String apiKey) {
-    _places = FlutterGooglePlacesSdk(apiKey);
+    _places = places.FlutterGooglePlacesSdk(apiKey);
   }
 
-  Future<List<AutocompletePrediction>> searchPlaces(
+  Future<List<places.AutocompletePrediction>> searchPlaces(
     String query, {
     String country = 'CM',
     LatLng? locationBias,
@@ -19,9 +19,15 @@ class PlacesService {
       query,
       countries: [country],
       locationBias: locationBias != null
-          ? LatLngBounds(
-              southwest: LatLng(locationBias.latitude - 0.1, locationBias.longitude - 0.1),
-              northeast: LatLng(locationBias.latitude + 0.1, locationBias.longitude + 0.1),
+          ? places.LatLngBounds(
+              southwest: places.LatLng(
+                lat: locationBias.latitude - 0.1,
+                lng: locationBias.longitude - 0.1,
+              ),
+              northeast: places.LatLng(
+                lat: locationBias.latitude + 0.1,
+                lng: locationBias.longitude + 0.1,
+              ),
             )
           : null,
     );
@@ -32,7 +38,7 @@ class PlacesService {
   Future<LatLng?> getPlaceDetails(String placeId) async {
     final result = await _places.fetchPlace(
       placeId,
-      fields: [PlaceField.Location],
+      fields: [places.PlaceField.Location],
     );
 
     final location = result.place?.latLng;

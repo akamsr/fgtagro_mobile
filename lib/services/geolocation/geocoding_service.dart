@@ -23,7 +23,7 @@ class GeocodingService {
       );
       if (placemarks.isNotEmpty) {
         final place = placemarks.first;
-        return '\${place.street}, \${place.locality}, \${place.administrativeArea}';
+        return '${place.street}, ${place.locality}, ${place.administrativeArea}';
       }
     } catch (e) {
       return null;

@@ -24,19 +24,17 @@ class DistanceService {
     distance.TravelMode mode = distance.TravelMode.driving,
   }) async {
     final response = await _distanceMatrix.distanceWithLocation(
-      [distance.Location(origin.latitude, origin.longitude)],
-      [distance.Location(destination.latitude, destination.longitude)],
+      [distance.Location(lat: origin.latitude, lng: origin.longitude)],
+      [distance.Location(lat: destination.latitude, lng: destination.longitude)],
       travelMode: mode,
     );
 
-    if (response.isOkay && response.results.isNotEmpty) {
-      final element = response.results.first.elements.first;
-      if (element.status == 'OK') {
-        return DistanceMatrixResult(
-          distanceKm: element.distance.value / 1000.0,
-          durationMinutes: (element.duration.value / 60).round(),
-        );
-      }
+    if (response.isOkay && response.rows.isNotEmpty) {
+      final element = response.rows.first.elements.first;
+      return DistanceMatrixResult(
+        distanceKm: element.distance.value / 1000.0,
+        durationMinutes: (element.duration.value / 60).round(),
+      );
     }
     return null;
   }

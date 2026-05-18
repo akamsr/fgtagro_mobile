@@ -1,0 +1,39 @@
+Analyzing geolocation...                                        
+
+  error • The named parameter 'lat' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:39:7 • missing_required_argument
+  error • The named parameter 'lng' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:39:7 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 2 found • lib/services/geolocation/directions_service.dart:39:27 • extra_positional_arguments_could_be_named
+  error • The named parameter 'lat' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:40:7 • missing_required_argument
+  error • The named parameter 'lng' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:40:7 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 2 found • lib/services/geolocation/directions_service.dart:40:27 • extra_positional_arguments_could_be_named
+  error • The named parameter 'lat' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:64:70 • missing_required_argument
+  error • The named parameter 'lng' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:64:70 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 2 found • lib/services/geolocation/directions_service.dart:64:90 • extra_positional_arguments_could_be_named
+  error • The named parameter 'lat' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:67:7 • missing_required_argument
+  error • The named parameter 'lng' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:67:7 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 2 found • lib/services/geolocation/directions_service.dart:67:27 • extra_positional_arguments_could_be_named
+  error • The named parameter 'lat' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:68:7 • missing_required_argument
+  error • The named parameter 'lng' is required, but there's no corresponding argument • lib/services/geolocation/directions_service.dart:68:7 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 2 found • lib/services/geolocation/directions_service.dart:68:27 • extra_positional_arguments_could_be_named
+  error • The named parameter 'optimizeWaypoints' isn't defined • lib/services/geolocation/directions_service.dart:70:7 • undefined_named_parameter
+  error • The named parameter 'lat' is required, but there's no corresponding argument • lib/services/geolocation/distance_service.dart:27:8 • missing_required_argument
+  error • The named parameter 'lng' is required, but there's no corresponding argument • lib/services/geolocation/distance_service.dart:27:8 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 2 found • lib/services/geolocation/distance_service.dart:27:26 • extra_positional_arguments_could_be_named
+  error • The named parameter 'lat' is required, but there's no corresponding argument • lib/services/geolocation/distance_service.dart:28:8 • missing_required_argument
+  error • The named parameter 'lng' is required, but there's no corresponding argument • lib/services/geolocation/distance_service.dart:28:8 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 2 found • lib/services/geolocation/distance_service.dart:28:26 • extra_positional_arguments_could_be_named
+   info • 'results' is deprecated and shouldn't be used. use `rows` • lib/services/geolocation/distance_service.dart:32:37 • deprecated_member_use
+   info • 'results' is deprecated and shouldn't be used. use `rows` • lib/services/geolocation/distance_service.dart:33:32 • deprecated_member_use
+  error • The getter 'status' isn't defined for the type 'Element' • lib/services/geolocation/distance_service.dart:34:19 • undefined_getter
+warning • The value of the local variable 'place' isn't used • lib/services/geolocation/geocoding_service.dart:25:15 • unused_local_variable
+  error • The name 'LatLng' is defined in the libraries 'package:flutter_google_places_sdk_platform_interface/src/types/lat_lng.dart (via package:flutter_google_places_sdk/flutter_google_places_sdk.dart)' and 'package:google_maps_flutter_platform_interface/src/types/location.dart (via package:google_maps_flutter/google_maps_flutter.dart)' • lib/services/geolocation/places_service.dart:14:5 • ambiguous_import
+  error • 'LatLngBounds' isn't a function • lib/services/geolocation/places_service.dart:22:13 • invocation_of_non_function
+  error • The name 'LatLngBounds' is defined in the libraries 'package:flutter_google_places_sdk_platform_interface/src/types/lat_lng_bounds.dart (via package:flutter_google_places_sdk/flutter_google_places_sdk.dart)' and 'package:google_maps_flutter_platform_interface/src/types/location.dart (via package:google_maps_flutter/google_maps_flutter.dart)' • lib/services/geolocation/places_service.dart:22:13 • ambiguous_import
+  error • 'LatLng' isn't a function • lib/services/geolocation/places_service.dart:23:26 • invocation_of_non_function
+  error • The name 'LatLng' is defined in the libraries 'package:flutter_google_places_sdk_platform_interface/src/types/lat_lng.dart (via package:flutter_google_places_sdk/flutter_google_places_sdk.dart)' and 'package:google_maps_flutter_platform_interface/src/types/location.dart (via package:google_maps_flutter/google_maps_flutter.dart)' • lib/services/geolocation/places_service.dart:23:26 • ambiguous_import
+  error • 'LatLng' isn't a function • lib/services/geolocation/places_service.dart:29:26 • invocation_of_non_function
+  error • The name 'LatLng' is defined in the libraries 'package:flutter_google_places_sdk_platform_interface/src/types/lat_lng.dart (via package:flutter_google_places_sdk/flutter_google_places_sdk.dart)' and 'package:google_maps_flutter_platform_interface/src/types/location.dart (via package:google_maps_flutter/google_maps_flutter.dart)' • lib/services/geolocation/places_service.dart:29:26 • ambiguous_import
+  error • The name 'LatLng' is defined in the libraries 'package:flutter_google_places_sdk_platform_interface/src/types/lat_lng.dart (via package:flutter_google_places_sdk/flutter_google_places_sdk.dart)' and 'package:google_maps_flutter_platform_interface/src/types/location.dart (via package:google_maps_flutter/google_maps_flutter.dart)' • lib/services/geolocation/places_service.dart:40:10 • ambiguous_import
+  error • 'LatLng' isn't a function • lib/services/geolocation/places_service.dart:48:14 • invocation_of_non_function
+  error • The name 'LatLng' is defined in the libraries 'package:flutter_google_places_sdk_platform_interface/src/types/lat_lng.dart (via package:flutter_google_places_sdk/flutter_google_places_sdk.dart)' and 'package:google_maps_flutter_platform_interface/src/types/location.dart (via package:google_maps_flutter/google_maps_flutter.dart)' • lib/services/geolocation/places_service.dart:48:14 • ambiguous_import
+
