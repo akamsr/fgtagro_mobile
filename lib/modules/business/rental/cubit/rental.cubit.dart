@@ -10,7 +10,6 @@ class RentalCubit extends Cubit<RentalState> {
   void fetchAllData() async {
     emit(state.copyWith(genLoading: true));
 
-    // Simulate API call
     await Future.delayed(const Duration(seconds: 1));
 
     final mockEquipment = [

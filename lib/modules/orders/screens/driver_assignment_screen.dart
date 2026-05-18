@@ -194,7 +194,6 @@ class _DriverAssignmentScreenState extends State<DriverAssignmentScreen>
                             Expanded(
                               child: OutlinedButton(
                                 onPressed: () {
-                                  setState(() => _showDeclineDialog = true);
                                   _showDeclineSheet(context, order);
                                 },
                                 style: OutlinedButton.styleFrom(

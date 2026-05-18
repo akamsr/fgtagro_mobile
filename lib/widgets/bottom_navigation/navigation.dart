@@ -116,10 +116,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                               currentIndex: _currentIndex,
                               prevIndex: _prevIndex,
                               progress: _controller,
-                              label: isSeller ? s.navOrders : s.navMessages,
-                              icon: isSeller
-                                  ? 'assets/icons/order.svg'
-                                  : 'assets/icons/notification.svg',
+                              label: s.navOrders,
+                              icon: 'assets/icons/order.svg',
                               onTap: () => _tabsRouter.setActiveIndex(2),
                             ),
                             _NavItem(
@@ -127,10 +125,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                               currentIndex: _currentIndex,
                               prevIndex: _prevIndex,
                               progress: _controller,
-                              label: isSeller ? s.navRentals : s.navOrders,
-                              icon: isSeller
-                                  ? 'assets/icons/rental.svg'
-                                  : 'assets/icons/order.svg',
+                              label: s.navRentals,
+                              icon: 'assets/icons/rental.svg',
                               onTap: () => _tabsRouter.setActiveIndex(3),
                             ),
                             _NavItem(

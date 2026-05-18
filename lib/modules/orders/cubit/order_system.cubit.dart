@@ -10,7 +10,6 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
   Timer? _assignmentCountdownTimer;
   final Random _random = Random();
 
-  // Simulated static coordinates for tracking (Douala)
   static const double destinationLat = 4.051056;
   static const double destinationLng = 9.767890;
   static const double startLat = 4.062000;
@@ -25,12 +24,12 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
       );
 
   // ─────────────────────────────────────────────────────────────
-  // MOCK DATA — covers all major status scenarios for dev/testing
+  // MOCK DATA
   // ─────────────────────────────────────────────────────────────
   static List<OrderModel> _generateInitialMockOrders() {
     final now = DateTime.now();
     return [
-      // 1. PENDING — buyer can cancel
+      // 1. PENDING
       OrderModel(
         id: '1',
         orderNumber: 'CMD-FGT9X7R2A',
@@ -39,22 +38,26 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         createdAt: now.subtract(const Duration(minutes: 10)),
         items: [
           CartItem(
-            id: 'item_1',
+            id: 1,
             productId: 'prod_1',
-            name: 'Engrais Organique Fertile',
-            price: 15000,
-            quantity: 2,
+            productName: 'Engrais Organique Fertile',
+            finalPrice: 15000,
+            qty: 2,
+            businessId: 1,
             unit: 'Sac 50kg',
-            imageUrl: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=300&q=80',
           ),
           CartItem(
-            id: 'item_2',
+            id: 2,
             productId: 'prod_2',
-            name: 'Semences de Maïs Hybride',
-            price: 15000,
-            quantity: 1,
+            productName: 'Semences de Maïs Hybride',
+            finalPrice: 15000,
+            qty: 1,
+            businessId: 1,
             unit: 'Sac 5kg',
-            imageUrl: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         shippingAddress: 'Rond-point Deido, Douala',
@@ -67,10 +70,12 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         deliveryFee: 3000,
         slug: 'cmd-fgt9x7r2a',
         buyerId: 'buyer_123',
-        timeline: {OrderStatus.pending: now.subtract(const Duration(minutes: 10))},
+        timeline: {
+          OrderStatus.pending: now.subtract(const Duration(minutes: 10)),
+        },
       ),
 
-      // 2. PREPARING — seller preparing, 48h SLA
+      // 2. PREPARING — seller, 48h SLA
       OrderModel(
         id: '2',
         orderNumber: 'CMD-FGT5Y3K9B',
@@ -80,13 +85,15 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         customerName: 'Aboubakar Njoya',
         items: [
           CartItem(
-            id: 'item_3',
+            id: 3,
             productId: 'prod_3',
-            name: 'Motopompe d\'irrigation 3HP',
-            price: 125000,
-            quantity: 1,
+            productName: 'Motopompe d\'irrigation 3HP',
+            finalPrice: 125000,
+            qty: 1,
+            businessId: 1,
             unit: 'Pièce',
-            imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         shippingAddress: 'Bonapriso, Douala',
@@ -106,7 +113,7 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         },
       ),
 
-      // 3. PAYMENT_CONFIRMED + STORE_PICKUP (cash on pickup)
+      // 3. PAYMENT_CONFIRMED + STORE_PICKUP
       OrderModel(
         id: '3',
         orderNumber: 'CMD-FGT7P1M8C',
@@ -116,13 +123,15 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         customerName: 'Christelle Ekambi',
         items: [
           CartItem(
-            id: 'item_4',
+            id: 4,
             productId: 'prod_4',
-            name: 'Pesticide Bio-Protect',
-            price: 25000,
-            quantity: 3,
+            productName: 'Pesticide Bio-Protect',
+            finalPrice: 25000,
+            qty: 3,
+            businessId: 1,
             unit: 'Litre',
-            imageUrl: 'https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         paymentMethod: 'CASH_IN_STORE',
@@ -141,32 +150,36 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         },
       ),
 
-      // 4. DRIVER_ASSIGNED — pending driver acceptance
+      // 4. DRIVER_ASSIGNED
       OrderModel(
         id: '4',
         orderNumber: 'CMD-FGT8D5N2E',
         status: OrderStatus.driverAssigned,
-        totalAmount: 55000,
+        totalAmount: 59000,
         createdAt: now.subtract(const Duration(hours: 6)),
         customerName: 'Rodrigue Talla',
         items: [
           CartItem(
-            id: 'item_6',
+            id: 6,
             productId: 'prod_6',
-            name: 'Houe à dents forgée',
-            price: 8500,
-            quantity: 2,
+            productName: 'Houe à dents forgée',
+            finalPrice: 8500,
+            qty: 2,
+            businessId: 1,
             unit: 'Pièce',
-            imageUrl: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=300&q=80',
           ),
           CartItem(
-            id: 'item_7',
+            id: 7,
             productId: 'prod_7',
-            name: 'Pulvérisateur 16L',
-            price: 38000,
-            quantity: 1,
+            productName: 'Pulvérisateur 16L',
+            finalPrice: 38000,
+            qty: 1,
+            businessId: 1,
             unit: 'Pièce',
-            imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         shippingAddress: 'Makepe, Douala',
@@ -190,7 +203,7 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         },
       ),
 
-      // 5. OUT_FOR_DELIVERY — buyer can track
+      // 5. OUT_FOR_DELIVERY
       OrderModel(
         id: '5',
         orderNumber: 'CMD-FGT3L6Q0F',
@@ -200,13 +213,15 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         customerName: 'Bertrand Nguele',
         items: [
           CartItem(
-            id: 'item_8',
+            id: 8,
             productId: 'prod_8',
-            name: 'Bottes de Sécurité Agricole',
-            price: 16000,
-            quantity: 2,
+            productName: 'Bottes de Sécurité Agricole',
+            finalPrice: 16000,
+            qty: 2,
+            businessId: 1,
             unit: 'Paire',
-            imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         shippingAddress: 'Akwa, Douala',
@@ -232,7 +247,7 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         },
       ),
 
-      // 6. DELIVERED — buyer can confirm or dispute
+      // 6. DELIVERED
       OrderModel(
         id: '6',
         orderNumber: 'CMD-FGT2M4R7G',
@@ -242,13 +257,15 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         customerName: 'Fatou Diallo',
         items: [
           CartItem(
-            id: 'item_9',
+            id: 9,
             productId: 'prod_9',
-            name: 'Semoir manuel polyvalent',
-            price: 68000,
-            quantity: 1,
+            productName: 'Semoir manuel polyvalent',
+            finalPrice: 68000,
+            qty: 1,
+            businessId: 1,
             unit: 'Pièce',
-            imageUrl: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         shippingAddress: 'Bali, Douala',
@@ -275,7 +292,7 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         },
       ),
 
-      // 7. COMPLETED — with payout details visible to seller
+      // 7. COMPLETED — payout visible to seller
       OrderModel(
         id: '7',
         orderNumber: 'CMD-FGT4K2L3D',
@@ -285,13 +302,15 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         customerName: 'Isabelle Mfou',
         items: [
           CartItem(
-            id: 'item_10',
+            id: 10,
             productId: 'prod_10',
-            name: 'Bottes de Sécurité Agricole',
-            price: 16000,
-            quantity: 2,
+            productName: 'Bottes de Sécurité Agricole',
+            finalPrice: 16000,
+            qty: 2,
+            businessId: 1,
             unit: 'Paire',
-            imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         shippingAddress: 'Akwa, Douala',
@@ -307,7 +326,7 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         driverName: 'Ebanda Samuel',
         driverPhone: '+237 677 889 900',
         driverId: 'driver_001',
-        payoutAmount: 28500, // after platform fee
+        payoutAmount: 28500,
         payoutDate: now.subtract(const Duration(days: 1)),
         timeline: {
           OrderStatus.pending: now.subtract(const Duration(days: 3)),
@@ -321,23 +340,25 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         },
       ),
 
-      // 8. REFUND_REQUESTED — dispute in progress
+      // 8. REFUND_REQUESTED
       OrderModel(
         id: '8',
         orderNumber: 'CMD-FGT1Z9S4H',
         status: OrderStatus.refundRequested,
-        totalAmount: 45000,
+        totalAmount: 48500,
         createdAt: now.subtract(const Duration(days: 5)),
         customerName: 'Pascal Nkemeni',
         items: [
           CartItem(
-            id: 'item_11',
+            id: 11,
             productId: 'prod_11',
-            name: 'Engrais NPK 15-15-15',
-            price: 22500,
-            quantity: 2,
+            productName: 'Engrais NPK 15-15-15',
+            finalPrice: 22500,
+            qty: 2,
+            businessId: 1,
             unit: 'Sac 25kg',
-            imageUrl: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         shippingAddress: 'Bonamoussadi, Douala',
@@ -370,13 +391,15 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
         createdAt: now.subtract(const Duration(days: 7)),
         items: [
           CartItem(
-            id: 'item_12',
+            id: 12,
             productId: 'prod_12',
-            name: 'Arrosoir 10L inox',
-            price: 18000,
-            quantity: 1,
+            productName: 'Arrosoir 10L inox',
+            finalPrice: 18000,
+            qty: 1,
+            businessId: 1,
             unit: 'Pièce',
-            imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=300&q=80',
+            productPhoto:
+                'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=300&q=80',
           ),
         ],
         shippingAddress: 'Logpom, Douala',
@@ -402,7 +425,6 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
   // ROLE
   // ─────────────────────────────────────────────────────────────
   void setRole(OrderSystemRole role) => emit(state.copyWith(currentRole: role));
-
   void selectOrder(String id) => emit(state.copyWith(selectedOrderId: id));
 
   // ─────────────────────────────────────────────────────────────
@@ -419,10 +441,10 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
     emit(state.copyWith(isLoading: true));
 
     for (var item in items) {
-      if (item.quantity > 50) {
+      if (item.qty > 50) {
         emit(state.copyWith(
           isLoading: false,
-          error: "${item.name} is not available in the requested quantity.",
+          error: "${item.productName ?? 'Item'} is not available in the requested quantity.",
         ));
         return;
       }
@@ -430,7 +452,10 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
 
     final now = DateTime.now();
     final orderNum = 'CMD-FGT${_random.nextInt(900000) + 100000}';
-    final subtotal = items.fold<double>(0.0, (v, i) => v + (i.price * i.quantity));
+    final subtotal = items.fold<double>(
+      0.0,
+      (v, i) => v + (i.finalPrice * i.qty),
+    );
     final deliveryFee = deliveryMethod == 'HOME_DELIVERY' ? 3000.0 : 0.0;
 
     final newOrder = OrderModel(
@@ -477,11 +502,10 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
       if (newStatus == OrderStatus.paymentConfirmed) pStatus = 'CONFIRMED';
       if (newStatus == OrderStatus.refunded) pStatus = 'REFUNDED';
 
-      // Assign payout when seller's order is completed
       double? payoutAmount = o.payoutAmount;
       DateTime? payoutDate = o.payoutDate;
       if (newStatus == OrderStatus.completed && payoutAmount == null) {
-        payoutAmount = o.subtotalAmount * 0.95; // 5% platform fee
+        payoutAmount = o.subtotalAmount * 0.95;
         payoutDate = DateTime.now().add(const Duration(days: 1));
       }
 
@@ -504,13 +528,12 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
     emit(state.copyWith(orders: updatedOrders));
   }
 
-  // Buyer cancellation → cancelledByBuyer
   void cancelOrder(String id, String reason) {
     updateOrderStatus(id, OrderStatus.cancelledByBuyer, reason: reason);
   }
 
   // ─────────────────────────────────────────────────────────────
-  // DRIVER ASSIGNMENT — Accept / Decline with 10-min countdown
+  // DRIVER ASSIGNMENT — 10-min countdown
   // ─────────────────────────────────────────────────────────────
   void triggerDriverAssignment(String orderId) {
     emit(state.copyWith(
@@ -526,7 +549,6 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
       final remaining = state.assignmentSecondsRemaining - 1;
       if (remaining <= 0) {
         t.cancel();
-        // Auto-decline if driver doesn't respond — re-assign to next driver
         _autoDeclineAssignment(orderId);
       } else {
         emit(state.copyWith(assignmentSecondsRemaining: remaining));
@@ -543,8 +565,6 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
   void declineAssignment(String orderId, String reason) {
     _assignmentCountdownTimer?.cancel();
     emit(state.copyWith(clearPendingAssignment: true));
-    // In production: backend re-assigns to next available driver
-    // For simulation: put back to PREPARING
     updateOrderStatus(orderId, OrderStatus.preparing, reason: 'Driver declined: $reason');
   }
 
@@ -555,7 +575,7 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // CUSTOMER ABSENT FLOW — 3 attempts
+  // CUSTOMER ABSENT — 3 attempts
   // ─────────────────────────────────────────────────────────────
   void recordDeliveryAttempt(String orderId) {
     final current = state.absentAttempts[orderId] ?? 0;
@@ -563,7 +583,6 @@ class OrderSystemCubit extends Cubit<OrderSystemState> {
       ..[orderId] = current + 1;
 
     if (current + 1 >= 3) {
-      // 3rd failed attempt → DELIVERY_FAILED
       updateOrderStatus(orderId, OrderStatus.deliveryFailed,
           reason: 'Delivery failed after 3 attempts — customer absent');
       emit(state.copyWith(absentAttempts: newAttempts));

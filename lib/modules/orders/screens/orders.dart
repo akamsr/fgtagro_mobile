@@ -535,7 +535,7 @@ class _OrdersScreenState extends State<OrdersScreen>
             : Colors.red;
 
     // Total items being prepared (for stock warning)
-    final totalItems = order.items.fold<int>(0, (sum, i) => sum + i.quantity);
+    final totalItems = order.items.fold<int>(0, (sum, i) => sum + i.qty);
 
     // Payout info for completed orders
     final isCompleted = order.status == OrderStatus.completed;
@@ -608,7 +608,7 @@ class _OrdersScreenState extends State<OrdersScreen>
           ...order.items.map((item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Text(
-                  '• ${item.quantity}× ${item.name} (${item.unit})',
+                  '• ${item.qty}× ${item.productName ?? 'Product'} (${item.unit ?? ''})',
                   style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
                 ),
               )),
@@ -766,8 +766,8 @@ class _OrdersScreenState extends State<OrdersScreen>
                   ...order.items.map((item) => CheckboxListTile(
                         value: true,
                         onChanged: (v) {},
-                        title: Text(item.name),
-                        subtitle: Text('${item.quantity} ${item.unit}'),
+                        title: Text(item.productName ?? 'Product'),
+                        subtitle: Text('${item.qty} ${item.unit ?? ""}'),
                         controlAffinity: ListTileControlAffinity.leading,
                         contentPadding: EdgeInsets.zero,
                         activeColor: AppColors.primaryColor,
@@ -1219,7 +1219,7 @@ class _OrdersScreenState extends State<OrdersScreen>
           ...order.items.map((item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Text(
-                  '• ${item.quantity}x ${item.name}',
+                  '• ${item.qty}x ${item.productName ?? 'Product'}',
                   style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
                 ),
               )),

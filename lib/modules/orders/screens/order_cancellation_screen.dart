@@ -122,7 +122,7 @@ class _OrderCancellationScreenState extends State<OrderCancellationScreen> {
           ...order.items.map((item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
                 child: Text(
-                  '• ${item.quantity}× ${item.name}',
+                  '• ${item.qty}× ${item.productName ?? 'Product'}',
                   style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
                 ),
               )),

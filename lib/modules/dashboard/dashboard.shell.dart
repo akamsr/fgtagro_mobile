@@ -37,8 +37,8 @@ class HomeDashBoardPage extends StatelessWidget {
                   : [
                       const DashboardHomeRoute(),
                       const CategoriesRoute(),
-                      const ConversationListRoute(),
                       const OrdersRoute(),
+                      const RentalMainRoute(),
                       const ProfileRoute(),
                     ],
               builder: (ctx, child) {

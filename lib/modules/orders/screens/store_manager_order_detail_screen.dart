@@ -4,8 +4,6 @@ import 'package:fgtagro_mobile/models/order.dart';
 import 'package:fgtagro_mobile/modules/orders/cubit/order_system.cubit.dart';
 import 'package:fgtagro_mobile/modules/orders/cubit/order_system_state.dart';
 import 'package:fgtagro_mobile/utils/theme/colors.dart';
-import 'package:fgtagro_mobile/utils/functions/navigate.dart';
-import 'package:fgtagro_mobile/routes/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -228,12 +226,12 @@ class _StoreManagerOrderDetailScreenState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(item.name,
+                        Text(item.productName ?? 'Product',
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
                                 color: AppColors.secondaryColor)),
-                        Text('${item.quantity}× ${item.unit}',
+                        Text('${item.qty}× ${item.unit ?? ''}',
                             style: TextStyle(
                                 color: Colors.grey.shade500, fontSize: 12)),
                       ],

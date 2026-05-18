@@ -30,6 +30,15 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: StoreManagerOrderDetailRoute.page),
     AutoRoute(page: DriverAssignmentRoute.page),
     AutoRoute(page: CustomerAbsentRoute.page),
+    AutoRoute(page: BuyerEquipmentDetailRoute.page),
+    AutoRoute(page: BuyerBookingFlowRoute.page),
+    AutoRoute(page: BuyerBookingDetailRoute.page),
+    AutoRoute(page: ActiveRentalTrackingRoute.page),
+    AutoRoute(page: RentalExtensionRequestRoute.page),
+    AutoRoute(page: TenantJointInspectionRoute.page),
+    AutoRoute(page: DepositDisputeRoute.page),
+    AutoRoute(page: MutualRatingRoute.page),
+    AutoRoute(page: TheftReportRoute.page),
 
     // Seller Management
     AutoRoute(page: SellerDashboardRoute.page),
@@ -61,6 +70,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: CategoriesRoute.page),
         AutoRoute(page: ConversationListRoute.page),
         AutoRoute(page: OrdersRoute.page),
+        AutoRoute(page: RentalMainRoute.page),
 
         // Seller Tabs
         AutoRoute(page: SellerDashboardRoute.page),

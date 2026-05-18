@@ -147,17 +147,34 @@ class _SellerOrderListScreenState extends State<SellerOrderListScreen>
     if (status == null) return S.of(context).statusAll;
     switch (status) {
       case OrderStatus.pending:
+      case OrderStatus.paymentPending:
         return S.of(context).statusPending;
       case OrderStatus.preparing:
         return S.of(context).statusPreparing;
+      case OrderStatus.driverAssigned:
+      case OrderStatus.pickedUp:
+      case OrderStatus.outForDelivery:
       case OrderStatus.shipped:
         return S.of(context).statusShipped;
       case OrderStatus.delivered:
+      case OrderStatus.completed:
         return S.of(context).statusDelivered;
       case OrderStatus.cancelled:
+      case OrderStatus.cancelledByBuyer:
+      case OrderStatus.cancelledAuto:
+      case OrderStatus.cancelledByAdmin:
+      case OrderStatus.expired:
+      case OrderStatus.deliveryFailed:
+      case OrderStatus.pickupExpired:
+      case OrderStatus.paymentFailed:
         return S.of(context).statusCancelled;
       case OrderStatus.paymentConfirmed:
+      case OrderStatus.readyForPickup:
         return S.of(context).statusPaymentConfirmed;
+      case OrderStatus.refundRequested:
+      case OrderStatus.refunded:
+      case OrderStatus.refundRejected:
+        return 'REFUND';
     }
   }
 
@@ -360,6 +377,7 @@ class _StatusBadge extends StatelessWidget {
 
     switch (status) {
       case OrderStatus.pending:
+      case OrderStatus.paymentPending:
         color = Colors.orange;
         label = S.of(context).statusPending;
         break;
@@ -368,20 +386,38 @@ class _StatusBadge extends StatelessWidget {
         label = S.of(context).statusPreparing;
         break;
       case OrderStatus.shipped:
+      case OrderStatus.driverAssigned:
+      case OrderStatus.pickedUp:
+      case OrderStatus.outForDelivery:
         color = Colors.purple;
         label = S.of(context).statusShipped;
         break;
       case OrderStatus.delivered:
+      case OrderStatus.completed:
         color = Colors.green;
         label = S.of(context).statusDelivered;
         break;
       case OrderStatus.cancelled:
+      case OrderStatus.cancelledByBuyer:
+      case OrderStatus.cancelledAuto:
+      case OrderStatus.cancelledByAdmin:
+      case OrderStatus.expired:
+      case OrderStatus.deliveryFailed:
+      case OrderStatus.pickupExpired:
+      case OrderStatus.paymentFailed:
         color = Colors.red;
         label = S.of(context).statusCancelled;
         break;
       case OrderStatus.paymentConfirmed:
+      case OrderStatus.readyForPickup:
         color = Colors.teal;
         label = S.of(context).statusPaymentConfirmed;
+        break;
+      case OrderStatus.refundRequested:
+      case OrderStatus.refunded:
+      case OrderStatus.refundRejected:
+        color = Colors.deepOrange;
+        label = 'REFUND';
         break;
     }
 

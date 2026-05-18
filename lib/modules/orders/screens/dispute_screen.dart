@@ -674,7 +674,7 @@ class _DeliveryConfirmationSheetState
                 activeColor: AppColors.primaryColor,
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  '${item.name} (${item.quantity}× ${item.unit})',
+                  '${item.productName ?? "Product"} (${item.qty}× ${item.unit ?? ""})',
                   style: const TextStyle(fontSize: 13),
                 ),
                 controlAffinity: ListTileControlAffinity.leading,

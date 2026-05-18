@@ -287,10 +287,10 @@ class BuyerOrderDetailScreen extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      item.imageUrl ?? '',
+                      item.productPhoto ?? '',
                       width: 50,
                       height: 50,
-                      fit: BoxShape.rectangle == BoxShape.circle ? BoxFit.cover : BoxFit.cover,
+                      fit: BoxFit.cover,
                       errorBuilder: (c, e, s) => Container(
                         width: 50,
                         height: 50,
@@ -305,7 +305,7 @@ class BuyerOrderDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.name,
+                          item.productName ?? 'Product',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
@@ -314,14 +314,14 @@ class BuyerOrderDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${item.quantity}x ${item.unit}',
+                          '${item.qty}x ${item.unit ?? ""}',
                           style: TextStyle(color: Colors.grey.shade500, fontSize: 11),
                         ),
                       ],
                     ),
                   ),
                   Text(
-                    '${(item.price * item.quantity).toStringAsFixed(0)} FCFA',
+                    '${(item.finalPrice * item.qty).toStringAsFixed(0)} FCFA',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
@@ -869,53 +869,123 @@ class BuyerOrderDetailScreen extends StatelessWidget {
   Color _getStatusColor(OrderStatus status) {
     switch (status) {
       case OrderStatus.pending:
+      case OrderStatus.paymentPending:
         return Colors.orange;
       case OrderStatus.paymentConfirmed:
         return Colors.teal;
       case OrderStatus.preparing:
         return Colors.blue;
+      case OrderStatus.driverAssigned:
+      case OrderStatus.pickedUp:
+        return Colors.indigo;
       case OrderStatus.shipped:
+      case OrderStatus.outForDelivery:
         return Colors.purple;
       case OrderStatus.delivered:
+      case OrderStatus.completed:
         return Colors.green;
       case OrderStatus.cancelled:
+      case OrderStatus.cancelledByBuyer:
+      case OrderStatus.cancelledAuto:
+      case OrderStatus.cancelledByAdmin:
+      case OrderStatus.expired:
+      case OrderStatus.deliveryFailed:
+      case OrderStatus.pickupExpired:
         return Colors.red;
+      case OrderStatus.paymentFailed:
+        return Colors.redAccent;
+      case OrderStatus.refundRequested:
+      case OrderStatus.refundRejected:
+        return Colors.orange;
+      case OrderStatus.refunded:
+        return Colors.orangeAccent;
+      case OrderStatus.readyForPickup:
+        return Colors.teal;
     }
   }
 
   IconData _getStatusBannerIcon(OrderStatus status) {
     switch (status) {
       case OrderStatus.pending:
+      case OrderStatus.paymentPending:
         return Icons.hourglass_empty;
       case OrderStatus.paymentConfirmed:
         return Icons.check_circle_outline;
       case OrderStatus.preparing:
         return Icons.settings_suggest_outlined;
+      case OrderStatus.driverAssigned:
+      case OrderStatus.pickedUp:
+        return Icons.delivery_dining_outlined;
       case OrderStatus.shipped:
+      case OrderStatus.outForDelivery:
         return Icons.local_shipping_outlined;
       case OrderStatus.delivered:
+      case OrderStatus.completed:
         return Icons.done_all;
       case OrderStatus.cancelled:
+      case OrderStatus.cancelledByBuyer:
+      case OrderStatus.cancelledAuto:
+      case OrderStatus.cancelledByAdmin:
+      case OrderStatus.expired:
+      case OrderStatus.deliveryFailed:
+      case OrderStatus.pickupExpired:
+      case OrderStatus.paymentFailed:
         return Icons.cancel_outlined;
+      case OrderStatus.refundRequested:
+      case OrderStatus.refundRejected:
+      case OrderStatus.refunded:
+        return Icons.currency_exchange;
+      case OrderStatus.readyForPickup:
+        return Icons.store_outlined;
     }
   }
 
   String _getStatusBannerLabel(OrderStatus status) {
     switch (status) {
       case OrderStatus.pending:
-        return 'En attente de paiement...';
+      case OrderStatus.paymentPending:
+        return 'Awaiting payment...';
       case OrderStatus.paymentConfirmed:
-        return 'Paiement reçu. Vendeur notifié.';
+        return 'Payment received. Seller notified.';
       case OrderStatus.preparing:
-        return 'Le vendeur prépare votre colis...';
+        return 'Seller is preparing your order...';
+      case OrderStatus.driverAssigned:
+        return 'Driver assigned. Awaiting pickup.';
+      case OrderStatus.pickedUp:
+        return 'Order picked up. En route!';
       case OrderStatus.shipped:
-        return 'Colis remis au livreur. En cours...';
+      case OrderStatus.outForDelivery:
+        return 'Out for delivery. Almost there!';
       case OrderStatus.delivered:
-        return 'Commande livrée !';
+        return 'Order delivered!';
+      case OrderStatus.completed:
+        return 'Order completed. Thank you!';
       case OrderStatus.cancelled:
-        return 'Commande annulée.';
+      case OrderStatus.cancelledByBuyer:
+        return 'Order cancelled.';
+      case OrderStatus.cancelledAuto:
+        return 'Order cancelled automatically.';
+      case OrderStatus.cancelledByAdmin:
+        return 'Order cancelled by admin.';
+      case OrderStatus.expired:
+        return 'Order expired.';
+      case OrderStatus.deliveryFailed:
+        return 'Delivery failed. Return in progress.';
+      case OrderStatus.pickupExpired:
+        return 'Pickup time expired.';
+      case OrderStatus.paymentFailed:
+        return 'Payment failed.';
+      case OrderStatus.refundRequested:
+        return 'Refund requested. Under review.';
+      case OrderStatus.refundRejected:
+        return 'Refund rejected.';
+      case OrderStatus.refunded:
+        return 'Refund issued successfully.';
+      case OrderStatus.readyForPickup:
+        return 'Ready for pickup at the store!';
     }
   }
+
 }
 
 extension ColorExtension on Color {
